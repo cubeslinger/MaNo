@@ -1,0 +1,16 @@
+Identifier  =  "MaNo"
+Name        =  { English = "MaNo" }
+NameShort   =  "MaNo"
+Version     =  "0.0.2"
+Description =  { English = "MAp NOtes" }
+Author      =  "marcob@marcob.org"
+Website     =  "https://github.com/cubeslinger/MaNo"
+Email       =  "marcob@marcob.org"
+Environment =  "4.0"
+
+
+RunOnStartup = {
+   "__map_notes.lua",
+   "_mano_init.lua",
+   "MaNo.lua",
+}
