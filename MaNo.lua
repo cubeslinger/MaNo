@@ -4,9 +4,14 @@
 -- StartDate   05/05/2018
 --
 local addon, mano = ...
-
-mano.mapnote  =  mapnotes()
-
+--
+mano.addon           =  {}
+mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
+mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
+--
+mano.mapnote         =  mapnotes()
+mano.noteinputform   =  noteinputform()
+--
 --
 -- function mano.gotevent(handle, params)
 --    if params then
@@ -31,13 +36,16 @@ local function parseslashcommands(params)
       
       print(string.format( "i [%s]", i))
       
-      if i  == "add"         then mano.mapnote.new()  end
+      if i  == "add"         then 
+      
+         mano.noteinputform.show()
+         mano.mapnote.new()  
+      
+      end
    end
    
    return   
 end
 
 
-
-
-table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon, "MaNo: add note here"})
+table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})

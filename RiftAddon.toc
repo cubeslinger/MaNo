@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.0.2"
+Version     =  "0.0.3"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -11,6 +11,14 @@ Environment =  "4.0"
 
 RunOnStartup = {
    "__map_notes.lua",
-   "_mano_init.lua",
+   "_mano_inputform.lua",
    "MaNo.lua",
+}
+
+Embed = {
+        LibSimpleWidgets = true,
+}
+
+Dependencies = {
+  LibSimpleWidgets = {"required", "before"},
 }
