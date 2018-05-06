@@ -38,8 +38,9 @@ local function parseslashcommands(params)
       
       if i  == "add"         then 
       
-         mano.noteinputform.show()
-         mano.mapnote.new()  
+         local playerposition = mano.mapnote.getplayerposition()
+         mano.noteinputform.show(playerposition)
+         mano.mapnote.new(playerposition)  
       
       end
    end

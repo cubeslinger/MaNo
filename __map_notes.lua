@@ -1,5 +1,5 @@
 --
--- Addon       MaNo.lua
+-- Addon       __map_notes.lua
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
@@ -32,7 +32,11 @@ function mapnotes()
 --       return count
 --    end
    
-   local function getplayerposition()
+
+   --
+   -- PUBLIC:  
+   --
+   function self.getplayerposition()
 
       local t  =  {}
       local bool, playerdata = pcall(Inspect.Unit.Detail, "player")
@@ -46,19 +50,22 @@ function mapnotes()
          t.locationName   = playerdata.locationName
          t.radius         = playerdata.radius
          t.name           = playerdata.name
+         
+         local bool, zonedata = pcall(Inspect.Zone.Detail, t.zone)
+         
+         t.zonename  =  (zonedata.name or nil)
+         t.zoneid    =  (zonedata.id or nil)
+         t.zonetype  =  (zonedata.type or nil)
       end
       
       return t
    end     
-
-   --
-   -- PUBLIC:  
-   --
-   function self.new()
+         
+   function self.new(playerposition)
       
       print "mapnotes.new()"
 
-      local playerposition =  getplayerposition()   
+      if not playerposition or not next(playerposition) then playerposition =  getplayerposition() end
 
       if next(playerposition) then
          Command.Console.Display("general", true, "========================================", true)
