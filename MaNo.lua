@@ -57,7 +57,7 @@ local function savevariables(_, addonname)
       a.mmbtnwidth   =  nil
       a.mmbtnobj     =  nil
 
-      guidata        =  a
+      manoguidata        =  a
    end
 
    return
@@ -70,9 +70,9 @@ local function loadvariables(_, addonname)
       print(string.format("addon.name [%s] -> addonname [%s]", addon.name, addonname))
       print(string.format("  for US [%s]", addonname))
 
-      if guidata then
+      if manoguidata then
 
-         local a  =  guidata
+         local a  =  manoguidata
          local key, val = nil, nil
          for key, val in pairs(a) do   mano.gui[key]   =  val   print(string.format("Importing %s: %s", key, val)) end
 
@@ -91,7 +91,8 @@ local function startmeup()
 
       -- Create/Display/Hide Mini Map Button Window
       if mano.gui.mmbtnobj == nil then
-         mano.gui.mmbtnobj =  mano.createminimapbutton()
+         mano.mmbutton     =  mano.createminimapbutton()
+         mano.gui.mmbtnobj =  mano.mmbutton.button
          mano.gui.mmbtnobj:SetVisible(true)
          mano.init.startup =  true
          -- remove tracking for this event

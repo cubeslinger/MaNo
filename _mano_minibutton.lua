@@ -31,51 +31,40 @@ end
 
 function mano.createminimapbutton()
 
-   -- avoid creating multiple minimap buttons...
-   if not mano.gui.mmbtnobj then
-      --       print(string.format("mano.createMiniMapButton: mano.gui.mmbtnobj=%s", mano.gui.mmbtnobj))
+   local btn = {}
+   
+   --Global context (parent frame-thing).
+   btn.context = UI.CreateContext("button_context")
 
-      --Global context (parent frame-thing).
-      mmbtncontext = UI.CreateContext("button_context")
-
-      -- MiniMapButton Border
-      mmbuttonborder = UI.CreateFrame("Texture", "mmBtnIconBorder", mmbtncontext)
-      mmbuttonborder:SetTexture("Rift", "sml_icon_border_(over)_yellow.png.dds")
-      mmbuttonborder:SetHeight(mano.gui.mmbtnheight)
-      mmbuttonborder:SetWidth(mano.gui.mmbtnwidth)
-      mmbuttonborder:SetLayer(1)
---       mmbuttonborder:EventAttach(Event.UI.Input.Mouse.Left.Click, function() mano.showhidewindow() end, "Show/Hide Pressed" )
-
-      mmbuttonborder:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
-                                                                     local playerposition = mano.mapnote.getplayerposition()
-                                                                     mano.noteinputform.show(playerposition)
-                                                                     mano.mapnote.new(playerposition)
-                                                                  end,
-                                                                  "Show/Hide Pressed" )
-
-      if mano.gui.mmbtnx == nil or mano.gui.mmbtny == nil then
-         -- first run, we position in the screen center
-         mmbuttonborder:SetPoint("CENTER", UIParent, "CENTER")
-      else
-         -- we have coordinates
-         mmbuttonborder:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.mmbtnx, mano.gui.mmbtny)
-      end
-
-      -- MiniMapButton Icon
-      mmbutton = UI.CreateFrame("Texture", "mmBtnIcon", mmbuttonborder)
---       mmbutton:SetTexture("Rift", "loot_gold_coins.dds")
-      mmbutton:SetTexture("Rift", "AATree_16D.dds")
-      mmbutton:SetLayer(1)
-      mmbutton:SetPoint("TOPLEFT",     mmbuttonborder, "TOPLEFT",      12, 12)
-      mmbutton:SetPoint("BOTTOMRIGHT", mmbuttonborder, "BOTTOMRIGHT", -12, -12)
-
-      -- Enable Dragging
-      Library.LibDraggable.draggify(mmbuttonborder, mano.updateguicoordinates)
-
-      mano.gui.mmbtnobj   =  mmbuttonborder
+   -- MiniMapButton Border
+   btn.border = UI.CreateFrame("Texture", "mmBtnIconBorder", btn.context)
+   btn.border:SetTexture("Rift", "sml_icon_border_(over)_yellow.png.dds")
+   btn.border:SetHeight(mano.gui.mmbtnheight)
+   btn.border:SetWidth(mano.gui.mmbtnwidth)
+   btn.border:SetLayer(1)
+   btn.border:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+                                                                  local playerposition = mano.mapnote.getplayerposition()
+                                                                  mano.noteinputform.show(playerposition)
+                                                                  mano.mapnote.new(playerposition)
+                                                               end,
+                                                               "Show/Hide Pressed" )
+   if mano.gui.mmbtnx == nil or mano.gui.mmbtny == nil then
+      -- first run, we position in the screen center
+      btn.border:SetPoint("CENTER", UIParent, "CENTER")
    else
-      mmbutton = mano.gui.mmbtnobj
+      -- we have coordinates
+      btn.border:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.mmbtnx, mano.gui.mmbtny)
    end
 
-   return mmbutton
+   -- MiniMapButton Icon
+   btn.button = UI.CreateFrame("Texture", "mmBtnIcon", btn.border)
+   btn.button:SetTexture("Rift", "AATree_16D.dds")
+   btn.button:SetLayer(1)
+   btn.button:SetPoint("TOPLEFT",     btn.border, "TOPLEFT",      12, 12)
+   btn.button:SetPoint("BOTTOMRIGHT", btn.border, "BOTTOMRIGHT", -12, -12)
+
+   -- Enable Dragging
+   Library.LibDraggable.draggify(btn.border, mano.updateguicoordinates)
+
+   return btn
 end
