@@ -24,24 +24,24 @@ function mapnotes()
 --       local k, v  =  nil, nil
 --       local count =  0
 --       local t     =  array
--- 
+--
 --       if array then
 --          for k, v in pairs(array) do count = count +1 end
 --       end
--- 
+--
 --       return count
 --    end
-   
+
 
    --
-   -- PUBLIC:  
+   -- PUBLIC:
    --
    function self.getplayerposition()
 
       local t  =  {}
       local bool, playerdata = pcall(Inspect.Unit.Detail, "player")
 
-          
+
       if bool  then
          t.coordX         = playerdata.coordX
          t.coordY         = playerdata.coordY
@@ -50,19 +50,19 @@ function mapnotes()
          t.locationName   = playerdata.locationName
          t.radius         = playerdata.radius
          t.name           = playerdata.name
-         
+
          local bool, zonedata = pcall(Inspect.Zone.Detail, t.zone)
-         
+
          t.zonename  =  (zonedata.name or nil)
          t.zoneid    =  (zonedata.id or nil)
          t.zonetype  =  (zonedata.type or nil)
       end
-      
+
       return t
-   end     
-         
+   end
+
    function self.new(playerposition)
-      
+
       print "mapnotes.new()"
 
       if not playerposition or not next(playerposition) then playerposition =  getplayerposition() end
@@ -74,13 +74,13 @@ function mapnotes()
          end
          Command.Console.Display("general", true, "========================================", true)
 
-      end      
+      end
 
-      return 
+      return
    end
 
    -- return the class instance
    return   self
 
 end
-   
+
