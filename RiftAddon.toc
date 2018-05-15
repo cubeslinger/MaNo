@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.0.6"
+Version     =  "0.0.7"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -24,4 +24,8 @@ RunOnStartup = {
    "_mano_minibutton.lua",
    "_mano_inputform.lua",
    "MaNo.lua",
+}
+
+SavedVariables = {
+   guidata           =  'character',
 }

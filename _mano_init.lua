@@ -5,8 +5,8 @@
 --
 local addon, mano = ...
 
-mano.addon           =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
-mano.version         =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
+-- mano.addon           =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
+-- mano.version         =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 --
 -- MiniMapButton
 --

@@ -33,11 +33,55 @@ local function parseslashcommands(params)
    return
 end
 
-local function savevariables()
+local function savevariables(_, addonname)
+   --    mano.gui             =  {}
+   --    mano.gui.mmbtnheight =  38
+   --    mano.gui.mmbtnwidth  =  38
+   --    mano.gui.mmbtnx      =  0
+   --    mano.gui.mmbtny      =  0
+   --    mano.gui.mmbtnobj    =  nil
+   --    --
+   --    -- Initialization flags
+   --    --
+   --    mano.init            =  {}
+   --    mano.init.startup    =  false
+   --
+
+   if addon.name == addonname then
+
+      print(string.format("addon.name [%s] -> addonname [%s]", addon.name, addonname))
+      print(string.format("  for US [%s]", addonname))
+
+      local a        =  mano.gui
+      a.mmbtnheight  =  nil
+      a.mmbtnwidth   =  nil
+      a.mmbtnobj     =  nil
+
+      guidata        =  a
+   end
+
    return
 end
 
-local function loadvariables()
+local function loadvariables(_, addonname)
+
+   if addon.name == addonname then
+
+      print(string.format("addon.name [%s] -> addonname [%s]", addon.name, addonname))
+      print(string.format("  for US [%s]", addonname))
+
+      if guidata then
+
+         local a  =  guidata
+         local key, val = nil, nil
+         for key, val in pairs(a) do   mano.gui[key]   =  val   print(string.format("Importing %s: %s", key, val)) end
+
+      end
+
+
+      Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
+   end
+
    return
 end
 

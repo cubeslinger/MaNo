@@ -6,6 +6,29 @@
 
 local addon, mano = ...
 
+
+function mano.round(num, digits)
+   local floor = math.floor
+   local mult = 10^(digits or 0)
+
+   return floor(num * mult + .5) / mult
+end
+
+
+function mano.updateguicoordinates(win, newx, newy)
+
+   if win ~= nil then
+      local winName = win:GetName()
+
+      if winName == "mmBtnIconBorder" then
+         mano.gui.mmbtnx =  mano.round(newx)
+         mano.gui.mmbtny =  mano.round(newy)
+      end
+   end
+
+   return
+end
+
 function mano.createminimapbutton()
 
    -- avoid creating multiple minimap buttons...
