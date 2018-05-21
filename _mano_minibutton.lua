@@ -6,7 +6,6 @@
 
 local addon, mano = ...
 
-
 function mano.round(num, digits)
    local floor = math.floor
    local mult = 10^(digits or 0)
@@ -42,12 +41,21 @@ function mano.createminimapbutton()
    btn.border:SetHeight(mano.gui.mmbtnheight)
    btn.border:SetWidth(mano.gui.mmbtnwidth)
    btn.border:SetLayer(1)
-   btn.border:EventAttach(Event.UI.Input.Mouse.Left.Click, function()
+   btn.border:EventAttach(Event.UI.Input.Mouse.Left.Click,     function()
                                                                   local playerposition = mano.mapnote.getplayerposition()
                                                                   mano.noteinputform.show(playerposition)
                                                                   mano.mapnote.new(playerposition)
+                                                                  return
                                                                end,
-                                                               "Show/Hide Pressed" )
+                                                               "Show/Hide Left Click" )
+                                                               
+   btn.border:EventAttach(Event.UI.Input.Mouse.Middle.Click,   function()                                                                   
+                                                                  mano.flags.trackartifacts = not mano.flags.trackartifacts
+                                                                  print("Middle Click")
+                                                                  return 
+                                                               end,
+                                                               "Show/Hide Middle Click" )
+                                                               
    if mano.gui.mmbtnx == nil or mano.gui.mmbtny == nil then
       -- first run, we position in the screen center
       btn.border:SetPoint("CENTER", UIParent, "CENTER")

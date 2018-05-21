@@ -22,3 +22,5 @@ mano.gui.mmbtnobj    =  nil
 mano.init            =  {}
 mano.init.startup    =  false
 --
+mano.flags                 =  {}
+mano.flags.trackartifacts  =  false
