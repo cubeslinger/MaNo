@@ -16,6 +16,10 @@ mano.gui.mmbtnwidth  =  38
 mano.gui.mmbtnx      =  0
 mano.gui.mmbtny      =  0
 mano.gui.mmbtnobj    =  nil
+-- 
+-- DBs
+-- 
+mano.notes           =  {}
 --
 -- Initialization flags
 --

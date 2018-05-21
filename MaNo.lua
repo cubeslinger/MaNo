@@ -9,7 +9,7 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 --
-mano.mapnote         =  mapnotes()
+if not mano.mapnote then mano.mapnote =  mapnotes()   end
 mano.noteinputform   =  noteinputform()
 --
 
@@ -23,9 +23,9 @@ local function parseslashcommands(params)
 
       if i  == "add"         then
 
-         local playerposition = mano.mapnote.getplayerposition()
-         mano.noteinputform.show(playerposition)
-         mano.mapnote.new(playerposition)
+         local playerposition =  mano.mapnote.getplayerposition()
+         local notetext       =  mano.noteinputform.show(playerposition)
+         mano.mapnote.new(playerposition, notetext)
 
       end
    end
@@ -57,7 +57,11 @@ local function savevariables(_, addonname)
       a.mmbtnwidth   =  nil
       a.mmbtnobj     =  nil
 
-      manoguidata        =  a
+      manoguidata    =  a
+      
+      if next(mano.mapnote.notes) then
+         manonotesdb    =  mano.mapnote.notes
+      end
    end
 
    return
@@ -77,7 +81,14 @@ local function loadvariables(_, addonname)
          for key, val in pairs(a) do   mano.gui[key]   =  val   print(string.format("Importing %s: %s", key, val)) end
 
       end
+      
+--       if manonotesdb  then  mano.notes  =  manonotesdb  end
+      if manonotesdb  then  
+         if not mano.mapnote then mano.mapnote =  mapnotes()   end
 
+         mano.mapnote.loaddb(manonotesdb)
+
+      end
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
@@ -85,7 +96,7 @@ local function loadvariables(_, addonname)
    return
 end
 
-local function startmeup()
+local function startmeup(h, t)
 
    if not mano.init.startup then
 
@@ -95,9 +106,14 @@ local function startmeup()
          mano.gui.mmbtnobj =  mano.mmbutton.button
          mano.gui.mmbtnobj:SetVisible(true)
          mano.init.startup =  true
-         -- remove tracking for this event
-         Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: Show MiniMpa Button")
       end
+      
+      -- inizitialize __bag_watcher() and __bag_scanner()
+      mano._init_watchers(h, t)
+      
+      -- remove tracking for this event
+      Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: Show MiniMpa Button")
+      
 
    end
 
@@ -107,6 +123,7 @@ end
 
 -- Event tracking initialization -- begin
 Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,     "MaNo: Show MiniMpa Button")
+-- Command.Event.Attach(Event.Unit.Availability.Full, mano._init_watchers,    "Stats: get base stats")
 Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
 Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables, "MaNo: Save Variables")
 --
