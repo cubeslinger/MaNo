@@ -6,7 +6,7 @@
 function mapnotes()
    -- the new instance
    local self =   {
-                  notes =  {}
+                  notes =  {},
 --                   mailbox     =  {},
                   -- public fields go in the instance table
                   }
@@ -74,21 +74,21 @@ function mapnotes()
             Command.Console.Display("general", true, string.format("[%20s]=[%s]", var, val), true)
          end
          Command.Console.Display("general", true, "========================================", true)
-         
+
          --
          -- MaNo specific  -- begin
          --
-         -- here we need to normalize coords to check for 
-         -- an already exiting note in the same "radius area", 
+         -- here we need to normalize coords to check for
+         -- an already exiting note in the same "radius area",
          -- including Z axis distance.
          local idx   =  playerposition.coordX .. "," .. playerposition.coordY .. "," .. playerposition.coordZ
 --          if not mano.notes[playerposition.zoneid]   then  mano.notes[playerposition.zoneid] =  {} end
---          mano.notes[playerposition.zoneid][idx]  =  notetext         
+--          mano.notes[playerposition.zoneid][idx]  =  notetext
 
          if notetext ~= nil then
             if not self.notes[playerposition.zoneid]        then  self.notes[playerposition.zoneid]      =  {} end
             if not self.notes[playerposition.zoneid][idx]   then  self.notes[playerposition.zoneid][idx] =  {} end
-            
+
             table.insert(self.notes[playerposition.zoneid][idx], notetext)
          end
 
@@ -100,16 +100,16 @@ function mapnotes()
 
       return
    end
-   
+
    function self.loaddb(db)
-      
+
       self.notes  =  manonotesdb
-      
+
       return
    end
 
    -- return the class instance
-   return   self
+   return self
 
 end
 

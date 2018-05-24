@@ -5,8 +5,6 @@
 --
 local addon, mano = ...
 
--- mano.addon           =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
--- mano.version         =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 --
 --
 -- DBs
@@ -43,17 +41,17 @@ mano.gui.borders.right     =  2
 mano.gui.borders.bottom    =  2
 mano.gui.borders.top       =  2
 --
-mano.color                 =  {}
-mano.color.black           =  {  0,  0,  0, .5}
-mano.color.deepblack       =  {  0,  0,  0,  1}
-mano.color.red             =  { .2,  0,  0, .5}
-mano.color.green           =  {  0,  1,  0, .5}
-mano.color.blue            =  {  0,  0,  6, .1}
-mano.color.lightblue       =  {  0,  0, .4, .1}
-mano.color.darkblue        =  {  0,  0, .2, .1}
-mano.color.grey            =  { .5, .5, .5, .5}
-mano.color.darkgrey        =  { .2, .2, .2, .5}
-mano.color.yellow          =  {  1,  1,  0, .5}
+mano.gui.color                 =  {}
+mano.gui.color.black           =  {  0,  0,  0, .5}
+mano.gui.color.deepblack       =  {  0,  0,  0,  1}
+mano.gui.color.red             =  { .2,  0,  0, .5}
+mano.gui.color.green           =  {  0,  1,  0, .5}
+mano.gui.color.blue            =  {  0,  0,  6, .1}
+mano.gui.color.lightblue       =  {  0,  0, .4, .1}
+mano.gui.color.darkblue        =  {  0,  0, .2, .1}
+mano.gui.color.grey            =  { .5, .5, .5, .5}
+mano.gui.color.darkgrey        =  { .2, .2, .2, .5}
+mano.gui.color.yellow          =  {  1,  1,  0, .5}
 --
 mano.html                  =  {}
 mano.html.yellow           =  '#555500'
@@ -67,8 +65,12 @@ mano.html.title	         =  "<font color=\'" .. mano.html.green .. "\'>MaNo</fon
 --
 mano.gui.font              =  {}
 mano.gui.font.size         =  12
+mano.gui.font.name         =  nil
 --
 mano.gui.shown             =  {}
+mano.gui.shown.counter     =  0
+--
+mano.gui.frames            =  {}
 --
 -- end
 --

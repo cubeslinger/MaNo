@@ -1,5 +1,5 @@
 --
--- Addon       _mano_input_form.lua
+-- Addon       _mano_inputform.lua
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
@@ -105,10 +105,25 @@ function noteinputform()
 
    function self.hide()
 
-      if next(self.inputwin) then  self.inputwin:SetVisible(false) end
+         if next(self.inputwin) then  self.inputwin:SetVisible(false) end
 
-      return
+         return
+      end
+
+   function self.setwaypoint(x, z, zonename)
+
+      if x and z then
+         local retval = Command.Map.Waypoint.Set(x, z)
+         print(string.format("Command.Map.Waypoint.Set(%s, %s)", x, z))
+      end
+
+      local X, Z = Inspect.Map.Waypoint.Get("Player")
+
+      print(string.format("Way Point added in: %s, at %s, %s", x, z, zonename))
+
+      return X, Z
    end
+
 
    -- return the class instance
    return   self

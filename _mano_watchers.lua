@@ -19,49 +19,50 @@ local function countarray(array)
 end
 
 -- local function displayresults(t)
-local function displayresultsandaddnote(t)
-
-   local k, v = nil, nil
-   local a, b = nil, nil
-
-   for k, v in pairs (t) do
-
---       print(string.format("_init_watchers: displayresults (t): msgid [%s]", k))
---       for a, b in pairs(v) do
---          print(string.format("    : %s=%s", a, b))
+-- local function displayresultsandaddnote(t)
+--
+--    local k, v = nil, nil
+--    local a, b = nil, nil
+--
+--    for k, v in pairs (t) do
+--
+-- --       print(string.format("_init_watchers: displayresults (t): msgid [%s]", k))
+-- --       for a, b in pairs(v) do
+-- --          print(string.format("    : %s=%s", a, b))
+-- --       end
+--
+--
+--       if mano.base  then
+--          --
+--          -- is it a REAL event or we did just got a
+--          -- refresh from server, like when we use a
+--          -- porticulum?
+--          --
+--          if (v.stack ~= (mano.delta[v.name] or 0)) then
+--             Command.Console.Display(   "general",
+--                                        true,
+--                                        string.format("BagWatcher: %s %s (base/delta/stack=%s/%s/%s)", v.name,
+--                                                             (v.stack - (mano.delta[v.name] or 0)),
+--                                                             (mano.base[v.name] or nil),
+--                                                             (mano.delta[v.name] or nil),
+--                                                             v.stack
+--                                                    ),
+--                                        true)
+--          end
+--
+--          mano.delta[v.name] =  v.stack
+--          if not mano.base[v.name] then mano.base[v.name] = v.stack end
+--
+--          -- add map note
+--          mano.mapnote.new(playerposition, v)
+--          mano.ui.addline(t.icon, t.text. t.x. t.z, playerposition.locationName)
+--
 --       end
-
-
-      if mano.base  then
-         --
-         -- is it a REAL event or we did just got a
-         -- refresh from server, like when we use a
-         -- porticulum?
-         --
-         if (v.stack ~= (mano.delta[v.name] or 0)) then
-            Command.Console.Display(   "general",
-                                       true,
-                                       string.format("BagWatcher: %s %s (base/delta/stack=%s/%s/%s)", v.name,
-                                                            (v.stack - (mano.delta[v.name] or 0)),
-                                                            (mano.base[v.name] or nil),
-                                                            (mano.delta[v.name] or nil),
-                                                            v.stack
-                                                   ),
-                                       true)
-         end
-
-         mano.delta[v.name] =  v.stack
-         if not mano.base[v.name] then mano.base[v.name] = v.stack end
-         
-         -- add map note         
-         mano.mapnote.new(playerposition, v)
-         
-      end
-   end
-
-   return
-
-end
+--    end
+--
+--    return
+--
+-- end
 
 local function  doinventoryscan()
 
@@ -77,7 +78,7 @@ local function  doinventoryscan()
 
 end
 
-function mano._init_watchers(h, t)
+function mano._init_watchers(h, t, callback)
 
    mano.player   =  Inspect.Unit.Detail("player")
    mano.base     =  {}
@@ -92,7 +93,8 @@ function mano._init_watchers(h, t)
       Command.Event.Detach(Event.Unit.Availability.Full, _init_watchers, "Stats: get base stats")
 
 --       mano.bagwatcher  =  bagwatcher(displayresults)
-      mano.bagwatcher  =  bagwatcher(displayresultsandaddnote)
+--       mano.bagwatcher  =  bagwatcher(displayresultsandaddnote)
+      mano.bagwatcher  =  bagwatcher(callback)
       mano.bagscanner  =  bagscanner()
 
       mano.timer       =  __timer()
@@ -108,15 +110,15 @@ function mano._init_watchers(h, t)
 --       local watcherslist   =  mano.bagwatcher.list()
 --       -- debug -- begin
 --       if next(watcherslist)  then
--- 
+--
 --          for queryid, table in pairs(watcherslist) do
--- 
+--
 --             print(string.format("Watchers List, QuerID: [%s]", queryid))
--- 
+--
 --             local k, v  =  nil, nil
 --             for k, v in pairs(table) do
 --                --                print(string.format("             : k[%s]=v(%s)", k, v))
--- 
+--
 --                local a, b  =  nil, nil
 --                for a, b in pairs(v) do
 --                   print(string.format("             : [%s]=(%s)", a, b))
