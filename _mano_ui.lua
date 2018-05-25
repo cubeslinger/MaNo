@@ -32,27 +32,31 @@ function manoui()
 
    local function buildforstock(parent,t)
 
-      print(string.format("buildforstock: parent=[%s]", parent))
-      for var, val in pairs(t) do
-         print(string.format("buildforstock: var[%s]=[%s]", var,val))
-      end
-
-
       local lineframe, icon, text   =  nil, nil, nil
-
-      for var, val in pairs(t) do
-         print(string.format("buildforstock: var[%s]=[%s]", var, val))
-      end
 
       -- (...)
 
       self.lineid =  self.lineid + 1
+      local parent   =  nil
+      if mano.gui.lastlinecontainer ~= nil then parent = mano.gui.lastlinecontainer
+      else                                      parent = mano.gui.shown.manoframe
+      end
 
       -- Line Frame container
       lineframe =  UI.CreateFrame("Frame", "line_item_Frame" .. self.lineid, parent)
-      lineframe:SetBackgroundColor(.2, .2, .2, .6)
-      lineframe:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
-      lineframe:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
+      lineframe:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+
+      if mano.gui.lastlinecontainer ~= nil then
+         print("attaching to lastlinecontainer")
+         lineframe:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
+         lineframe:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
+      else
+         print("attaching to manoframe")
+         lineframe:SetPoint("TOPLEFT",  parent, "TOPLEFT", 0, 1)
+         lineframe:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
+      end
+
+      lineframe:SetHeight(mano.gui.font.size+2)
       lineframe:SetLayer(3)
 
 
@@ -70,12 +74,13 @@ function manoui()
          text:SetFont(mano.addon, mano.gui.font.name)
       end
       text:SetFontSize(mano.gui.font.size)
-      text:SetText(t.name or t.location)
+--       text:SetText(t.name or t.location)
+      text:SetText("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
       text:SetLayer(3)
---       text:SetFontColor(objColor.r, objColor.g, objColor.b)
-      text:SetFontColor(unpack(mano.gui.color.lightblue))
-      text:SetPoint("TOPLEFT",   icon,    "TOPRIGHT", mano.gui.borders.left, -4)
-      -- text:EventAttach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.y) end, "Way Point Selected" )
+      text:SetFontColor(unpack(mano.gui.color.white))
+      text:SetBackgroundColor(unpack(mano.gui.color.green))
+      text:SetPoint("TOPLEFT",   icon,    "TOPRIGHT", mano.gui.borders.left, 0)
+      text:EventAttach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.y) end, "Way Point Selected" )
 
       -- (...)
 
@@ -86,9 +91,11 @@ function manoui()
                   text  =  text
                   }
 
-      print(string.format("T=[%s] count=%s", T, countarray(T)))
+--       print(string.format("T=[%s] count=%s", T, countarray(T)))
       table.insert(self.linestock, T)
-      print(string.format("self.linestock=[%s] count=%s", self.linestock, countarray(self.linestock)))
+--       print(string.format("self.linestock=[%s] count=%s", self.linestock, countarray(self.linestock)))
+
+      mano.gui.lastlinecontainer =  lineframe
 
       return(T)
    end
@@ -105,15 +112,18 @@ function manoui()
          tbl.text:EventDetach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.y, t.zonename) end, "Way Point Selected" )
       end
 
+      mano.gui.lastlinecontainer =  nil
+
       return
    end
 
    local function fetchlinefromstock(parent,t)
 
-      local idx, tbl =  nil, {}
+      local idx, tbl, cnt =  nil, {}, 0
       local retval   =  nil
 
       for idx, tbl in pairs(self.linestock) do
+         cnt = cnt + 1
          if not tbl.inuse then
             retval = tbl
             -- set the frame as INUSE
@@ -229,21 +239,31 @@ function manoui()
 
    function self.addline(t)
 
-      local inuse, frame, icon, text, parent =  nil, nil, nil, nil, nil
+      local inuse, frame, icon, text   =  nil, nil, nil, nil
 
       if not self.initialized then
          print("MY WAY ON THE HIGHWAY!")
          self = self.new() end
 
-      if mano.gui.shown.counter   == 0  then
-         parent   =  mano.gui.frames.container
-      else
-         parent   =  mano.gui.frames.last
-      end
+--       if mano.gui.shown.counter   == 0  then
+--          parent   =  mano.gui.frames.container
+--       else
+--          parent   =  mano.gui.frames.last
+--       end
+
+--       local parent   =  mano.gui.frames.lastlinecontainer
+--       print(string.format("lastlinecontainer: %s", mano.gui.lastlinecontainer))
+--       for var, val in pairs(mano.gui.lastlinecontainer) do
+--          print(string.format("lastlinecontainer: var[%s]=[%s]", var, val))
+--          for vvar, vval in pairs(val) do
+--             print(string.format("lastlinecontainer:     var[%s]=[%s]", vvar, vval))
+--          end
+--       end
 
 
       print(string.format("ui.addline: parent=[%s]", parent))
-      local stockframe  = fetchlinefromstock(parent,t)
+--       local stockframe  = fetchlinefromstock(parent,t)
+      local stockframe  = fetchlinefromstock(nil,t)
 
       if next(stockframe) ~= nil then
          for var, val in pairs(stockframe) do
@@ -257,20 +277,37 @@ function manoui()
 --       icon  =  stockframe.icon
 --       text  =  stockframe.text
 
-      if t.icon then stockframe.icon:SetTexture("Rift", t.icon)
-      else           stockframe.icon:SetTexture("Rift", "Fish_icon.png.dds")
-      end
+      stockframe.frame:SetBackgroundColor(unpack(mano.gui.color.white))
+      stockframe.frame:SetVisible(true)
+      mano.gui.frames.lastlinecontainer   =  stockframe.frame
+
+--       if t.icon then stockframe.icon:SetTexture("Rift", t.icon)
+--       else           stockframe.icon:SetTexture("Rift", "Fish_icon.png.dds")
+--       end
+      stockframe.icon:SetTexture("Rift", "Fish_icon.png.dds")
       stockframe.icon:SetVisible(true)
 
       stockframe.text:SetText(t.text or "lorem ipsum")
       stockframe.text:EventAttach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.z, t.zone) end, "Way Point Added" )
+      stockframe.text:SetVisible(true)
 
-      mano.gui.frames.last  =  stockframe
-
-      return
+      return stockframe
 
    end
 
+   function self.adjustheight()
+
+      if mano.gui.lastlinecontainer ~= nil then
+         local maxY  =  mano.gui.lastlinecontainer:GetBottom()
+         local minY  =  mano.gui.shown.manoframe:GetTop()
+
+         mano.gui.shown.manoframe:SetHeight(mano.f.round(maxY - maxY))
+         mano.gui.shown.window:SetHeight(mano.gui.shown.titleframe:GetHeight() +  mano.f.round(maxY - minY))
+         print(string.format("new Height: (%s)", mano.gui.shown.window:GetHeight()))
+      end
+
+      return
+   end
 
    function self.new()
 
@@ -357,7 +394,7 @@ function manoui()
       externalframe:SetPoint("TOPRIGHT",    mano.gui.shown.titleframe,   "BOTTOMRIGHT", - mano.gui.borders.right, 0)
       externalframe:SetPoint("BOTTOMLEFT",  mano.gui.shown.window,       "BOTTOMLEFT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
       externalframe:SetPoint("BOTTOMRIGHT", mano.gui.shown.window,       "BOTTOMRIGHT", - mano.gui.borders.right, - mano.gui.borders.bottom)
-      externalframe:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+      externalframe:SetBackgroundColor(unpack(mano.gui.color.black))
       externalframe:SetLayer(1)
       mano.gui.shown.externalframe   =  externalframe
 
@@ -371,23 +408,23 @@ function manoui()
       local manoframe =  UI.CreateFrame("Frame", "mano_frame", mano.gui.shown.maskframe)
       manoframe:SetAllPoints(mano.gui.shown.maskframe)
       manoframe:SetLayer(1)
-      mano.gui.frames.container =  manoframe
-      print(string.format("ui.new: mano.gui.frames.container=[%s]", mano.gui.frames.container))
+      mano.gui.shown.manoframe   =  manoframe
+--       print(string.format("ui.new: mano.gui.frames.container=[%s]", mano.gui.frames.container))
 
       -- RESIZER WIDGET
       local corner=  UI.CreateFrame("Texture", "corner", mano.gui.shown.window)
-      --    corner:SetTexture("Rift", "chat_resize_(normal).png.dds")
-      --    corner:SetTexture("Rift", "chat_resize_(over).png.dds")
-      corner:SetTexture("Rift", "AuctionHouse_I91.dds")
+--       corner:SetTexture("Rift", "chat_resize_(normal).png.dds")
+      corner:SetTexture("Rift", "chat_resize_(over).png.dds")
+--       corner:SetTexture("Rift", "AuctionHouse_I91.dds")
       corner:SetHeight(mano.gui.font.size)
       corner:SetWidth(mano.gui.font.size)
       corner:SetLayer(4)
-      corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.titleframe, "BOTTOMRIGHT", mano.gui.font.size/2, mano.gui.font.size/2)
+--       corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.titleframe, "BOTTOMRIGHT", mano.gui.font.size/2, mano.gui.font.size/2)
+      corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.manoframe, "BOTTOMRIGHT", mano.gui.font.size/2, mano.gui.font.size/2)
       corner:EventAttach(Event.UI.Input.Mouse.Right.Down,      function()  local mouse = Inspect.Mouse()
                                                                            corner.pressed = true
                                                                            corner.basex   =  window:GetLeft()
                                                                            corner.basey   =  window:GetTop()
-                                                                           showtitlebar()
                                                                         end,
                                                                         "Event.UI.Input.Mouse.Right.Down")
 
@@ -419,3 +456,21 @@ function manoui()
    return self
 
 end
+
+--[[
+    Error: Incorrect function usage.
+   Parameters: (Frame: MaNo.MaNo.0x00e29da0)
+   Parameter types: Frame
+   Function documentation:
+   Sets the height of this frame. Undefined results if the frame already has two pinned Y coordinates.
+   Not permitted on a frame with "restricted" SecureMode while the addon environment is secured.
+   Frame:SetHeight(height)   -- number
+   Parameters:
+   height:	The new height of this frame.
+   In MaNo / MaNo: add note here, event Event.Slash.mano
+   stack traceback:
+   [C]: in function 'SetHeight'
+   MaNo/_mano_ui.lua:319: in function 'adjustheight'
+   MaNo/MaNo.lua:49: in function 'parseslashcommands'
+   MaNo/MaNo.lua:253: in function <MaNo/MaNo.lua:253>
+    ]]

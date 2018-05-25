@@ -25,9 +25,9 @@ local function parseslashcommands(params)
 
          local playerposition =  mano.mapnote.getplayerposition()
 
-         for var, val in pairs(playerposition) do
-            print(string.format("parseslashcommands: playerposition -> [%s]=val[%s]", var, val))
-         end
+--          for var, val in pairs(playerposition) do
+--             print(string.format("parseslashcommands: playerposition -> [%s]=val[%s]", var, val))
+--          end
 
 
          if next(playerposition) then
@@ -41,11 +41,12 @@ local function parseslashcommands(params)
             t.zoneid    =  playerposition.zoneid
             t.location  =  playerposition.locationName
 
-            for var, val in pairs(t) do
-               print(string.format("parseslashcommands: var[%s]=val[%s]", var, val))
-            end
+--             for var, val in pairs(t) do
+--                print(string.format("parseslashcommands: var[%s]=val[%s]", var, val))
+--             end
 
             mano.uiclass.addline(t)
+            mano.uiclass.adjustheight()
          else
             print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
          end
@@ -232,6 +233,9 @@ local function startmeup(h, t)
 
       mano.uiclass      =  manoui()
       mano.gui.window   =  mano.uiclass.new()
+
+      Library.LibDraggable.draggify(mano.gui.window, mano.updateguicoordinates)
+
       mano.gui.window:SetVisible(true)
 
    end

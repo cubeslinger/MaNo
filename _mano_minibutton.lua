@@ -20,8 +20,13 @@ function mano.updateguicoordinates(win, newx, newy)
       local winName = win:GetName()
 
       if winName == "mmBtnIconBorder" then
-         mano.gui.mmbtn.x  =  mano.round(newx)
          mano.gui.mmbtn.y  =  mano.round(newy)
+         mano.gui.mmbtn.x  =  mano.round(newx)
+      end
+
+      if winName == "MaNo" then
+         mano.gui.x  =  mano.round(newy)
+         mano.gui.y  =  mano.round(newx)
       end
    end
 

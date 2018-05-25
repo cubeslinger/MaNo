@@ -19,6 +19,8 @@ mano.init.startup          =  false
 mano.flags                 =  {}
 mano.flags.trackartifacts  =  false
 --
+mano.f                     =  {}
+--
 --
 -- GUI
 --
@@ -41,17 +43,18 @@ mano.gui.borders.right     =  2
 mano.gui.borders.bottom    =  2
 mano.gui.borders.top       =  2
 --
-mano.gui.color                 =  {}
-mano.gui.color.black           =  {  0,  0,  0, .5}
-mano.gui.color.deepblack       =  {  0,  0,  0,  1}
-mano.gui.color.red             =  { .2,  0,  0, .5}
-mano.gui.color.green           =  {  0,  1,  0, .5}
-mano.gui.color.blue            =  {  0,  0,  6, .1}
-mano.gui.color.lightblue       =  {  0,  0, .4, .1}
-mano.gui.color.darkblue        =  {  0,  0, .2, .1}
-mano.gui.color.grey            =  { .5, .5, .5, .5}
-mano.gui.color.darkgrey        =  { .2, .2, .2, .5}
-mano.gui.color.yellow          =  {  1,  1,  0, .5}
+mano.gui.color             =  {}
+mano.gui.color.black       =  {  0,  0,  0, .5}
+mano.gui.color.deepblack   =  {  0,  0,  0,  1}
+mano.gui.color.red         =  { .2,  0,  0, .5}
+mano.gui.color.green       =  {  0,  1,  0, .5}
+mano.gui.color.blue        =  {  0,  0,  6, .1}
+mano.gui.color.lightblue   =  {  0,  0, .4, .1}
+mano.gui.color.darkblue    =  {  0,  0, .2, .1}
+mano.gui.color.grey        =  { .5, .5, .5, .5}
+mano.gui.color.darkgrey    =  { .2, .2, .2, .5}
+mano.gui.color.yellow      =  {  1,  1,  0, .5}
+mano.gui.color.white       =  {  9,  9,  9, .5}
 --
 mano.html                  =  {}
 mano.html.yellow           =  '#555500'
@@ -72,5 +75,13 @@ mano.gui.shown.counter     =  0
 --
 mano.gui.frames            =  {}
 --
--- end
+-- end declarations
 --
+
+function mano.f.round(num, digits)
+   local floor = math.floor
+   local mult = 10^(digits or 0)
+
+   return floor(num * mult + .5) / mult
+end
+
