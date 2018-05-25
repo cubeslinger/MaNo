@@ -81,10 +81,15 @@ local function savevariables(_, addonname)
       a.mmbtnwidth   =  nil
       a.mmbtnobj     =  nil
 ]]
-      local a        =  mano.gui.mmbtn
-      a.height  =  nil
-      a.width   =  nil
-      a.obj     =  nil
+--       local a        =  mano.gui.mmbtn
+--       a.height  =  nil
+--       a.width   =  nil
+--       a.obj     =  nil
+
+      local a        =  {}
+      a.mmbtn        =  mano.gui.mmbtn
+      a.win          =  mano.gui.win
+      
 
       manoguidata    =  a
 
@@ -107,7 +112,8 @@ local function loadvariables(_, addonname)
 
          local a  =  manoguidata
          local key, val = nil, nil
-         for key, val in pairs(a) do   mano.gui.mmbtn[key]  =  val   print(string.format("Importing %s: %s", key, val)) end
+--          for key, val in pairs(a) do   mano.gui.mmbtn[key]  =  val   print(string.format("Importing %s: %s", key, val)) end
+         for key, val in pairs(a) do   mano.gui[key]  =  val   print(string.format("Importing %s: %s", key, val)) end
 
       end
 
@@ -232,11 +238,11 @@ local function startmeup(h, t)
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
 
       mano.uiclass      =  manoui()
-      mano.gui.window   =  mano.uiclass.new()
+      mano.o.window   =  mano.uiclass.new()
 
-      Library.LibDraggable.draggify(mano.gui.window, mano.updateguicoordinates)
+      Library.LibDraggable.draggify(mano.o.window, mano.updateguicoordinates)
 
-      mano.gui.window:SetVisible(true)
+      mano.o.window:SetVisible(true)
 
    end
 

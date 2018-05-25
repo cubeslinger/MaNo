@@ -152,10 +152,10 @@ function manoui()
 
       if mano.gui.locked == true then
          icon  =  "lock_on.png.dds"
-         Library.LibDraggable.undraggify(mano.gui.window, updateguicoordinates)
+         Library.LibDraggable.undraggify(mano.o.window, updateguicoordinates)
       else
          icon  =  "lock_off.png.dds"
-         Library.LibDraggable.draggify(mano.gui.window, updateguicoordinates)
+         Library.LibDraggable.draggify(mano.o.window, updateguicoordinates)
       end
 
       mano.gui.shown.lockbutton:SetTexture("Rift", icon)
@@ -174,7 +174,7 @@ function manoui()
          mano.gui.visible  =  true
       end
 
-      mano.gui.window:SetVisible(mano.gui.visible)
+      mano.o.window:SetVisible(mano.gui.visible)
 
       return
    end
@@ -312,16 +312,19 @@ function manoui()
    function self.new()
 
       --Global context (parent frame-thing).
-      local window  =  UI.CreateFrame("Frame", "MaNo", UI.CreateContext("mano_context"))
-      if mano.gui.x == nil or mano.gui.y == nil then
+      local context  = UI.CreateContext("mano_context")
+      
+      -- Main Window
+      local window  =  UI.CreateFrame("Frame", "MaNo", context)
+      if mano.gui.win.x == nil or mano.gui.win.y == nil then
          -- first run, we position in the screen center
          window:SetPoint("CENTER", UIParent, "CENTER")
       else
          -- we have coordinates
-         window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.x or 0, mano.gui.y or 0)
+         window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.win.x or 0, mano.gui.win.y or 0)
       end
       window:SetLayer(-1)
-      window:SetWidth(mano.gui.width)
+      window:SetWidth(mano.gui.win.width)
       window:SetBackgroundColor(unpack(mano.gui.color.black))
       window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: window_wheel_forward")
       window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: window_wheel_backward")
@@ -430,11 +433,11 @@ function manoui()
 
       corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move,    function()  if  corner.pressed then
                                                                               local mouse = Inspect.Mouse()
-                                                                              mano.gui.width  = mano.round(mouse.x - corner.basex)
+                                                                              mano.gui.win.width  = mano.round(mouse.x - corner.basex)
                                                                               mano.gui.height = mano.round(mouse.y - corner.basey)
-                                                                              mano.gui.window:SetWidth(mano.gui.width)
-                                                                              mano.gui.window:SetHeight(mano.gui.height)
-                                                                              --                                                                            print(string.format("POST Width[%s] Height[%s]", mano.gui.width, mano.gui.height))
+                                                                              mano.o.window:SetWidth(mano.gui.win.width)
+                                                                              mano.o.window:SetHeight(mano.gui.height)
+                                                                              --                                                                            print(string.format("POST Width[%s] Height[%s]", mano.gui.win.width, mano.gui.height))
                                                                            end
                                                                         end,
                                                                         "Event.UI.Input.Mouse.Cursor.Move")
