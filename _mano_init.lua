@@ -5,6 +5,9 @@
 --
 local addon, mano = ...
 
+-- only pirnt if debug is on
+local function dprint(...) if mano.flags.debug == true then print(...) end end
+
 -- function mano.f.round(num, digits)
 function round(num, digits)
    local floor = math.floor
@@ -13,6 +16,25 @@ function round(num, digits)
    return floor(num * mult + .5) / mult
 end
 
+
+local function updateguicoordinates(win, newx, newy)
+
+   if win ~= nil then
+      local winName = win:GetName()
+      
+      if winName == "mmBtnIconBorder" then
+         mano.gui.mmbtn.x  =  round(newx)         
+         mano.gui.mmbtn.y  =  round(newy)
+      end
+
+      if winName == "MaNo" then
+         mano.gui.win.x  =  round(newx)
+         mano.gui.win.y  =  round(newy)
+      end
+   end
+
+   return
+end
 
 --
 --
@@ -27,15 +49,14 @@ mano.init.startup          =  false
 --
 mano.flags                 =  {}
 mano.flags.trackartifacts  =  false
+mano.flags.debug           =  false
 --
 -- "f" = Function handles
 --
 mano.f                     =  {}
 mano.f.round               =  round
---
--- "o" = Object handles
---
-mano.o                     =  {}
+mano.f.updateguicoordinates=  updateguicoordinates
+mano.f.dprint              =  dprint
 --
 --
 -- GUI

@@ -14,26 +14,26 @@ function mano.round(num, digits)
 end
 
 
-function mano.updateguicoordinates(win, newx, newy)
-
-   if win ~= nil then
-      local winName = win:GetName()
-      
-      print(string.format("mano.updateguicoordinates: WIN is [%s]", winName))
-
-      if winName == "mmBtnIconBorder" then
-         mano.gui.mmbtn.y  =  mano.round(newy)
-         mano.gui.mmbtn.x  =  mano.round(newx)
-      end
-
-      if winName == "MaNo" then
-         mano.gui.win.x  =  mano.round(newy)
-         mano.gui.win.y  =  mano.round(newx)
-      end
-   end
-
-   return
-end
+-- function mano.updateguicoordinates(win, newx, newy)
+-- 
+--    if win ~= nil then
+--       local winName = win:GetName()
+--       
+--       print(string.format("mano.updateguicoordinates: WIN is [%s]", winName))
+-- 
+--       if winName == "mmBtnIconBorder" then
+--          mano.gui.mmbtn.y  =  mano.round(newy)
+--          mano.gui.mmbtn.x  =  mano.round(newx)
+--       end
+-- 
+--       if winName == "MaNo" then
+--          mano.gui.win.x  =  mano.round(newy)
+--          mano.gui.win.y  =  mano.round(newx)
+--       end
+--    end
+-- 
+--    return
+-- end
 
 function mano.createminimapbutton()
 
@@ -79,7 +79,7 @@ function mano.createminimapbutton()
    btn.button:SetPoint("BOTTOMRIGHT", btn.border, "BOTTOMRIGHT", -12, -12)
 
    -- Enable Dragging
-   Library.LibDraggable.draggify(btn.border, mano.updateguicoordinates)
+   Library.LibDraggable.draggify(btn.border, mano.f.updateguicoordinates)
 
    return btn
 end

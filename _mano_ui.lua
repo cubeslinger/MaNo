@@ -30,57 +30,61 @@ function manoui()
    end
 
 
-   local function buildforstock(parent,t)
+   local function buildforstock(t)
 
-      local lineframe, icon, text   =  nil, nil, nil
+      local lineframe   =  nil
+      local icon        =  nil
+      local text        =  nil
+      local parent      =  nil
 
-      -- (...)
+      self.lineid    =  self.lineid + 1
 
-      self.lineid =  self.lineid + 1
-      local parent   =  nil
-      if mano.gui.lastlinecontainer ~= nil then parent = mano.gui.lastlinecontainer
-      else                                      parent = mano.gui.shown.manoframe
+      if mano.gui.frames.lastlinecontainer ~= nil and next(mano.gui.frames.lastlinecontainer) ~= nil then 
+         parent = mano.gui.frames.lastlinecontainer
+      else                                      
+         parent = mano.gui.shown.manoframe
       end
-
+      
       -- Line Frame container
-      lineframe =  UI.CreateFrame("Frame", "line_item_Frame" .. self.lineid, parent)
+      lineframe =  UI.CreateFrame("Frame", "line_item_frame_" .. self.lineid, parent)
       lineframe:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
-
-      if mano.gui.lastlinecontainer ~= nil then
-         print("attaching to lastlinecontainer")
+      lineframe:SetHeight(mano.gui.font.size+2)
+      lineframe:SetLayer(3)
+      lineframe:SetVisible(true)    
+      if mano.gui.frames.lastlinecontainer ~= nil and next(mano.gui.frames.lastlinecontainer) ~= nil then
+         mano.f.dprint("attaching to lastlinecontainer")
          lineframe:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
          lineframe:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
       else
-         print("attaching to manoframe")
+         mano.f.dprint("attaching to manoframe")
          lineframe:SetPoint("TOPLEFT",  parent, "TOPLEFT", 0, 1)
          lineframe:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
       end
-
-      lineframe:SetHeight(mano.gui.font.size+2)
-      lineframe:SetLayer(3)
-
 
       -- Icon
       local icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, lineframe)
       icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
       icon:SetWidth(mano.gui.font.size)
       icon:SetHeight(mano.gui.font.size)
-      icon:SetPoint("TOPLEFT",   lineframe, "TOPRIGHT", mano.gui.borders.left, 0)
-      icon:SetLayer(3)
+      icon:SetLayer(4)
+      icon:SetVisible(true)
+      icon:SetPoint("TOPLEFT",   lineframe, "TOPRIGHT", mano.gui.borders.left, 0)      
 
       -- Item's Name
       local text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, lineframe)
       if mano.gui.font.name then
-         text:SetFont(mano.addon, mano.gui.font.name)
+         text:SetFont(mano.addon.name, mano.gui.font.name)
       end
       text:SetFontSize(mano.gui.font.size)
---       text:SetText(t.name or t.location)
-      text:SetText("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-      text:SetLayer(3)
-      text:SetFontColor(unpack(mano.gui.color.white))
-      text:SetBackgroundColor(unpack(mano.gui.color.green))
-      text:SetPoint("TOPLEFT",   icon,    "TOPRIGHT", mano.gui.borders.left, 0)
-      text:EventAttach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.y) end, "Way Point Selected" )
+      text:SetText(t.name or t.location .. " (" .. self.lineid .. ")")      
+      text:SetLayer(4)
+      text:EventAttach( Event.UI.Input.Mouse.Left.Click, 
+                        function() 
+                           self.setwaypoint(t.x, t.y) 
+                        end, 
+                        "Way Point Selected" )
+      text:SetVisible(true)
+      text:SetPoint("TOPLEFT", icon, "TOPRIGHT", mano.gui.borders.left, 0)      
 
       -- (...)
 
@@ -91,11 +95,7 @@ function manoui()
                   text  =  text
                   }
 
---       print(string.format("T=[%s] count=%s", T, countarray(T)))
       table.insert(self.linestock, T)
---       print(string.format("self.linestock=[%s] count=%s", self.linestock, countarray(self.linestock)))
-
-      mano.gui.lastlinecontainer =  lineframe
 
       return(T)
    end
@@ -109,15 +109,19 @@ function manoui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.y, t.zonename) end, "Way Point Selected" )
+         tbl.text:EventDetach(   Event.UI.Input.Mouse.Left.Click, 
+                                 function() 
+                                    self.setwaypoint(t.x, t.y, t.zonename) 
+                                 end, 
+                                 "Way Point Selected" )
       end
 
-      mano.gui.lastlinecontainer =  nil
+      mano.gui.frames.lastlinecontainer =  nil
 
       return
    end
 
-   local function fetchlinefromstock(parent,t)
+   local function fetchlinefromstock(t)
 
       local idx, tbl, cnt =  nil, {}, 0
       local retval   =  nil
@@ -133,8 +137,21 @@ function manoui()
       end
 
       if not retval then
-         retval = buildforstock(parent, t)
+         retval = buildforstock(t)
          print(string.format("fetchlinefromstock: BUILD NEW LINE FRAME=>[%s] count(%s)", retval, countarray(retval)))
+         mano.gui.frames.lastlinecontainer =  retval.frame
+      else
+         retval.frame:SetVisible(true)
+         retval.icon:SetVisible(true)
+         mano.f.dprint(strinf.format("Text is [%s]", t.text))
+         retval.text:SetText(t.text or "lorem ipsum")
+         retval.text:EventAttach(   Event.UI.Input.Mouse.Left.Click, 
+                                    function() 
+                                       self.setwaypoint(t.x, t.z, t.zone) 
+                                    end, 
+                                    "Way Point Added" )
+         retval.text:SetVisible(true)           
+         mano.gui.frames.lastlinecontainer =  retval.frame
       end
 
       return retval
@@ -152,20 +169,16 @@ function manoui()
 
       if mano.gui.locked == true then
          icon  =  "lock_on.png.dds"
-         Library.LibDraggable.undraggify(mano.o.window, updateguicoordinates)
+         Library.LibDraggable.undraggify(mano.gui.shown.window, mano.f.updateguicoordinates)
       else
          icon  =  "lock_off.png.dds"
-         Library.LibDraggable.draggify(mano.o.window, updateguicoordinates)
+         Library.LibDraggable.draggify(mano.gui.shown.window, mano.f.updateguicoordinates)
       end
 
       mano.gui.shown.lockbutton:SetTexture("Rift", icon)
 
-      --    print(string.format("value=(%s) mano.gui.locked=(%s)", value, mano.gui.locked))
-
       return
    end
-
-
 
    local function showhidewindow(params)
       if mano.gui.visible ==  true then
@@ -174,7 +187,7 @@ function manoui()
          mano.gui.visible  =  true
       end
 
-      mano.o.window:SetVisible(mano.gui.visible)
+      mano.gui.shown.window:SetVisible(mano.gui.visible)
 
       return
    end
@@ -237,68 +250,32 @@ function manoui()
       return
    end
 
+
    function self.addline(t)
 
       local inuse, frame, icon, text   =  nil, nil, nil, nil
 
       if not self.initialized then
-         print("MY WAY ON THE HIGHWAY!")
-         self = self.new() end
-
---       if mano.gui.shown.counter   == 0  then
---          parent   =  mano.gui.frames.container
---       else
---          parent   =  mano.gui.frames.last
---       end
-
---       local parent   =  mano.gui.frames.lastlinecontainer
---       print(string.format("lastlinecontainer: %s", mano.gui.lastlinecontainer))
---       for var, val in pairs(mano.gui.lastlinecontainer) do
---          print(string.format("lastlinecontainer: var[%s]=[%s]", var, val))
---          for vvar, vval in pairs(val) do
---             print(string.format("lastlinecontainer:     var[%s]=[%s]", vvar, vval))
---          end
---       end
-
-
-      print(string.format("ui.addline: parent=[%s]", parent))
---       local stockframe  = fetchlinefromstock(parent,t)
-      local stockframe  = fetchlinefromstock(nil,t)
-
-      if next(stockframe) ~= nil then
-         for var, val in pairs(stockframe) do
-            print(string.format("stockframe: var[%s]=[%s]", var, val))
-         end
-      else
-         print(string.format("stockframe: ERROR, stockframe=[%s] n=%s", stockframe, countarray(stockframe)))
+         mano.f.dprint("MY WAY ON THE HIGHWAY!")
+         self = self.new() 
       end
 
---       frame =  stockframe.frame
---       icon  =  stockframe.icon
---       text  =  stockframe.text
-
-      stockframe.frame:SetBackgroundColor(unpack(mano.gui.color.white))
-      stockframe.frame:SetVisible(true)
+      local stockframe  =  fetchlinefromstock(t)
       mano.gui.frames.lastlinecontainer   =  stockframe.frame
 
---       if t.icon then stockframe.icon:SetTexture("Rift", t.icon)
---       else           stockframe.icon:SetTexture("Rift", "Fish_icon.png.dds")
---       end
-      stockframe.icon:SetTexture("Rift", "Fish_icon.png.dds")
-      stockframe.icon:SetVisible(true)
-
-      stockframe.text:SetText(t.text or "lorem ipsum")
-      stockframe.text:EventAttach(Event.UI.Input.Mouse.Left.Click, function() self.setwaypoint(t.x, t.z, t.zone) end, "Way Point Added" )
-      stockframe.text:SetVisible(true)
+      
+      -- auto adjust window Y size
+      self.adjustheight()
 
       return stockframe
 
    end
 
+
    function self.adjustheight()
 
-      if mano.gui.lastlinecontainer ~= nil then
-         local maxY  =  mano.gui.lastlinecontainer:GetBottom()
+      if mano.gui.frames.lastlinecontainer ~= nil then
+         local maxY  =  mano.gui.frames.lastlinecontainer:GetBottom()
          local minY  =  mano.gui.shown.manoframe:GetTop()
 
          mano.gui.shown.manoframe:SetHeight(mano.f.round(maxY - maxY))
@@ -316,6 +293,9 @@ function manoui()
       
       -- Main Window
       local window  =  UI.CreateFrame("Frame", "MaNo", context)
+      
+      mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
+      
       if mano.gui.win.x == nil or mano.gui.win.y == nil then
          -- first run, we position in the screen center
          window:SetPoint("CENTER", UIParent, "CENTER")
@@ -406,74 +386,57 @@ function manoui()
       maskframe:SetAllPoints(mano.gui.shown.externalframe)
       mano.gui.shown.maskframe =  maskframe
 
-      -- Current Session Data Container
-      -- CUT CONTAINER FRAME
+      -- CONTAINER FRAME
       local manoframe =  UI.CreateFrame("Frame", "mano_frame", mano.gui.shown.maskframe)
       manoframe:SetAllPoints(mano.gui.shown.maskframe)
       manoframe:SetLayer(1)
       mano.gui.shown.manoframe   =  manoframe
---       print(string.format("ui.new: mano.gui.frames.container=[%s]", mano.gui.frames.container))
 
       -- RESIZER WIDGET
       local corner=  UI.CreateFrame("Texture", "corner", mano.gui.shown.window)
---       corner:SetTexture("Rift", "chat_resize_(normal).png.dds")
       corner:SetTexture("Rift", "chat_resize_(over).png.dds")
---       corner:SetTexture("Rift", "AuctionHouse_I91.dds")
       corner:SetHeight(mano.gui.font.size)
       corner:SetWidth(mano.gui.font.size)
       corner:SetLayer(4)
---       corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.titleframe, "BOTTOMRIGHT", mano.gui.font.size/2, mano.gui.font.size/2)
-      corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.manoframe, "BOTTOMRIGHT", mano.gui.font.size/2, mano.gui.font.size/2)
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Down,      function()  local mouse = Inspect.Mouse()
-                                                                           corner.pressed = true
-                                                                           corner.basex   =  window:GetLeft()
-                                                                           corner.basey   =  window:GetTop()
-                                                                        end,
-                                                                        "Event.UI.Input.Mouse.Right.Down")
+      corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.manoframe, "BOTTOMRIGHT")
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Down,      function()  
+                                                                  local mouse = Inspect.Mouse()
+                                                                  corner.pressed = true
+                                                                  corner.basex   =  window:GetLeft()
+                                                                  corner.basey   =  window:GetTop()
+                                                               end,
+                                                               "Event.UI.Input.Mouse.Right.Down")
 
-      corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move,    function()  if  corner.pressed then
-                                                                              local mouse = Inspect.Mouse()
-                                                                              mano.gui.win.width  = mano.round(mouse.x - corner.basex)
-                                                                              mano.gui.height = mano.round(mouse.y - corner.basey)
-                                                                              mano.o.window:SetWidth(mano.gui.win.width)
-                                                                              mano.o.window:SetHeight(mano.gui.height)
-                                                                              --                                                                            print(string.format("POST Width[%s] Height[%s]", mano.gui.win.width, mano.gui.height))
-                                                                           end
-                                                                        end,
-                                                                        "Event.UI.Input.Mouse.Cursor.Move")
+      corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move,     function()  
+                                                                  if  corner.pressed then
+                                                                     local mouse = Inspect.Mouse()
+                                                                     mano.gui.win.width  = mano.round(mouse.x - corner.basex)
+                                                                     mano.gui.win.height = mano.round(mouse.y - corner.basey)
+                                                                     mano.gui.shown.window:SetWidth(mano.gui.win.width)
+                                                                     mano.gui.shown.window:SetHeight(mano.gui.win.height)
+                                                                  end
+                                                               end,
+                                                               "Event.UI.Input.Mouse.Cursor.Move")
 
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside, function()  corner.pressed = false        end, "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Up,        function()  corner.pressed = false        end, "MaNo: Event.UI.Input.Mouse.Right.Up")
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside, function()  
+                                                                  corner.pressed = false        
+                                                                  self.adjustheight()
+                                                               end, 
+                                                               "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Up,        function()  
+                                                                  corner.pressed = false        
+                                                                  self.adjustheight()
+                                                               end, 
+                                                               "MaNo: Event.UI.Input.Mouse.Right.Up")
       mano.gui.shown.corner  =  corner
-
-      --    -- Enable Dragging
-      --    Library.LibDraggable.draggify(window, updateguicoordinates)
-
-      --    lockgui(mano.gui.locked)
 
       return window
    end
 
-   if self  then  self.initialized =   true  end
+   if self  then  
+      self.initialized =   true  
+   end
 
    return self
 
 end
-
---[[
-    Error: Incorrect function usage.
-   Parameters: (Frame: MaNo.MaNo.0x00e29da0)
-   Parameter types: Frame
-   Function documentation:
-   Sets the height of this frame. Undefined results if the frame already has two pinned Y coordinates.
-   Not permitted on a frame with "restricted" SecureMode while the addon environment is secured.
-   Frame:SetHeight(height)   -- number
-   Parameters:
-   height:	The new height of this frame.
-   In MaNo / MaNo: add note here, event Event.Slash.mano
-   stack traceback:
-   [C]: in function 'SetHeight'
-   MaNo/_mano_ui.lua:319: in function 'adjustheight'
-   MaNo/MaNo.lua:49: in function 'parseslashcommands'
-   MaNo/MaNo.lua:253: in function <MaNo/MaNo.lua:253>
-    ]]
