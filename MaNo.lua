@@ -35,15 +35,17 @@ local function parseslashcommands(params)
             mano.mapnote.new(playerposition, notetext)
             local t     = {}
             t.icon      =  nil
-            t.text      =  notetext
+            t.text      =  notetext or "Lorem Ipsum"
             t.x         =  playerposition.coordX
             t.z         =  playerposition.coordZ
             t.zoneid    =  playerposition.zoneid
             t.location  =  playerposition.locationName
 
---             for var, val in pairs(t) do
---                print(string.format("parseslashcommands: var[%s]=val[%s]", var, val))
---             end
+            if mano.flags.debug  then
+               for var, val in pairs(t) do
+                  print(string.format("mano.uiclass.addline: t=>var[%s]=val[%s]", var, val))
+               end
+            end
 
             mano.uiclass.addline(t)
 --             mano.uiclass.adjustheight()
@@ -63,7 +65,7 @@ local function savevariables(_, addonname)
 
       local a        =  {}
       a.mmbtn        =  mano.gui.mmbtn
-      a.win          =  mano.gui.win    
+      a.win          =  mano.gui.win
       manoguidata    =  a
 
       if next(mano.mapnote.notes) then
@@ -82,8 +84,8 @@ local function loadvariables(_, addonname)
 
          local a  =  manoguidata
          local key, val = nil, nil
-         for key, val in pairs(a) do   
-            mano.gui[key]  =  val   
+         for key, val in pairs(a) do
+            mano.gui[key]  =  val
             mano.f.dprint(string.format("Importing %s: %s", key, val))
             if mano.flags.debug then
                local vvar, vval = nil, nil
@@ -109,12 +111,12 @@ local function loadvariables(_, addonname)
 end
 
 -- local function displayresultsandaddnote(t)
--- 
+--
 --    local k, v = nil, nil
 --    local a, b = nil, nil
--- 
+--
 --    for k, v in pairs (t) do
--- 
+--
 --       if mano.base  then
 --          --
 --          -- is it a REAL event or we did just got a
@@ -124,7 +126,7 @@ end
 --          if (v.stack ~= (mano.delta[v.name] or 0)) then
 --             Command.Console.Display(   "general",
 --                                        true,
---                                        string.format("BagWatcher: %s %s (base/delta/stack=%s/%s/%s)", 
+--                                        string.format("BagWatcher: %s %s (base/delta/stack=%s/%s/%s)",
 --                                           v.name,
 --                                           (v.stack - (mano.delta[v.name] or 0)),
 --                                           (mano.base[v.name] or nil),
@@ -133,15 +135,15 @@ end
 --                                           ),
 --                                        true)
 --          end
--- 
+--
 --          mano.delta[v.name] =  v.stack
 --          if not mano.base[v.name] then mano.base[v.name] = v.stack end
--- 
+--
 --          -- add map note
 --          mano.mapnote.new(playerposition, v)
 --       end
 --    end
--- 
+--
 --    return
 -- end
 

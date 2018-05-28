@@ -21,9 +21,9 @@ local function updateguicoordinates(win, newx, newy)
 
    if win ~= nil then
       local winName = win:GetName()
-      
+
       if winName == "mmBtnIconBorder" then
-         mano.gui.mmbtn.x  =  round(newx)         
+         mano.gui.mmbtn.x  =  round(newx)
          mano.gui.mmbtn.y  =  round(newy)
       end
 
@@ -49,7 +49,7 @@ mano.init.startup          =  false
 --
 mano.flags                 =  {}
 mano.flags.trackartifacts  =  false
-mano.flags.debug           =  false
+mano.flags.debug           =  true
 --
 -- "f" = Function handles
 --
@@ -71,7 +71,7 @@ mano.gui.win.y             =  0
 mano.gui.win.width         =  280
 --
 -- Minimap Button
---       
+--
 mano.gui.mmbtn	            =  {}
 mano.gui.mmbtn.height      =  38
 mano.gui.mmbtn.width       =  38
