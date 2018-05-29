@@ -105,50 +105,12 @@ function noteinputform()
 
    function self.hide()
 
-         if next(self.inputwin) then  self.inputwin:SetVisible(false) end
+      if next(self.inputwin) then  self.inputwin:SetVisible(false) end
 
-         return
-      end
+      return
+   end
 
---    function self.setwaypoint(x, z, zonename)
---
---       if x and z then
---          local retval = Command.Map.Waypoint.Set(x, z)
---          print(string.format("Command.Map.Waypoint.Set(%s, %s)", x, z))
---       end
---
---       local X, Z = Inspect.Map.Waypoint.Get("Player")
---
---       print(string.format("Way Point added in: %s, at %s, %s", x, z, zonename))
---
---       return X, Z
---    end
---
---
    -- return the class instance
    return   self
 
 end
-
---[[
-         -- ZONE NAME CONTAINER Header
-         local lbl1  =  UI.CreateFrame("Text", infoWindow:GetName() .. "_zone_label", headerFrame)
-         local objColor  =  cD.rarityColor("common")
-         lbl1:SetText("Zone    :")
-         lbl1:SetFont(cD.addon, cD.text.base_font_name)
-         lbl1:SetFontSize(cD.text.base_font_size)
-         lbl1:SetLayer(1)
-         lbl1:SetPoint("TOPLEFT",  headerFrame, "TOPLEFT")
-
-            -- ZONE NAME Header [idx=1]
-            local lineOBJ_2 =  UI.CreateFrame("Text", infoWindow:GetName() .. "_zone", headerFrame)
-            local objColor  =  cD.rarityColor("quest")
-            lineOBJ_2:SetText(zone)
-            lineOBJ_2:SetFont(cD.addon, cD.text.base_font_name)
-            lineOBJ_2:SetFontSize(cD.text.base_font_size)
-            lineOBJ_2:SetLayer(1)
-            lineOBJ_2:SetFontColor(objColor.r, objColor.g, objColor.b)
-            lineOBJ_2:SetPoint("TOPLEFT", lbl1, "TOPRIGHT", cD.borders.left, 0)
-            table.insert(cD.sLThdrs, lineOBJ_2 )
-
-    ]]
