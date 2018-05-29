@@ -110,21 +110,21 @@ function noteinputform()
          return
       end
 
-   function self.setwaypoint(x, z, zonename)
-
-      if x and z then
-         local retval = Command.Map.Waypoint.Set(x, z)
-         print(string.format("Command.Map.Waypoint.Set(%s, %s)", x, z))
-      end
-
-      local X, Z = Inspect.Map.Waypoint.Get("Player")
-
-      print(string.format("Way Point added in: %s, at %s, %s", x, z, zonename))
-
-      return X, Z
-   end
-
-
+--    function self.setwaypoint(x, z, zonename)
+--
+--       if x and z then
+--          local retval = Command.Map.Waypoint.Set(x, z)
+--          print(string.format("Command.Map.Waypoint.Set(%s, %s)", x, z))
+--       end
+--
+--       local X, Z = Inspect.Map.Waypoint.Get("Player")
+--
+--       print(string.format("Way Point added in: %s, at %s, %s", x, z, zonename))
+--
+--       return X, Z
+--    end
+--
+--
    -- return the class instance
    return   self
 

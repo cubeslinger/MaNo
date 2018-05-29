@@ -36,6 +36,23 @@ local function updateguicoordinates(win, newx, newy)
    return
 end
 
+local function setwaypoint(x, z, zonename)
+
+   mano.f.dprint(string.format("setwaypoint: zone=%s @ (%s, %s)", zonename, x, z))
+
+   if x and z then
+      local retval = Command.Map.Waypoint.Set(x, z)
+      mano.f.dprint(string.format("Command.Map.Waypoint.Set(%s, %s) result=%s", x, z, retval))
+   end
+
+   local X, Z = Inspect.Map.Waypoint.Get("player")
+
+   mano.f.dprint(string.format("Way Point added in: %s, at %s, %s", zonename, X, Z))
+
+   return X, Z
+end
+
+
 --
 --
 -- DBs
@@ -57,6 +74,7 @@ mano.f                     =  {}
 mano.f.round               =  round
 mano.f.updateguicoordinates=  updateguicoordinates
 mano.f.dprint              =  dprint
+mano.f.setwaypoint         =  setwaypoint
 --
 --
 -- GUI

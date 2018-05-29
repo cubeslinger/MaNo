@@ -15,11 +15,11 @@ mano.noteinputform   =  noteinputform()
 
 local function parseslashcommands(params)
 
-   mano.f.dprint(string.format( "got mano [%s]", params))
+--    mano.f.dprint(string.format( "got mano [%s]", params))
 
    for i in string.gmatch(params, "%S+") do
 
-      mano.f.dprint(string.format( "i [%s]", i))
+--       mano.f.dprint(string.format( "i [%s]", i))
 
       if i  == "add"         then
 
@@ -48,7 +48,6 @@ local function parseslashcommands(params)
             end
 
             mano.uiclass.addline(t)
---             mano.uiclass.adjustheight()
          else
             print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
          end
