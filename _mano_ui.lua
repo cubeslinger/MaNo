@@ -13,7 +13,8 @@ function manoui()
                   -- public fields go in the instance table
                   linestock   =  {},
                   lineid      =  0,
-                  initialized =  false
+                  initialized =  false,
+                  o           =  {}
                   }
 
    local function countarray(array)
@@ -39,24 +40,25 @@ function manoui()
 
       self.lineid    =  self.lineid + 1
 
-      if mano.gui.frames.lastlinecontainer ~= nil and next(mano.gui.frames.lastlinecontainer) ~= nil then 
+      if mano.gui.frames.lastlinecontainer ~= nil and next(mano.gui.frames.lastlinecontainer) ~= nil then
          parent = mano.gui.frames.lastlinecontainer
-      else                                      
+      else
          parent = mano.gui.shown.manoframe
+--             parent = mano.gui.shown.maskframe
       end
-      
+
       -- Line Frame container
       lineframe =  UI.CreateFrame("Frame", "line_item_frame_" .. self.lineid, parent)
       lineframe:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
       lineframe:SetHeight(mano.gui.font.size+2)
       lineframe:SetLayer(3)
-      lineframe:SetVisible(true)    
+      lineframe:SetVisible(true)
       if mano.gui.frames.lastlinecontainer ~= nil and next(mano.gui.frames.lastlinecontainer) ~= nil then
          mano.f.dprint("attaching to lastlinecontainer")
          lineframe:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
          lineframe:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
       else
-         mano.f.dprint("attaching to manoframe")
+         mano.f.dprint("attaching to maskframe")
          lineframe:SetPoint("TOPLEFT",  parent, "TOPLEFT", 0, 1)
          lineframe:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
       end
@@ -66,9 +68,9 @@ function manoui()
       icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
       icon:SetWidth(mano.gui.font.size)
       icon:SetHeight(mano.gui.font.size)
-      icon:SetLayer(4)
+      icon:SetLayer(3)
       icon:SetVisible(true)
-      icon:SetPoint("TOPLEFT",   lineframe, "TOPRIGHT", mano.gui.borders.left, 0)      
+      icon:SetPoint("TOPLEFT",   lineframe, "TOPRIGHT", mano.gui.borders.left, 0)
 
       -- Item's Name
       local text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, lineframe)
@@ -76,15 +78,15 @@ function manoui()
          text:SetFont(mano.addon.name, mano.gui.font.name)
       end
       text:SetFontSize(mano.gui.font.size)
-      text:SetText(t.name or t.location .. " (" .. self.lineid .. ")")      
-      text:SetLayer(4)
-      text:EventAttach( Event.UI.Input.Mouse.Left.Click, 
-                        function() 
-                           self.setwaypoint(t.x, t.y) 
-                        end, 
+      text:SetText(t.name or t.location .. " (" .. self.lineid .. ")")
+      text:SetLayer(3)
+      text:EventAttach( Event.UI.Input.Mouse.Left.Click,
+                        function()
+                           self.setwaypoint(t.x, t.y)
+                        end,
                         "Way Point Selected" )
       text:SetVisible(true)
-      text:SetPoint("TOPLEFT", icon, "TOPRIGHT", mano.gui.borders.left, 0)      
+      text:SetPoint("TOPLEFT", icon, "TOPRIGHT", mano.gui.borders.left, 0)
 
       -- (...)
 
@@ -109,10 +111,10 @@ function manoui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach(   Event.UI.Input.Mouse.Left.Click, 
-                                 function() 
-                                    self.setwaypoint(t.x, t.y, t.zonename) 
-                                 end, 
+         tbl.text:EventDetach(   Event.UI.Input.Mouse.Left.Click,
+                                 function()
+                                    self.setwaypoint(t.x, t.y, t.zonename)
+                                 end,
                                  "Way Point Selected" )
       end
 
@@ -145,12 +147,12 @@ function manoui()
          retval.icon:SetVisible(true)
          mano.f.dprint(strinf.format("Text is [%s]", t.text))
          retval.text:SetText(t.text or "lorem ipsum")
-         retval.text:EventAttach(   Event.UI.Input.Mouse.Left.Click, 
-                                    function() 
-                                       self.setwaypoint(t.x, t.z, t.zone) 
-                                    end, 
+         retval.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
+                                    function()
+                                       self.setwaypoint(t.x, t.z, t.zone)
+                                    end,
                                     "Way Point Added" )
-         retval.text:SetVisible(true)           
+         retval.text:SetVisible(true)
          mano.gui.frames.lastlinecontainer =  retval.frame
       end
 
@@ -257,18 +259,17 @@ function manoui()
 
       if not self.initialized then
          mano.f.dprint("MY WAY ON THE HIGHWAY!")
-         self = self.new() 
+         self = self.new()
       end
 
       local stockframe  =  fetchlinefromstock(t)
       mano.gui.frames.lastlinecontainer   =  stockframe.frame
 
-      
+
       -- auto adjust window Y size
       self.adjustheight()
 
       return stockframe
-
    end
 
 
@@ -290,12 +291,12 @@ function manoui()
 
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
-      
+
       -- Main Window
       local window  =  UI.CreateFrame("Frame", "MaNo", context)
-      
+
       mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
-      
+
       if mano.gui.win.x == nil or mano.gui.win.y == nil then
          -- first run, we position in the screen center
          window:SetPoint("CENTER", UIParent, "CENTER")
@@ -387,19 +388,19 @@ function manoui()
       mano.gui.shown.maskframe =  maskframe
 
       -- CONTAINER FRAME
-      local manoframe =  UI.CreateFrame("Frame", "mano_frame", mano.gui.shown.maskframe)
+      local manoframe =  UI.CreateFrame("Frame", "mano_notes_frame", mano.gui.shown.maskframe)
       manoframe:SetAllPoints(mano.gui.shown.maskframe)
       manoframe:SetLayer(1)
       mano.gui.shown.manoframe   =  manoframe
 
       -- RESIZER WIDGET
-      local corner=  UI.CreateFrame("Texture", "corner", mano.gui.shown.window)
+      local corner=  UI.CreateFrame("Texture", "mano_corner", mano.gui.shown.window)
       corner:SetTexture("Rift", "chat_resize_(over).png.dds")
       corner:SetHeight(mano.gui.font.size)
       corner:SetWidth(mano.gui.font.size)
       corner:SetLayer(4)
       corner:SetPoint("BOTTOMRIGHT", mano.gui.shown.manoframe, "BOTTOMRIGHT")
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Down,      function()  
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Down,      function()
                                                                   local mouse = Inspect.Mouse()
                                                                   corner.pressed = true
                                                                   corner.basex   =  window:GetLeft()
@@ -407,7 +408,7 @@ function manoui()
                                                                end,
                                                                "Event.UI.Input.Mouse.Right.Down")
 
-      corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move,     function()  
+      corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move,     function()
                                                                   if  corner.pressed then
                                                                      local mouse = Inspect.Mouse()
                                                                      mano.gui.win.width  = mano.round(mouse.x - corner.basex)
@@ -418,23 +419,23 @@ function manoui()
                                                                end,
                                                                "Event.UI.Input.Mouse.Cursor.Move")
 
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside, function()  
-                                                                  corner.pressed = false        
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside, function()
+                                                                  corner.pressed = false
                                                                   self.adjustheight()
-                                                               end, 
+                                                               end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
-      corner:EventAttach(Event.UI.Input.Mouse.Right.Up,        function()  
-                                                                  corner.pressed = false        
+      corner:EventAttach(Event.UI.Input.Mouse.Right.Up,        function()
+                                                                  corner.pressed = false
                                                                   self.adjustheight()
-                                                               end, 
+                                                               end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
       mano.gui.shown.corner  =  corner
 
       return window
    end
 
-   if self  then  
-      self.initialized =   true  
+   if self  then
+      self.initialized =   true
    end
 
    return self

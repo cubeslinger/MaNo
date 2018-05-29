@@ -121,9 +121,9 @@ mano.gui.font.size         =  12
 mano.gui.font.name         =  nil
 --
 mano.gui.shown             =  {}
-mano.gui.shown.counter     =  0
---
-mano.gui.frames            =  {}
+-- mano.gui.shown.counter     =  0
+-- --
+-- mano.gui.frames            =  {}
 --
 -- end declarations
 --
