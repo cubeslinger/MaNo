@@ -57,7 +57,8 @@ end
 --
 -- DBs
 --
-mano.notes                 =  {}
+mano.db                    =  {}
+mano.db.notes              =  {}
 --
 -- Initialization flags
 --

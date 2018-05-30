@@ -422,6 +422,18 @@ function manoui()
                                                                   self.adjustheight()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
+
+
+      -- MENUBUTTON WIDGET
+      self.o.menubutton  =  UI.CreateFrame("Texture", "mano.menubutton", self.o.window)
+      self.o.menubutton:SetTexture("Rift", "reward_gold.png.dds")
+      self.o.menubutton:SetHeight(mano.gui.font.size)
+      self.o.menubutton:SetWidth(mano.gui.font.size)
+      self.o.menubutton:SetLayer(4)
+      self.o.menubutton:SetPoint("BOTTOMLEFT", self.o.manoframe, "BOTTOMLEFT")
+      self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.gui.shown.menuclass.show() end, "MaNo: Lock GUI Button Pressed" )
+
+
       return self.o.window
    end
 
