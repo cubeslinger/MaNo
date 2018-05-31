@@ -9,7 +9,7 @@
 --
 -- Expansion:  Storm Legion - Cairns
 -- Source:     http://archive.riftscene.com/guides/achievements/cairn-do-too-storm-legion-cairns/
--- Credits:     Cupcakes
+-- Credits:    Cupcakes
 --
 -- Data:       Storm Legion - Puzzles
 -- Source:     http://tmrguides.blogspot.com/
@@ -39,7 +39,8 @@ mano.db.puzzles.mathosia=  {
                               { name="Don’t be Cagey",                  location="Drought Islands",                  x=8335, z=6200 },
                               { name="Tracks in the Snow",              location="Iron Pine Peaks",                  x=3760, z=2266 },
                               { name="The Peg Solitaire",               location="Shimmersand",                      x=6414, z=7714 },
-                              { name="Stillmoor",                       location="Thalin Thor",                      x=1705, z=2310 }
+                              { name="Herding Bats",                    location="Stillmoor",                        x=1705, z=2310 },
+                              { name="Emerald Enigma",                  location="Ember Isle",                      x=12823, z=3857 }
                               }
 mano.db.puzzles.stormlegion=  {
                                  { name="Circuit Diagrams",    location="Brevane",  subzone="Ardent Domain",         x=5988,  z=10744,
