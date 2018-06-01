@@ -208,7 +208,8 @@ local function startmeup(h, t)
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
 
       mano.uiclass      =  manoui()
-      mano.gui.shown.window =  mano.uiclass.new()
+      mano.gui.shown.window   =  mano.uiclass.new()
+--       mano.gui.shown.window =  mano.uiclass.new()
 
 
       -- {  parent=[],                          -- parent menu or nil (need x and y)
@@ -218,17 +219,17 @@ local function startmeup(h, t)
       --    fontface=[],                        -- defaults to Rift Font
       --    hide=[],                            -- defaults to start hidden, use :show() to reveal the menu
       -- }
-      local tt =  {  parent   =  mano.uiclass.o.menubutton,
-                     title    =  "Configuration",
-                     voices   =  {  { name="First Voice" },
-                                    { name="Second Voice"},
-                                    { name="Cippa Lippa", callback=mano.mapnote.new() },
-                                 }
-                  }
-
-      mano.gui.shown.menuclass   =  menu()
-      mano.gui.shown.menu        =  mano.gui.shown.menuclass.new(tt)
-      mano.gui.shown.menuclass.hide()
+--       local tt =  {  parent   =  mano.uiclass.o.menubutton,
+--                      title    =  "Configuration",
+--                      voices   =  {  { name="First Voice" },
+--                                     { name="Second Voice"},
+--                                     { name="Cippa Lippa", callback=mano.mapnote.new() },
+--                                  }
+--                   }
+--
+--       mano.gui.shown.menuclass   =  menu()
+--       mano.gui.shown.menu        =  mano.gui.shown.menuclass.new(tt)
+--       mano.gui.shown.menuclass.hide()
 
       Library.LibDraggable.draggify(mano.gui.shown.window, mano.f.updateguicoordinates)
 
