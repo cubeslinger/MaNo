@@ -302,28 +302,48 @@ function manoui()
       self.o.submenu.db.cairns.mathosia      =  {}
       self.o.submenu.db.cairns.stormlegion   =  {}
       self.menucfg               =  {}
-      self.menucfg.dbs           =  {  parent   =  self.o.menubutton,
-                                       voices   =  {  { name   ="Puzzles",       callback =  self.o.submenu.db.puzzles.mathosia:show() },
-                                                      { name   ="Puzzles",       callback =  self.o.submenu.db.puzzles.stormlegion:show() },
-                                                      { name   ="Cairns",        callback =  self.o.submenu.db.cairns.mathosia:show() },
-                                                      { name   ="Cairns",        callback =  self.o.submenu.db.cairns.stormlegion:show() },
-                                                   },
-                                    }
-      self.menucfg.main          =  {  parent   =  self.o.menubutton,
-                                       voices   =  {  { name="Load DB",          callback =  self.o.menu.dbs:show() },
-                                                      { name="Add Note Here!",   callback =  mano.mapnote.new() },
-                                                   },
-                                    }
-
-      -- Main Menu
-      self.o.menu.main           =  menu()
-      self.o.menu.main.instance  =  self.o.menu.main.new(self.menucfg.main)
-      self.o.menu.main:hide()
-
+--       self.menucfg.dbs           =  {  parent   =  self.o.menubutton,
+--                                        voices   =  {  { name   ="Puzzles", }, --      callback =  self.o.submenu.db.puzzles.mathosia:show() },
+--                                                       { name   ="Puzzles", }, --      callback =  self.o.submenu.db.puzzles.stormlegion:show() },
+--                                                       { name   ="Cairns",  }, --      callback =  self.o.submenu.db.cairns.mathosia:show() },
+--                                                       { name   ="Cairns",  }, --      callback =  self.o.submenu.db.cairns.stormlegion:show() },
+--                                                    },
+--                                     }
+--[[                                    
       -- submenu: DBs
       self.o.menu.dbs            =  menu()
       self.o.menu.dbs.instance   =  self.o.menu.dbs.new(self.menucfg.dbs)
-      self.o.menu.dbs:hide()
+      self.o.menu.dbs:hide()                                                                     ]]
+
+--       -- Main Menu      
+--       self.menucfg.main          =  {  parent   =  self.o.menubutton,
+--                                        voices   =  {  { name="Load DB",          callback =  self.o.menu.dbs:show() },
+--                                                       { name="Add Note Here!",   callback =  mano.mapnote.new() },
+--                                                    },
+--                                     }
+--       self.o.menu.main           =  menu()
+--       self.o.menu.main.instance  =  self.o.menu.main.new(self.menucfg.main)
+--       self.o.menu.main:hide()
+      
+      
+--       self.menucfg.main          =  {  parent   =  self.o.menubutton,
+      self.menucfg.main          =  {  
+                                       voices   =  {  {  name     =  "Load DB",
+                                                         callback =  "_submenu_",
+                                                         submenu  =  {  parent   =  self.o.menubutton,
+                                                                        voices   =  { { name   ="Puzzles"   },
+                                                                                      { name   ="Cairns",   },
+                                                                                    },
+                                                                     },
+                                                      },
+                                                      {  name     =  "Add Note Here!",   
+                                                         callback =  mano.mapnote.new() },
+                                                   },
+                                    }      
+      
+--       self.o.menu.main           =  menu()
+--       self.o.menu.main.instance  =  self.o.menu.main.new(self.o.menubutton, self.menucfg.main)
+--       self.o.menu.main:hide()
 
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
@@ -411,7 +431,7 @@ function manoui()
          self.o.menubutton:SetWidth(mano.gui.font.size)
          self.o.menubutton:SetLayer(3)
          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                              self.o.menu.menu.main:show()
+                                                                              self.o.menu.main:show()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed" )
          self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERRIGHT", -mano.gui.font.size, 0)
@@ -484,6 +504,13 @@ function manoui()
 --       self.o.menubutton:SetPoint("BOTTOMLEFT", self.o.manoframe, "BOTTOMLEFT")
 --       self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.gui.shown.menuclass.show() end, "MaNo: Lock GUI Button Pressed" )
 
+                                       
+                                       
+      self.o.menu.main           =  menu(self.o.menubutton, self.menucfg.main)
+--       self.o.menu.main.instance  =  self.o.menu.main.new(self.o.menubutton, self.menucfg.main)
+      self.o.menu.main:hide()
+                                       
+                                       
 
       return self.o.window
    end
@@ -495,19 +522,3 @@ function manoui()
    return self
 
 end
-
---[[
-
-   mano.uiclass            =  manoui()
-   mano.gui.shown.window   =  mano.uiclass.new()
-   local tt =  {  parent   =  mano.uiclass.o.menubutton,
-                  title    =  "Configuration",
-                  voices   =  {  { name="First Voice" },
-                                 { name="Second Voice"},
-                                 { name="Cippa Lippa", callback=mano.mapnote.new() },
-                              }
-                }
-   mano.gui.shown.menuclass   =  menu()
-   mano.gui.shown.menu        =  mano.gui.shown.menuclass.new(tt)
-   mano.gui.shown.menuclass.hide()
-]]
