@@ -330,8 +330,7 @@ function manoui()
       self.menucfg.main          =  {  
                                        voices   =  {  {  name     =  "Load DB",
                                                          callback =  "_submenu_",
-                                                         submenu  =  {  parent   =  self.o.menubutton,
-                                                                        voices   =  { { name   ="Puzzles"   },
+                                                         submenu  =  {  voices   =  { { name   ="Puzzles"   },
                                                                                       { name   ="Cairns",   },
                                                                                     },
                                                                      },
