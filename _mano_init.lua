@@ -77,6 +77,14 @@ mano.f.updateguicoordinates=  updateguicoordinates
 mano.f.dprint              =  dprint
 mano.f.setwaypoint         =  setwaypoint
 --
+mano.foo                         =  {}
+mano.foo['round']                =  function(args) return(round(args))                    end
+mano.foo['updateguicoordinates'] =  function(args) return(updateguicoordinates(args))     end
+mano.foo['dprint']               =  function(args) return(dprint(args))                   end
+mano.foo['setwaypoint']          =  function(args) return(setwaypoint(args))              end
+mano.foo['parseslashcommands']   =  function(args) return(mano.parseslashcommands(args))  end
+
+--
 --
 -- GUI
 --

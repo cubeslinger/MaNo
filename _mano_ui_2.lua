@@ -292,8 +292,8 @@ function manoui()
    function self.new()
 
       -- Create/Initialize Menus
-      self.menucfg      =  {}     
-      self.menucfg.main =  {  
+      self.menucfg      =  {}
+      self.menucfg.main =  {
                               voices   =  {  {  name     =  "Load DB",
                                                 callback =  "_submenu_",
                                                 submenu  =  {  voices   =  {  { name   =  "Puzzles"   },
@@ -301,12 +301,12 @@ function manoui()
                                                                            },
                                                             },
                                              },
-                                             {  name     =  "Add Note Here!",   
-                                                callback =  mano.mapnote.new() 
+                                             {  name     =  "Add Note Here!",
+                                                callback =  mano.foo["parseslashcommands"]("add"),
                                              },
                                           },
-                           }      
-      
+                           }
+
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
 
@@ -378,14 +378,17 @@ function manoui()
          self.o.menubutton:SetWidth(mano.gui.font.size)
          self.o.menubutton:SetLayer(3)
          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                              self.o.menu.main:show()
+                                                                              self.o.menu.main:flip()
+                                                                              self.o.menu.loaddb:flip()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed" )
          self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERRIGHT", -mano.gui.font.size, 0)
          -- Create Menu
          print("%% CREATE MENU %%")
-         self.o.menu       =  {}
-         self.o.menu.main  =  menu(self.o.menubutton, self.menucfg.main)
+         self.o.menu          =  {}
+         self.o.menu.loaddb   =  menu(self.o.menubutton, self.menucfg.loaddb)
+         self.o.menu.loaddb:hide()
+         self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
          self.o.menu.main:hide()
          --
 
@@ -444,7 +447,7 @@ function manoui()
                                                                   self.adjustheight()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
-                                       
+
       return self.o.window
    end
 

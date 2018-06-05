@@ -13,7 +13,8 @@ if not mano.mapnote then mano.mapnote =  mapnotes()   end
 mano.noteinputform   =  noteinputform()
 --
 
-local function parseslashcommands(params)
+-- local function parseslashcommands(params)
+function mano.parseslashcommands(params)
 
 --    mano.f.dprint(string.format( "got mano [%s]", params))
 
@@ -201,12 +202,12 @@ local function startmeup(h, t)
       end
 
       -- inizitialize __bag_watcher() and __bag_scanner()
-      mano._init_watchers(h, t, displayresultsandaddnote)
+--       mano._init_watchers(h, t, displayresultsandaddnote)
 
       -- remove tracking for this event
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
 
-      mano.uiclass      =  manoui()
+      mano.uiclass            =  manoui()
       mano.gui.shown.window   =  mano.uiclass.new()
 --       mano.gui.shown.window =  mano.uiclass.new()
 
