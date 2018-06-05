@@ -13,7 +13,7 @@ function manoui()
                   linestock         =  {},
                   lineid            =  0,
                   initialized       =  false,
-                  o                    =  {},
+                  o                 =  {},
                   }
 
    local function countarray(array)
@@ -292,58 +292,21 @@ function manoui()
    function self.new()
 
       -- Create/Initialize Menus
-      self.o.menu                            =  {}
-      self.o.submenu                         =  {}
-      self.o.submenu.db                      =  {}
-      self.o.submenu.db.puzzles              =  {}
-      self.o.submenu.db.puzzles.mathosia     =  {}
-      self.o.submenu.db.puzzles.stormlegion  =  {}
-      self.o.submenu.db.cairns               =  {}
-      self.o.submenu.db.cairns.mathosia      =  {}
-      self.o.submenu.db.cairns.stormlegion   =  {}
-      self.menucfg               =  {}
---       self.menucfg.dbs           =  {  parent   =  self.o.menubutton,
---                                        voices   =  {  { name   ="Puzzles", }, --      callback =  self.o.submenu.db.puzzles.mathosia:show() },
---                                                       { name   ="Puzzles", }, --      callback =  self.o.submenu.db.puzzles.stormlegion:show() },
---                                                       { name   ="Cairns",  }, --      callback =  self.o.submenu.db.cairns.mathosia:show() },
---                                                       { name   ="Cairns",  }, --      callback =  self.o.submenu.db.cairns.stormlegion:show() },
---                                                    },
---                                     }
---[[                                    
-      -- submenu: DBs
-      self.o.menu.dbs            =  menu()
-      self.o.menu.dbs.instance   =  self.o.menu.dbs.new(self.menucfg.dbs)
-      self.o.menu.dbs:hide()                                                                     ]]
-
---       -- Main Menu      
---       self.menucfg.main          =  {  parent   =  self.o.menubutton,
---                                        voices   =  {  { name="Load DB",          callback =  self.o.menu.dbs:show() },
---                                                       { name="Add Note Here!",   callback =  mano.mapnote.new() },
---                                                    },
---                                     }
---       self.o.menu.main           =  menu()
---       self.o.menu.main.instance  =  self.o.menu.main.new(self.menucfg.main)
---       self.o.menu.main:hide()
+      self.menucfg      =  {}     
+      self.menucfg.main =  {  
+                              voices   =  {  {  name     =  "Load DB",
+                                                callback =  "_submenu_",
+                                                submenu  =  {  voices   =  {  { name   =  "Puzzles"   },
+                                                                              { name   =  "Cairns"    },
+                                                                           },
+                                                            },
+                                             },
+                                             {  name     =  "Add Note Here!",   
+                                                callback =  mano.mapnote.new() 
+                                             },
+                                          },
+                           }      
       
-      
---       self.menucfg.main          =  {  parent   =  self.o.menubutton,
-      self.menucfg.main          =  {  
-                                       voices   =  {  {  name     =  "Load DB",
-                                                         callback =  "_submenu_",
-                                                         submenu  =  {  voices   =  { { name   ="Puzzles"   },
-                                                                                      { name   ="Cairns",   },
-                                                                                    },
-                                                                     },
-                                                      },
-                                                      {  name     =  "Add Note Here!",   
-                                                         callback =  mano.mapnote.new() },
-                                                   },
-                                    }      
-      
---       self.o.menu.main           =  menu()
---       self.o.menu.main.instance  =  self.o.menu.main.new(self.o.menubutton, self.menucfg.main)
---       self.o.menu.main:hide()
-
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
 
@@ -404,26 +367,11 @@ function manoui()
          self.o.iconizebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() showhidewindow() end, "MaNo: Iconize Button Pressed" )
          self.o.iconizebutton:SetPoint("CENTERRIGHT",   self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right, 0)
 
---          -- Lock Button
---          self.o.lockbutton = UI.CreateFrame("Texture", "mano_lock_gui_button", self.o.titleframe)
---          local icon  =  nil
---          if mano.gui.locked then
---             icon  =  "lock_on.png.dds"
---          else
---             icon  =  "lock_off.png.dds"
---          end
---          self.o.lockbutton:SetTexture("Rift", icon)
---          self.o.lockbutton:SetHeight(mano.gui.font.size)
---          self.o.lockbutton:SetWidth(mano.gui.font.size)
---          self.o.lockbutton:SetLayer(3)
---          self.o.lockbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() lockgui() end, "MaNo: Lock GUI Button Pressed" )
---          self.o.lockbutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERRIGHT", -mano.gui.font.size, 0)
-
-
          -- Menu Button
          self.o.menubutton = UI.CreateFrame("Texture", "mano_menu_gui_button", self.o.titleframe)
          local icon  =  "btn_arrow_R_(normal).png.dds"   -- normal
 --          local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
+
 
          self.o.menubutton:SetTexture("Rift", icon)
          self.o.menubutton:SetHeight(mano.gui.font.size)
@@ -434,8 +382,12 @@ function manoui()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed" )
          self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERRIGHT", -mano.gui.font.size, 0)
-
-
+         -- Create Menu
+         print("%% CREATE MENU %%")
+         self.o.menu       =  {}
+         self.o.menu.main  =  menu(self.o.menubutton, self.menucfg.main)
+         self.o.menu.main:hide()
+         --
 
       -- EXTERNAL CUT CONTAINER FRAME
       self.o.externalframe =  UI.CreateFrame("Frame", "mano_external_frame", self.o.window)
@@ -492,25 +444,7 @@ function manoui()
                                                                   self.adjustheight()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
-
-
---       -- MENUBUTTON WIDGET
---       self.o.menubutton  =  UI.CreateFrame("Texture", "mano.menubutton", self.o.window)
---       self.o.menubutton:SetTexture("Rift", "reward_gold.png.dds")
---       self.o.menubutton:SetHeight(mano.gui.font.size)
---       self.o.menubutton:SetWidth(mano.gui.font.size)
---       self.o.menubutton:SetLayer(4)
---       self.o.menubutton:SetPoint("BOTTOMLEFT", self.o.manoframe, "BOTTOMLEFT")
---       self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.gui.shown.menuclass.show() end, "MaNo: Lock GUI Button Pressed" )
-
                                        
-                                       
-      self.o.menu.main           =  menu(self.o.menubutton, self.menucfg.main)
---       self.o.menu.main.instance  =  self.o.menu.main.new(self.o.menubutton, self.menucfg.main)
-      self.o.menu.main:hide()
-                                       
-                                       
-
       return self.o.window
    end
 

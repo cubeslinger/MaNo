@@ -198,7 +198,6 @@ local function startmeup(h, t)
          mano.mmbutton     =  mano.createminimapbutton()
          mano.gui.mmbtnobj =  mano.mmbutton.button
          mano.gui.mmbtnobj:SetVisible(true)
-         mano.init.startup =  true
       end
 
       -- inizitialize __bag_watcher() and __bag_scanner()
@@ -235,6 +234,8 @@ local function startmeup(h, t)
 
       mano.gui.shown.window:SetVisible(true)
 
+      print("++ STARMEUP ++")
+      mano.init.startup =  true
    end
 
    return
