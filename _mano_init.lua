@@ -69,22 +69,6 @@ mano.flags                 =  {}
 mano.flags.trackartifacts  =  false
 mano.flags.debug           =  true
 --
--- "f" = Function handles
---
-mano.f                     =  {}
-mano.f.round               =  round
-mano.f.updateguicoordinates=  updateguicoordinates
-mano.f.dprint              =  dprint
-mano.f.setwaypoint         =  setwaypoint
---
-mano.foo                         =  {}
-mano.foo['round']                =  function(args) return(round(args))                    end
-mano.foo['updateguicoordinates'] =  function(args) return(updateguicoordinates(args))     end
-mano.foo['dprint']               =  function(args) return(dprint(args))                   end
-mano.foo['setwaypoint']          =  function(args) return(setwaypoint(args))              end
-mano.foo['parseslashcommands']   =  function(args) return(mano.parseslashcommands(args))  end
-
---
 --
 -- GUI
 --
@@ -148,9 +132,23 @@ mano.gui.font.size         =  12
 mano.gui.font.name         =  nil
 --
 mano.gui.shown             =  {}
--- mano.gui.shown.counter     =  0
--- --
--- mano.gui.frames            =  {}
+--
+--
+-- "f" = Function handles
+--
+mano.f                     =  {}
+mano.f.round               =  round
+mano.f.updateguicoordinates=  updateguicoordinates
+mano.f.dprint              =  dprint
+mano.f.setwaypoint         =  setwaypoint
+--
+-- mano.foo                         =  {}
+-- mano.foo['round']                =  function(args) return(round(args))                    end
+-- mano.foo['updateguicoordinates'] =  function(args) return(updateguicoordinates(args))     end
+-- mano.foo['dprint']               =  function(args) return(dprint(args))                   end
+-- mano.foo['setwaypoint']          =  function(args) return(setwaypoint(args))              end
+-- mano.foo['parseslashcommands']   =  function(args) return(mano.parseslashcommands(args))  end
+--
 --
 -- end declarations
 --

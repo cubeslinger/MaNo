@@ -6,7 +6,7 @@
 
 local addon, mano = ...
 
-function manoui()
+function __mano_ui()
    -- the new instance
    local self =   {
                   -- public fields go in the instance table
@@ -60,15 +60,6 @@ function manoui()
          T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
       end
 
---       -- Icon
---       local T.icon = UI.CreateFrame("Texture", "line_T.icon_" .. self.lineid, T.frame)
---       T.icon:SetTexture("Rift", t.T.icon or "Fish_T.icon.png.dds")
---       T.icon:SetWidth(mano.gui.font.size)
---       T.icon:SetHeight(mano.gui.font.size)
---       T.icon:SetLayer(3)
---       T.icon:SetVisible(true)
---       T.icon:SetPoint("TOPLEFT",   T.frame, "TOPRIGHT", mano.gui.borders.left, 0)
-
       -- Item's Name
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
       if mano.gui.font.name then
@@ -81,15 +72,6 @@ function manoui()
       T.text:SetVisible(true)
       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
       T.text:SetPoint("TOPRIGHT",   T.frame, "TOPRIGHT", -mano.gui.borders.right,   0)
-
-      -- (...)
-
---       local T  =  {
---                   inuse =  true,
---                   frame =  T.frame,
---                   T.icon  =  T.icon,
---                   T.text  =  T.text
---                   }
 
       table.insert(self.linestock, T)
 
@@ -289,7 +271,8 @@ function manoui()
       return
    end
 
-   function self.new()
+--    function self.new()
+   local function new()
 
       -- Create/Initialize Menus
       self.menucfg      =  {}
@@ -448,13 +431,14 @@ function manoui()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
 
-      return self.o.window
+--       return self.o.window
+      return   self
    end
 
    if self  then
       self.initialized =   true
    end
 
-   return self
+   return new()
 
 end

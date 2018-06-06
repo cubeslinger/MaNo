@@ -9,30 +9,22 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 --
-if not mano.mapnote then mano.mapnote =  mapnotes()   end
-mano.noteinputform   =  noteinputform()
+if not mano.mapnote then mano.mapnote =  __map_notes()   end
+-- mano.noteinputform   =  noteinputform()
 --
 
 -- local function parseslashcommands(params)
-function mano.parseslashcommands(params)
-
---    mano.f.dprint(string.format( "got mano [%s]", params))
+local function parseslashcommands(params)
 
    for i in string.gmatch(params, "%S+") do
-
---       mano.f.dprint(string.format( "i [%s]", i))
 
       if i  == "add"         then
 
          local playerposition =  mano.mapnote.getplayerposition()
 
---          for var, val in pairs(playerposition) do
---             print(string.format("parseslashcommands: playerposition -> [%s]=val[%s]", var, val))
---          end
-
-
          if next(playerposition) then
-            local notetext       =  mano.noteinputform.show(playerposition)
+--             local notetext       =  mano.noteinputform.show(playerposition)
+            local notetext =  "Lorem Ipsum"
             mano.mapnote.new(playerposition, notetext)
             local t     = {}
             t.icon      =  nil
@@ -44,11 +36,23 @@ function mano.parseslashcommands(params)
 
             if mano.flags.debug  then
                for var, val in pairs(t) do
-                  print(string.format("mano.uiclass.addline: t=>var[%s]=val[%s]", var, val))
+                  print(string.format("t => var[%s]=val[%s]", var, val))
                end
             end
 
-            mano.uiclass.addline(t)
+--             mano.uiclass.addline(t)
+
+            print("mano.gui.shown.window -- begin")
+            for a, b in pairs(mano.gui.shown) do
+               print(string.format("a=%s, b=%s", a, b))
+               for c, d in pairs(b) do
+                  print(string.format(" c=%s, d=%s", c, d))
+               end
+            end
+            print("mano.gui.shown.window -- end")
+
+            mano.gui.shown.window.addline(t)
+
          else
             print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
          end
@@ -98,7 +102,7 @@ local function loadvariables(_, addonname)
       end
 
       if manonotesdb  then
-         if not mano.mapnote then mano.mapnote =  mapnotes()   end
+         if not mano.mapnote then mano.mapnote =  __map_notes()   end
 
          mano.mapnote.loaddb(manonotesdb)
 
@@ -110,42 +114,6 @@ local function loadvariables(_, addonname)
    return
 end
 
--- local function displayresultsandaddnote(t)
---
---    local k, v = nil, nil
---    local a, b = nil, nil
---
---    for k, v in pairs (t) do
---
---       if mano.base  then
---          --
---          -- is it a REAL event or we did just got a
---          -- refresh from server, like when we use a
---          -- porticulum?
---          --
---          if (v.stack ~= (mano.delta[v.name] or 0)) then
---             Command.Console.Display(   "general",
---                                        true,
---                                        string.format("BagWatcher: %s %s (base/delta/stack=%s/%s/%s)",
---                                           v.name,
---                                           (v.stack - (mano.delta[v.name] or 0)),
---                                           (mano.base[v.name] or nil),
---                                           (mano.delta[v.name] or nil),
---                                           v.stack
---                                           ),
---                                        true)
---          end
---
---          mano.delta[v.name] =  v.stack
---          if not mano.base[v.name] then mano.base[v.name] = v.stack end
---
---          -- add map note
---          mano.mapnote.new(playerposition, v)
---       end
---    end
---
---    return
--- end
 
 
 local function displayresultsandaddnote(t)
@@ -207,29 +175,17 @@ local function startmeup(h, t)
       -- remove tracking for this event
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
 
-      mano.uiclass            =  manoui()
-      mano.gui.shown.window   =  mano.uiclass.new()
---       mano.gui.shown.window =  mano.uiclass.new()
-
-
-      -- {  parent=[],                          -- parent menu or nil (need x and y)
-      --    title=[],                           -- menu title or nil
-      --    voices=<{ name="", callback=""}>,   --
-      --    fontsize=[],                        -- defaults to
-      --    fontface=[],                        -- defaults to Rift Font
-      --    hide=[],                            -- defaults to start hidden, use :show() to reveal the menu
-      -- }
---       local tt =  {  parent   =  mano.uiclass.o.menubutton,
---                      title    =  "Configuration",
---                      voices   =  {  { name="First Voice" },
---                                     { name="Second Voice"},
---                                     { name="Cippa Lippa", callback=mano.mapnote.new() },
---                                  }
---                   }
---
---       mano.gui.shown.menuclass   =  menu()
---       mano.gui.shown.menu        =  mano.gui.shown.menuclass.new(tt)
---       mano.gui.shown.menuclass.hide()
+--       mano.uiclass            =  __mano_ui()
+--       mano.gui.shown.window   =  mano.uiclass.new()
+      local tt =  __mano_ui()
+      if tt then
+         for a, b in pairs(tt) do
+            print(string.format("a=%s b=%s", a, b))
+         end
+      else
+         print("ERROR tt is nil!")
+      end
+      mano.gui.shown.window   =  tt
 
       Library.LibDraggable.draggify(mano.gui.shown.window, mano.f.updateguicoordinates)
 
@@ -242,6 +198,10 @@ local function startmeup(h, t)
    return
 end
 
+--
+mano.foo                         =  {}
+mano.foo['parseslashcommands']   =  function(args) return(parseslashcommands(args))  end
+--
 
 -- Event tracking initialization -- begin
 Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,     "MaNo: startup event")
@@ -250,4 +210,3 @@ Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables, "MaNo
 -- Event tracking initialization -- end
 --
 table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
-

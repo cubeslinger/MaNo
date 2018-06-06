@@ -3,7 +3,7 @@
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
-function mapnotes()
+function __map_notes()
    -- the new instance
    local self =   {
                   notes =  {},
@@ -15,24 +15,10 @@ function mapnotes()
    -- private fields are implemented using locals
    -- they are faster than table access, and are truly private, so the code that uses your class can't get them
    --
---    local watchers             =  {}
---    local queryid              =  0
---    local msgid                =  0
---    local lastmsg              =  0
-
---    --private
---    local function countarray(array)
---       local k, v  =  nil, nil
---       local count =  0
---       local t     =  array
---
---       if array then
---          for k, v in pairs(array) do count = count +1 end
---       end
---
---       return count
---    end
-
+   --    local watchers             =  {}
+   --    local queryid              =  0
+   --    local msgid                =  0
+   --    local lastmsg              =  0
 
    --
    -- PUBLIC:
