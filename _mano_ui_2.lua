@@ -272,7 +272,7 @@ function __mano_ui()
    end
 
 --    function self.new()
-   local function new()
+--    local function new()
 
       -- Create/Initialize Menus
       self.menucfg      =  {}
@@ -285,10 +285,12 @@ function __mano_ui()
                                                             },
                                              },
                                              {  name     =  "Add Note Here!",
-                                                callback =  mano.foo["parseslashcommands"]("add"),
+                                                callback =  { mano.foo["parseslashcommands"], "add", 'close' },
                                              },
                                           },
                            }
+
+
 
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
@@ -336,7 +338,7 @@ function __mano_ui()
 
          -- MaNo Version
          self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
-         self.o.titleversion:SetFontSize(mano.round(mano.gui.font.size * .75))
+         self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
          self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
          self.o.titleversion:SetLayer(3)
          self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
@@ -354,8 +356,6 @@ function __mano_ui()
          self.o.menubutton = UI.CreateFrame("Texture", "mano_menu_gui_button", self.o.titleframe)
          local icon  =  "btn_arrow_R_(normal).png.dds"   -- normal
 --          local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
-
-
          self.o.menubutton:SetTexture("Rift", icon)
          self.o.menubutton:SetHeight(mano.gui.font.size)
          self.o.menubutton:SetWidth(mano.gui.font.size)
@@ -432,13 +432,16 @@ function __mano_ui()
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
 
 --       return self.o.window
-      return   self
-   end
+--       return   self.o.window
+--    end
 
    if self  then
       self.initialized =   true
    end
 
-   return new()
+--    print("ui2_2: o ", mano.f.dump(self.o))
+--    print("ui2_2: window ", mano.f.dump(self.o.window))
+
+   return self
 
 end

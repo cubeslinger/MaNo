@@ -5,7 +5,76 @@
 --
 local addon, mano = ...
 
--- only pirnt if debug is on
+--
+local function parseslashcommands(params)
+   print(string.format("params: -- begin => params(%s)", params))
+   print("params: ", mano.f.dumptable(params))
+   print("params: -- end")
+
+
+   for i in string.gmatch(params, "%S+") do
+
+      if i  == "add"         then
+
+         local playerposition =  mano.mapnote.getplayerposition()
+
+         if next(playerposition) then
+            --             local notetext       =  mano.noteinputform.show(playerposition)
+            local notetext =  "Lorem Ipsum"
+            mano.mapnote.new(playerposition, notetext)
+            local t     = {}
+            t.icon      =  nil
+            t.text      =  notetext or "Lorem Ipsum"
+            t.x         =  playerposition.coordX
+            t.z         =  playerposition.coordZ
+            t.zoneid    =  playerposition.zoneid
+            t.location  =  playerposition.locationName
+
+            if mano.flags.debug  then
+               for var, val in pairs(t) do
+                  print(string.format("t => var[%s]=val[%s]", var, val))
+               end
+            end
+
+            --             mano.uiclass.addline(t)
+
+            if mano.gui.shown.window ~= nil and next(mano.gui.shown.window) then
+               print("XXXX -- begin")
+               print("XXXX: ", mano.f.dumptable(mano.gui.shown.window.o.window))
+               print("XXXX -- end")
+               mano.gui.shown.window.addline(t)
+            else
+               print("ERROR: mano.gui.shown.window is nil")
+            end
+
+         else
+            print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
+         end
+
+      end
+   end
+
+   return
+end
+
+
+-- local print nested tables
+local function dumptable(o)
+   if type(o) == 'table' then
+      local s = '{ '
+         for k,v in pairs(o) do
+            if type(k) ~= 'number' then
+               k = '"'..k..'"'
+            end
+            s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ','
+         end
+         return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
+-- only print if debug is on
 local function dprint(...) if mano.flags.debug == true then print(...) end end
 
 -- function mano.f.round(num, digits)
@@ -141,13 +210,26 @@ mano.f.round               =  round
 mano.f.updateguicoordinates=  updateguicoordinates
 mano.f.dprint              =  dprint
 mano.f.setwaypoint         =  setwaypoint
+mano.f.dumptable           =  dumptable
 --
 -- mano.foo                         =  {}
--- mano.foo['round']                =  function(args) return(round(args))                    end
--- mano.foo['updateguicoordinates'] =  function(args) return(updateguicoordinates(args))     end
--- mano.foo['dprint']               =  function(args) return(dprint(args))                   end
--- mano.foo['setwaypoint']          =  function(args) return(setwaypoint(args))              end
--- mano.foo['parseslashcommands']   =  function(args) return(mano.parseslashcommands(args))  end
+-- mano.foo["round"]                =  function(args) return(round(args))                 end
+-- mano.foo["updateguicoordinates"] =  function(args) return(updateguicoordinates(args))  end
+-- mano.foo["dprint"]               =  function(args) return(dprint(args))                end
+-- mano.foo["setwaypoint"]          =  function(args) return(setwaypoint(args))           end
+-- mano.foo["parseslashcommands"]   =  function(args) return(parseslashcommands(args))    end
+--
+mano.foo                   =  {
+                              round                 =  round,
+                              updateguicoordinates  =  updateguicoordinates,
+                              dprint                =  dprint,
+                              setwaypoint           =  setwaypoint,
+                              parseslashcommands    =  parseslashcommands,
+                              dumptable             =  dumptable,
+                              }
+
+print("mano.foo: ", dumptable(mano.foo))
+
 --
 --
 -- end declarations
