@@ -353,19 +353,34 @@ function __mano_ui()
          self.o.iconizebutton:SetPoint("CENTERRIGHT",   self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right, 0)
 
          -- Menu Button
-         self.o.menubutton = UI.CreateFrame("Texture", "mano_menu_gui_button", self.o.titleframe)
-         local icon  =  "btn_arrow_R_(normal).png.dds"   -- normal
---          local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
-         self.o.menubutton:SetTexture("Rift", icon)
-         self.o.menubutton:SetHeight(mano.gui.font.size)
-         self.o.menubutton:SetWidth(mano.gui.font.size)
+         self.o.menubutton = UI.CreateFrame("Text", "mano_menu_gui_button", self.o.titleframe)
+         self.o.menubutton:SetText("Menu")
+         self.o.menubutton:SetFontSize(mano.gui.font.size)
+         self.o.menubutton:SetFontColor(unpack(mano.gui.color.white))
          self.o.menubutton:SetLayer(3)
          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
                                                                               self.o.menu.main:flip()
                                                                               self.o.menu.loaddb:flip()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed" )
-         self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERRIGHT", -mano.gui.font.size, 0)
+         self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERLEFT", -mano.gui.font.size, 0)
+
+         -- Add Waypoint Button
+         self.o.addwpbutton = UI.CreateFrame("Texture", "mano_menu_wp_button", self.o.titleframe)
+         local icon  =  "AbilityBinder_I15.dds"   -- normal
+--                   local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
+         self.o.addwpbutton:SetTexture("Rift", icon)
+         self.o.addwpbutton:SetHeight(mano.gui.font.size)
+         self.o.addwpbutton:SetWidth(mano.gui.font.size)
+         self.o.addwpbutton:SetLayer(3)
+         self.o.addwpbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,  function()
+                                                                              mano.foo.parseslashcommands("add")
+                                                                           end,
+                                                                           "MaNo: Main Menu Add WP Button Pressed" )
+         self.o.addwpbutton:SetPoint("CENTERRIGHT",   self.o.menubutton, "CENTERLEFT", -mano.gui.font.size, 0)
+
+
+
          -- Create Menu
          print("%% CREATE MENU %%")
          self.o.menu          =  {}

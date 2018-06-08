@@ -138,6 +138,7 @@ local function startmeup(h, t)
 
 
       Library.LibDraggable.draggify(mano.gui.shown.window.o.window, mano.f.updateguicoordinates)
+--       Library.LibDraggable.draggify(mano.gui.shown.window.o.titleframe, mano.f.updateguicoordinates)
 
       mano.gui.shown.window.o.window:SetVisible(true)
 
