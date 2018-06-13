@@ -3,27 +3,39 @@
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
-function __map_notes()
-   -- the new instance
+function __map_notes(basedb)
+
    local self =   {
-                  notes =  {},
---                   mailbox     =  {},
-                  -- public fields go in the instance table
+                  notes    =  {},
+                  lastidx  =  0,
                   }
 
-   --
-   -- private fields are implemented using locals
-   -- they are faster than table access, and are truly private, so the code that uses your class can't get them
-   --
-   --    local watchers             =  {}
-   --    local queryid              =  0
-   --    local msgid                =  0
-   --    local lastmsg              =  0
+   local function loaddb(db)
 
-   --
-   -- PUBLIC:
-   --
-   function self.getplayerposition()
+      if db ~= nil then
+         self.notes     =  db
+      else
+         self.notes     =  {}
+      end
+
+      -- Seek lastidx used (highest)
+      local tbl, idx = {}, nil
+      for _, tbl in pairs(self.notes) do
+         for _, b in pairs(tbl) do
+            print(string.format("__map_notes.loaddb: a=%s, b=%s", a, b))
+--             if a == 'idx' then
+               print(string.format("__map_notes.loaddb: lastidx=%s, tbl.idx=%s", self.lastidx, b.idx))
+--                self.lastidx   =  math.max(self.lastidx, tbl.idx)
+               self.lastidx   =  math.max(self.lastidx, b.idx)
+--             end
+         end
+      end
+
+      return
+   end
+
+
+   local function getplayerposition()
 
       local t  =  {}
       local bool, playerdata = pcall(Inspect.Unit.Detail, "player")
@@ -41,58 +53,51 @@ function __map_notes()
          local bool, zonedata = pcall(Inspect.Zone.Detail, t.zone)
 
          t.zonename  =  (zonedata.name or nil)
-         t.zoneid    =  (zonedata.id or nil)
+         t.zoneid    =  (zonedata.id   or nil)
          t.zonetype  =  (zonedata.type or nil)
       end
 
       return t
    end
 
-   function self.new(playerposition, notetext)
+   function self.new(notetext, notecategory)
 
-      print "mapnotes.new()"
-
-      if not playerposition or not next(playerposition) then playerposition =  self.getplayerposition() end
-
-      if next(playerposition) then
-         Command.Console.Display("general", true, "========================================", true)
-         for var, val in pairs(playerposition) do
-            Command.Console.Display("general", true, string.format("[%20s]=[%s]", var, val), true)
-         end
-         Command.Console.Display("general", true, "========================================", true)
-
-         --
-         -- MaNo specific  -- begin
-         --
-         -- here we need to normalize coords to check for
-         -- an already exiting note in the same "radius area",
-         -- including Z axis distance.
-         local idx   =  playerposition.coordX .. "," .. playerposition.coordY .. "," .. playerposition.coordZ
---          if not mano.notes[playerposition.zoneid]   then  mano.notes[playerposition.zoneid] =  {} end
---          mano.notes[playerposition.zoneid][idx]  =  notetext
-
-         if notetext ~= nil then
-            if not self.notes[playerposition.zoneid]        then  self.notes[playerposition.zoneid]      =  {} end
-            if not self.notes[playerposition.zoneid][idx]   then  self.notes[playerposition.zoneid][idx] =  {} end
-
-            table.insert(self.notes[playerposition.zoneid][idx], notetext)
-         end
-
-
-         --
-         -- MaNo specific  -- end
-         --
+      if self.notes  == nil or not next(self.notes) then
+         loaddb()
       end
 
-      return
+
+      local playerposition =  getplayerposition()
+
+      if next(playerposition) then
+
+
+         self.lastidx   =  self.lastidx   +  1
+
+         if notetext ~= nil then
+
+            if not self.notes[playerposition.zoneid]  then
+               self.notes[playerposition.zoneid]   =  {}
+            end
+
+            table.insert(self.notes[playerposition.zoneid], {  idx         =  self.lastidx,
+                                                               text        =  notetext or "",
+                                                               category    =  notecategory,
+                                                               playerpos   =  playerposition,
+                                                               timestamp   =  os.time(),
+                                                            }
+                        )
+
+         end
+
+      else
+         print("__map_notes ERROR: can't determinate Player position, skipping note.")
+      end
+
+      return self.lastidx
    end
 
-   function self.loaddb(db)
-
-      self.notes  =  manonotesdb
-
-      return
-   end
+   loaddb(basedb or nil)
 
    -- return the class instance
    return self

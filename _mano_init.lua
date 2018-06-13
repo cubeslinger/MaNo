@@ -16,40 +16,9 @@ local function parseslashcommands(params)
 
       if i  == "add"         then
 
-         local playerposition =  mano.mapnote.getplayerposition()
-
-         if next(playerposition) then
-            --             local notetext       =  mano.noteinputform.show(playerposition)
-            local notetext =  "Lorem Ipsum"
-            mano.mapnote.new(playerposition, notetext)
-            local t     = {}
-            t.icon      =  nil
-            t.text      =  notetext or "Lorem Ipsum"
-            t.x         =  playerposition.coordX
-            t.z         =  playerposition.coordZ
-            t.zoneid    =  playerposition.zoneid
-            t.location  =  playerposition.locationName
-
-            if mano.flags.debug  then
-               for var, val in pairs(t) do
-                  print(string.format("t => var[%s]=val[%s]", var, val))
-               end
-            end
-
-            --             mano.uiclass.addline(t)
-
-            if mano.gui.shown.window ~= nil and next(mano.gui.shown.window) then
-               print("XXXX -- begin")
-               print("XXXX: ", mano.f.dumptable(mano.gui.shown.window.o.window))
-               print("XXXX -- end")
-               mano.gui.shown.window.addline(t)
-            else
-               print("ERROR: mano.gui.shown.window is nil")
-            end
-
-         else
-            print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
-         end
+         local notetext       =  "Lorem Ipsum"
+         local notecategory   =  "Default Category"
+         local noteidx  =  mano.mapnote.new(notetext, notecategory)
 
       end
    end

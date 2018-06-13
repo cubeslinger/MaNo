@@ -23,7 +23,7 @@ function mano.createminimapbutton()
 --                                                                   local playerposition = mano.mapnote.getplayerposition()
 --                                                                   mano.noteinputform.show(playerposition)
 --                                                                   mano.mapnote.new(playerposition)
-                                                                     mano.gui.shown.window:flip()
+                                                                     mano.gui.shown.window.o.window:SetVisible(not mano.gui.shown.window.o.window:GetVisible())
                                                                   return
                                                                end,
                                                                "Show/Hide Left Click" )

@@ -1,5 +1,5 @@
 --
--- Addon       MaNo.lua
+-- Addon       MaNo_1.lua
 -- Author      marcob@marcob.org
 -- StartDate   05/05/2018
 --
@@ -9,61 +9,8 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 --
-if not mano.mapnote then mano.mapnote =  __map_notes()   end
--- mano.noteinputform   =  noteinputform()
+-- if not mano.mapnote then mano.mapnote =  __map_notes()   end
 --
-
--- local function parseslashcommands(params)
---
---    print(string.format("params: -- begin => params(%s)", params))
---    print("params: ", mano.f.dumptable(params))
---    print("params: -- end")
---
---
---    for i in string.gmatch(params, "%S+") do
---
---       if i  == "add"         then
---
---          local playerposition =  mano.mapnote.getplayerposition()
---
---          if next(playerposition) then
--- --             local notetext       =  mano.noteinputform.show(playerposition)
---             local notetext =  "Lorem Ipsum"
---             mano.mapnote.new(playerposition, notetext)
---             local t     = {}
---             t.icon      =  nil
---             t.text      =  notetext or "Lorem Ipsum"
---             t.x         =  playerposition.coordX
---             t.z         =  playerposition.coordZ
---             t.zoneid    =  playerposition.zoneid
---             t.location  =  playerposition.locationName
---
---             if mano.flags.debug  then
---                for var, val in pairs(t) do
---                   print(string.format("t => var[%s]=val[%s]", var, val))
---                end
---             end
---
--- --             mano.uiclass.addline(t)
---
---             if mano.gui.shown.window ~= nil and next(mano.gui.shown.window) then
---                print("XXXX -- begin")
---                print("XXXX: ", mano.f.dumptable(mano.gui.shown.window.o.window))
---                print("XXXX -- end")
---                mano.gui.shown.window.o.window.addline(t)
---             else
---                print("ERROR: mano.gui.shown.window is nil")
---             end
---
---          else
---             print(string.format("ERROR: parseslashcommands: playerposition is empty!"))
---          end
---
---       end
---    end
---
---    return
--- end
 
 local function savevariables(_, addonname)
 
@@ -104,10 +51,9 @@ local function loadvariables(_, addonname)
       end
 
       if manonotesdb  then
-         if not mano.mapnote then mano.mapnote =  __map_notes()   end
-
-         mano.mapnote.loaddb(manonotesdb)
-
+         if not mano.mapnote then
+            mano.mapnote =  __map_notes(manonotesdb)
+         end
       end
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
