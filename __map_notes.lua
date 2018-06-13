@@ -3,6 +3,7 @@
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
+      
 function __map_notes(basedb)
 
    local self =   {
@@ -12,7 +13,7 @@ function __map_notes(basedb)
 
    local function loaddb(db)
 
-      if db ~= nil then
+      if db ~= nil and next(db) ~= nil then
          self.notes     =  db
       else
          self.notes     =  {}
@@ -22,12 +23,14 @@ function __map_notes(basedb)
       local tbl, idx = {}, nil
       for _, tbl in pairs(self.notes) do
          for _, b in pairs(tbl) do
-            print(string.format("__map_notes.loaddb: a=%s, b=%s", a, b))
---             if a == 'idx' then
+            if b.idx ~= nil then
+               print(string.format("__map_notes.loaddb: b=%s", b))
                print(string.format("__map_notes.loaddb: lastidx=%s, tbl.idx=%s", self.lastidx, b.idx))
---                self.lastidx   =  math.max(self.lastidx, tbl.idx)
+               
+--                print("__map_notes.loaddb: dump(b):", mano.f.dumptable(b))
+
                self.lastidx   =  math.max(self.lastidx, b.idx)
---             end
+            end
          end
       end
 
@@ -76,15 +79,15 @@ function __map_notes(basedb)
 
          if notetext ~= nil then
 
-            if not self.notes[playerposition.zoneid]  then
-               self.notes[playerposition.zoneid]   =  {}
+            if not self.notes[playerposition.zonename]  then
+               self.notes[playerposition.zonename]   =  {}
             end
 
-            table.insert(self.notes[playerposition.zoneid], {  idx         =  self.lastidx,
-                                                               text        =  notetext or "",
-                                                               category    =  notecategory,
-                                                               playerpos   =  playerposition,
-                                                               timestamp   =  os.time(),
+            table.insert(self.notes[playerposition.zonename], {   idx         =  self.lastidx,
+                                                                  text        =  notetext or "Lorem Ipsum",
+                                                                  category    =  notecategory,
+                                                                  playerpos   =  playerposition,
+                                                                  timestamp   =  os.time(),
                                                             }
                         )
 

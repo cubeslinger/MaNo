@@ -426,8 +426,8 @@ function __mano_ui()
       self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
                                                                      if  self.o.corner.pressed then
                                                                         local mouse = Inspect.Mouse()
-                                                                        mano.gui.win.width  = mano.round(mouse.x - self.o.corner.basex)
-                                                                        mano.gui.win.height = mano.round(mouse.y - self.o.corner.basey)
+                                                                        mano.gui.win.width  = mano.f.round(mouse.x - self.o.corner.basex)
+                                                                        mano.gui.win.height = mano.f.round(mouse.y - self.o.corner.basey)
                                                                         self.o.window:SetWidth(mano.gui.win.width)
                                                                         self.o.window:SetHeight(mano.gui.win.height)
                                                                      end

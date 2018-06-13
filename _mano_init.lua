@@ -18,7 +18,7 @@ local function parseslashcommands(params)
 
          local notetext       =  "Lorem Ipsum"
          local notecategory   =  "Default Category"
-         local noteidx  =  mano.mapnote.new(notetext, notecategory)
+         local noteidx        =  mano.mapnote.new(notetext, notecategory)
 
       end
    end

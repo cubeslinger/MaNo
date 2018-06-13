@@ -8,9 +8,6 @@ local addon, mano = ...
 mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
---
--- if not mano.mapnote then mano.mapnote =  __map_notes()   end
---
 
 local function savevariables(_, addonname)
 
@@ -50,7 +47,7 @@ local function loadvariables(_, addonname)
 
       end
 
-      if manonotesdb  then
+      if manonotesdb ~= nil and next(manonotesdb) ~= nil then
          if not mano.mapnote then
             mano.mapnote =  __map_notes(manonotesdb)
          end
@@ -100,6 +97,11 @@ end
 Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,     "MaNo: startup event")
 Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
 Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables, "MaNo: Save Variables")
+--
 -- Event tracking initialization -- end
 --
+--
 table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
+--
+if not mano.mapnote then mano.mapnote =  __map_notes({}) end
+--
