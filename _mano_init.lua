@@ -18,8 +18,35 @@ local function parseslashcommands(params)
 
          local notetext       =  "Lorem Ipsum"
          local notecategory   =  "Default Category"
-         local noteidx        =  mano.mapnote.new(notetext, notecategory)
+         local noterecord     =  mano.mapnote.new(notetext, notecategory)
+         print("{noterecord}: ", mano.f.dumptable(noterecord))
+         print(string.format("noterecord.text => [%s]", noterecord.text))
+--
+--
+--          table.insert(self.notes[playerposition.zonename], {
+--             idx         =  self.lastidx,
+--             text        =  notetext or "Lorem Ipsum",
+--             category    =  notecategory,
+--             playerpos   =  playerposition,
+--             timestamp   =  os.time(),
+--          }
+--
+--
+         local	t			= {   text        =   noterecord.text,
+                              category    =   noterecord.category,
+                              timestamp   =   noterecord.timestamp,
+                              position    =   { x  =  noterecord.playerpos.coordX,
+                                                y  =  noterecord.playerpos.coordY,
+                                                z  =  noterecord.playerpos.coordZ,
+                                             },
+                              zoneid      =   noterecord.playerpos.zoneid,
+                              zonename    =   noterecord.playerpos.zonename,
+                              zonetype    =   noterecord.playerpos.zonetype,
+                           }
 
+         print("pre addnewline(t): ", mano.f.dumptable(t))
+
+         local newframe =  mano.gui.shown.window.addline(t)
       end
    end
 
@@ -35,7 +62,7 @@ local function dumptable(o)
             if type(k) ~= 'number' then
                k = '"'..k..'"'
             end
-            s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ','
+            s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ',\n'
          end
          return s .. '} '
    else

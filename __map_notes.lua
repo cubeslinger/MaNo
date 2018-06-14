@@ -3,7 +3,7 @@
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
 --
-      
+
 function __map_notes(basedb)
 
    local self =   {
@@ -26,7 +26,7 @@ function __map_notes(basedb)
             if b.idx ~= nil then
                print(string.format("__map_notes.loaddb: b=%s", b))
                print(string.format("__map_notes.loaddb: lastidx=%s, tbl.idx=%s", self.lastidx, b.idx))
-               
+
 --                print("__map_notes.loaddb: dump(b):", mano.f.dumptable(b))
 
                self.lastidx   =  math.max(self.lastidx, b.idx)
@@ -69,7 +69,7 @@ function __map_notes(basedb)
          loaddb()
       end
 
-
+      local t              =  {}
       local playerposition =  getplayerposition()
 
       if next(playerposition) then
@@ -83,13 +83,14 @@ function __map_notes(basedb)
                self.notes[playerposition.zonename]   =  {}
             end
 
-            table.insert(self.notes[playerposition.zonename], {   idx         =  self.lastidx,
-                                                                  text        =  notetext or "Lorem Ipsum",
-                                                                  category    =  notecategory,
-                                                                  playerpos   =  playerposition,
-                                                                  timestamp   =  os.time(),
-                                                            }
-                        )
+            t  =  {  idx         =  self.lastidx,
+                     text        =  notetext or "Lorem Ipsum",
+                     category    =  notecategory,
+                     playerpos   =  playerposition,
+                     timestamp   =  os.time(),
+                  }
+
+            table.insert(self.notes[playerposition.zonename], t)
 
          end
 
@@ -97,7 +98,8 @@ function __map_notes(basedb)
          print("__map_notes ERROR: can't determinate Player position, skipping note.")
       end
 
-      return self.lastidx
+--       return self.lastidx
+      return t
    end
 
    loaddb(basedb or nil)
