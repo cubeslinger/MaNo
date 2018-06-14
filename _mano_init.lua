@@ -7,9 +7,9 @@ local addon, mano = ...
 
 --
 local function parseslashcommands(params)
-   print(string.format("params: -- begin => params(%s)", params))
-   print("params: ", mano.f.dumptable(params))
-   print("params: -- end")
+--    print(string.format("params: -- begin => params(%s)", params))
+--    print("params: ", mano.f.dumptable(params))
+--    print("params: -- end")
 
 
    for i in string.gmatch(params, "%S+") do
@@ -19,19 +19,9 @@ local function parseslashcommands(params)
          local notetext       =  "Lorem Ipsum"
          local notecategory   =  "Default Category"
          local noterecord     =  mano.mapnote.new(notetext, notecategory)
-         print("{noterecord}: ", mano.f.dumptable(noterecord))
-         print(string.format("noterecord.text => [%s]", noterecord.text))
---
---
---          table.insert(self.notes[playerposition.zonename], {
---             idx         =  self.lastidx,
---             text        =  notetext or "Lorem Ipsum",
---             category    =  notecategory,
---             playerpos   =  playerposition,
---             timestamp   =  os.time(),
---          }
---
---
+--          print("{noterecord}: ", mano.f.dumptable(noterecord))
+--          print(string.format("noterecord.text => [%s]", noterecord.text))
+
          local	t			= {   text        =   noterecord.text,
                               category    =   noterecord.category,
                               timestamp   =   noterecord.timestamp,
@@ -44,7 +34,7 @@ local function parseslashcommands(params)
                               zonetype    =   noterecord.playerpos.zonetype,
                            }
 
-         print("pre addnewline(t): ", mano.f.dumptable(t))
+--          print("pre addnewline(t): ", mano.f.dumptable(t))
 
          local newframe =  mano.gui.shown.window.addline(t)
       end
@@ -103,11 +93,11 @@ end
 
 local function setwaypoint(x, z, zonename)
 
-   mano.f.dprint(string.format("setwaypoint: zone=%s @ (%s, %s)", zonename, x, z))
+--    mano.f.dprint(string.format("setwaypoint: zone=%s @ (%s, %s)", zonename, x, z))
 
    if x and z then
       local retval = Command.Map.Waypoint.Set(x, z)
-      mano.f.dprint(string.format("Command.Map.Waypoint.Set(%s, %s) result=%s", x, z, retval))
+--       mano.f.dprint(string.format("Command.Map.Waypoint.Set(%s, %s) result=%s", x, z, retval))
    end
 
    local X, Z = Inspect.Map.Waypoint.Get("player")
@@ -224,7 +214,7 @@ mano.foo                   =  {
                               dumptable             =  dumptable,
                               }
 
-print("mano.foo: ", dumptable(mano.foo))
+-- print("mano.foo: ", dumptable(mano.foo))
 
 --
 --

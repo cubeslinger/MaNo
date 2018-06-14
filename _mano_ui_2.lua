@@ -32,10 +32,12 @@ function __mano_ui()
 
    local function buildforstock(t)
 
-      print("buildforstock(t): ", mano.f.dumptable(t))
+--       print("buildforstock(t): ", mano.f.dumptable(t))
 
       local parent      =  nil
       local T           =  {}
+      
+      T.inuse           =  true
 
       self.lineid    =  self.lineid + 1
 
@@ -103,11 +105,10 @@ function __mano_ui()
 
    local function fetchlinefromstock(t)
 
-      local idx, tbl, cnt  =  nil, {}, 0
-      local newline        =  nil
+      local idx, tbl =  nil, {}
+      local newline  =  nil
 
       for idx, tbl in pairs(self.linestock) do
-         cnt = cnt + 1
          if not tbl.inuse then
             newline = tbl
             -- set the frame as INUSE
@@ -117,9 +118,11 @@ function __mano_ui()
       end
 
       if not newline then
+         print("NEW frame")
          newline = buildforstock(t)
          self.o.lastlinecontainer =  newline.frame
       else
+         print("re-using old frame")
          -- frame
          newline.frame:SetVisible(true)
          newline.text:SetText(t.text or "lorem ipsum")
@@ -231,7 +234,7 @@ function __mano_ui()
 
    function self.addline(t)
 
-      print("addline(t): ", mano.f.dumptable(t))
+--       print("addline(t): ", mano.f.dumptable(t))
 
       local inuse, frame, icon, text   =  nil, nil, nil, nil
 
