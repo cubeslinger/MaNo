@@ -103,5 +103,6 @@ Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables, "MaNo
 --
 table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
 --
-if not mano.mapnote then mano.mapnote =  __map_notes({}) end
+if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
+if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
 --

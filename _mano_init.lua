@@ -6,6 +6,57 @@
 local addon, mano = ...
 
 --
+local function userinputsave()
+
+
+   local userinput   =  mano.mapnoteinput:GetInput()
+
+   if userinput ~= nil and next(userinput) then
+
+      if userinput.save ~= nil and userinput.save == true then
+
+         local notetext       =  userinput.note
+         local notecategory   =  userinput.category
+
+         --                local notetext       =  "Lorem Ipsum"
+         --                local notecategory   =  "Default Category"
+
+         local noterecord     =  mano.mapnote.new(notetext, notecategory)
+         --             print("{noterecord}: ", mano.f.dumptable(noterecord))
+         --             print(string.format("noterecord.text => [%s]", noterecord.text))
+
+         local	t			= {   text        =   noterecord.text,
+            category    =   noterecord.category,
+            timestamp   =   noterecord.timestamp,
+            position    =   { x  =  noterecord.playerpos.coordX,
+               y  =  noterecord.playerpos.coordY,
+               z  =  noterecord.playerpos.coordZ,
+            },
+            zoneid      =   noterecord.playerpos.zoneid,
+            zonename    =   noterecord.playerpos.zonename,
+            zonetype    =   noterecord.playerpos.zonetype,
+         }
+
+         local newframe       =  mano.gui.shown.window.addline(t)
+      end
+   end
+
+   Command.Event.Detach(addon.identifier.userinput.cancel, userinputsave,    "MaNo input: Cancel")
+   Command.Event.Detach(addon.identifier.userinput.save,   userinputcancel,  "MaNo input: Save")
+
+   return
+
+end
+
+local function userinputcancel()
+
+   Command.Event.Detach(addon.identifier.userinput.cancel, userinputsave,    "MaNo input: Cancel")
+   Command.Event.Detach(addon.identifier.userinput.save,   userinputcancel,  "MaNo input: Save")
+
+
+   return
+end
+
 local function parseslashcommands(params)
 --    print(string.format("params: -- begin => params(%s)", params))
 --    print("params: ", mano.f.dumptable(params))
@@ -16,32 +67,58 @@ local function parseslashcommands(params)
 
       if i  == "add"         then
 
-         local notetext       =  "Lorem Ipsum"
-         local notecategory   =  "Default Category"
-         local noterecord     =  mano.mapnote.new(notetext, notecategory)
---          print("{noterecord}: ", mano.f.dumptable(noterecord))
---          print(string.format("noterecord.text => [%s]", noterecord.text))
+         print("pre mano.mapnote.new")
+         mano.mapnoteinput.o.window:SetVisible(true)
+         print("post mano.mapnote.new")
 
-         local	t			= {   text        =   noterecord.text,
-                              category    =   noterecord.category,
-                              timestamp   =   noterecord.timestamp,
-                              position    =   { x  =  noterecord.playerpos.coordX,
-                                                y  =  noterecord.playerpos.coordY,
-                                                z  =  noterecord.playerpos.coordZ,
-                                             },
-                              zoneid      =   noterecord.playerpos.zoneid,
-                              zonename    =   noterecord.playerpos.zonename,
-                              zonetype    =   noterecord.playerpos.zonetype,
-                           }
+         print("addon: ", mano.f.dumptable(addon))
 
---          print("pre addnewline(t): ", mano.f.dumptable(t))
+--          Command.Event.Attach(mano.events.cancelevent, userinputsave,    "MaNo input: Cancel")
+--          Command.Event.Attach(mano.events.saveevent,   userinputcancel,  "MaNo input: Save")
 
-         local newframe =  mano.gui.shown.window.addline(t)
+         Command.Event.Attach(Event.Mano.userinput.cancel, userinputsave,    "MaNo input: Cancel")
+         Command.Event.Attach(Event.Mano.userinput.save,   userinputcancel,  "MaNo input: Save")
+--[[
+
+         local userinput   =  mano.mapnoteinput:GetInput()
+
+         if userinput ~= nil and next(userinput) then
+
+            if userinput.save ~= nil and userinput.save == true then
+
+               local notetext       =  userinput.note
+               local notecategory   =  userinput.category
+
+--                local notetext       =  "Lorem Ipsum"
+--                local notecategory   =  "Default Category"
+
+               local noterecord     =  mano.mapnote.new(notetext, notecategory)
+--             print("{noterecord}: ", mano.f.dumptable(noterecord))
+--             print(string.format("noterecord.text => [%s]", noterecord.text))
+
+               local	t			= {   text        =   noterecord.text,
+                                    category    =   noterecord.category,
+                                    timestamp   =   noterecord.timestamp,
+                                    position    =   { x  =  noterecord.playerpos.coordX,
+                                                      y  =  noterecord.playerpos.coordY,
+                                                      z  =  noterecord.playerpos.coordZ,
+                                                   },
+                                    zoneid      =   noterecord.playerpos.zoneid,
+                                    zonename    =   noterecord.playerpos.zonename,
+                                    zonetype    =   noterecord.playerpos.zonetype,
+                                 }
+
+               local newframe       =  mano.gui.shown.window.addline(t)
+--             print("pre addnewline(t): ", mano.f.dumptable(t))]]
+--             end
+--          end
       end
    end
 
    return
 end
+
+
 
 
 -- local print nested tables
@@ -215,6 +292,14 @@ mano.foo                   =  {
                               }
 
 -- print("mano.foo: ", dumptable(mano.foo))
+--
+-- Events
+--
+mano.events                =  {}
+mano.events.canceltrigger  =  {}
+mano.events.cancelevent    =  {}
+mano.events.savetrigger  =  {}
+mano.events.saveevent    =  {}
 
 --
 --
