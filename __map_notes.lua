@@ -62,6 +62,31 @@ function __map_notes(basedb)
 
       return t
    end
+   
+   function self.getzonedata(zonename)
+      print(string.format("self.getzonedata(%s)", zonename))
+      local t  =  {}
+      
+      if zonename ~= nil then
+         if self.notes[zonename] ~= nil then
+            t  =  self.notes[zonename]
+         end
+      end
+         
+      return t
+   end   
+   
+   function self.getzonedatabyid(zoneid)
+      print(string.format("self.getzonedatabyid(%s)", zoneid))
+      local t   =  {}
+      
+      if zoneid ~= nil then
+         local zone  =  Inspect.Zone.Detail(zoneid)
+         local t  =  self.getzonedata(zone.name)
+      end
+      
+      return   t
+   end   
 
    function self.new(notetext, notecategory)
 

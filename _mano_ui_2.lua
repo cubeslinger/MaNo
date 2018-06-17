@@ -72,7 +72,7 @@ function __mano_ui()
       T.text:SetFontSize(mano.gui.font.size)
       T.text:SetText(t.text or t.zonename .. " (" .. self.lineid .. ")")
       T.text:SetLayer(3)
-      T.text:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected" )
+      T.text:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected_" .. self.lineid )
       T.text:SetVisible(true)
       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
       T.text:SetPoint("TOPRIGHT",   T.frame, "TOPRIGHT", -mano.gui.borders.right,   0)
@@ -91,11 +91,7 @@ function __mano_ui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach(   Event.UI.Input.Mouse.Left.Click,
-                                 function()
-                                    mano.f.setwaypoint(t.position.x, t.position.y, t.zonename)
-                                 end,
-                                 "Way Point Selected" )
+         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected_" .. self.lineid )
       end
 
       self.o.lastlinecontainer =  nil
@@ -251,6 +247,19 @@ function __mano_ui()
       self.adjustheight()
 
       return stockframe
+   end
+   
+   function self.loadlistbyzoneid(zoneid)
+      print(string.format("loadlistbyzoneid(%s)", zoneid))
+      clearlist()
+         
+      local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
+         
+      for _, tbl in pairs(zonedata) do 
+         local newframe       =  mano.gui.shown.window.addline(tbl)
+      end      
+      
+      return
    end
 
 

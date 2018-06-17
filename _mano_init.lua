@@ -6,7 +6,10 @@
 local addon, mano = ...
 
 --
-local function userinputsave()
+local function userinputsave(handle, params)
+   
+   print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
+   print("params: ", mano.f.dumptable(params))
 
 
    local userinput   =  mano.mapnoteinput:GetInput()
@@ -18,20 +21,17 @@ local function userinputsave()
          local notetext       =  userinput.note
          local notecategory   =  userinput.category
 
-         --                local notetext       =  "Lorem Ipsum"
-         --                local notecategory   =  "Default Category"
-
          local noterecord     =  mano.mapnote.new(notetext, notecategory)
          --             print("{noterecord}: ", mano.f.dumptable(noterecord))
          --             print(string.format("noterecord.text => [%s]", noterecord.text))
 
-         local	t			= {   text        =   noterecord.text,
-            category    =   noterecord.category,
-            timestamp   =   noterecord.timestamp,
-            position    =   { x  =  noterecord.playerpos.coordX,
-               y  =  noterecord.playerpos.coordY,
-               z  =  noterecord.playerpos.coordZ,
-            },
+         local	t			= {   text        = noterecord.text,
+                              category    = noterecord.category,
+                              timestamp   = noterecord.timestamp,
+                              position    = {   x  =  noterecord.playerpos.coordX,
+                                                y  =  noterecord.playerpos.coordY,
+                                                z  =  noterecord.playerpos.coordZ,
+                                             },
             zoneid      =   noterecord.playerpos.zoneid,
             zonename    =   noterecord.playerpos.zonename,
             zonetype    =   noterecord.playerpos.zonetype,
@@ -41,20 +41,13 @@ local function userinputsave()
       end
    end
 
-   Command.Event.Detach(addon.identifier.userinput.cancel, userinputsave,    "MaNo input: Cancel")
-   Command.Event.Detach(addon.identifier.userinput.save,   userinputcancel,  "MaNo input: Save")
-
    return
 
 end
 
 local function userinputcancel()
 
-   Command.Event.Detach(addon.identifier.userinput.cancel, userinputsave,    "MaNo input: Cancel")
-   Command.Event.Detach(addon.identifier.userinput.save,   userinputcancel,  "MaNo input: Save")
-
-
-   return
+   return {}
 end
 
 local function parseslashcommands(params)
@@ -71,13 +64,13 @@ local function parseslashcommands(params)
          mano.mapnoteinput.o.window:SetVisible(true)
          print("post mano.mapnote.new")
 
-         print("addon: ", mano.f.dumptable(addon))
+--          print("addon: ", mano.f.dumptable(addon))
 
---          Command.Event.Attach(mano.events.cancelevent, userinputsave,    "MaNo input: Cancel")
---          Command.Event.Attach(mano.events.saveevent,   userinputcancel,  "MaNo input: Save")
+--          Command.Event.Attach(Event.MaNo.userinput.cancel, userinputsave,    "MaNo input: Cancel")
+--          Command.Event.Attach(Event.MaNo.userinput.save,   userinputcancel,  "MaNo input: Save")
 
-         Command.Event.Attach(Event.Mano.userinput.cancel, userinputsave,    "MaNo input: Cancel")
-         Command.Event.Attach(Event.Mano.userinput.save,   userinputcancel,  "MaNo input: Save")
+
+
 --[[
 
          local userinput   =  mano.mapnoteinput:GetInput()
@@ -274,6 +267,8 @@ mano.f.updateguicoordinates=  updateguicoordinates
 mano.f.dprint              =  dprint
 mano.f.setwaypoint         =  setwaypoint
 mano.f.dumptable           =  dumptable
+mano.f.userinputcancel     =  userinputcancel
+mano.f.userinputsave       =  userinputsave
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end
@@ -296,11 +291,12 @@ mano.foo                   =  {
 -- Events
 --
 mano.events                =  {}
-mano.events.canceltrigger  =  {}
-mano.events.cancelevent    =  {}
-mano.events.savetrigger  =  {}
-mano.events.saveevent    =  {}
-
+mano.events.canceltrigger, mano.events.cancelevent =  Utility.Event.Create(addon.identifier, "userinput.cancel")
+mano.events.savetrigger,   mano.events.saveevent   =  Utility.Event.Create(addon.identifier, "userinput.save")
+--
+-- Player's Cached Info
+--
+mano.player                =  {}
 --
 --
 -- end declarations

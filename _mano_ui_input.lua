@@ -101,6 +101,7 @@ function __mano_ui_input()
    end
 
    function self.GetInput()
+      
       local t  =  {  label    =  self.o.labeltext:GetText(),
                      note     =  self.o.notetext:GetText(),
                      category =  self.o.cattext:GetText(),
@@ -108,6 +109,7 @@ function __mano_ui_input()
                      save     =  self.o.save
                   }
       return t
+      
    end
 
    -- Main
@@ -250,13 +252,7 @@ function __mano_ui_input()
    self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
                                                                         self.o.save =  false
                                                                         self.o.window:SetVisible(false)
-                                                                        mano.events.canceltrigger, mano.events.cancelevent   =  Utility.Event.Create(addon.identifier, "userinput.cancel")
-
---                                                                         mano.events.canceltrigger(self, self.o)
-                                                                        mano.events.cancelevent(self, self)
-
-                                                                        print(string.format("addon.identifier=($s)", addon.identifier))
-
+                                                                        mano.events.canceltrigger( { save =  false } )
                                                                      end, "MaNo input: Cancel Button Pressed"
                                     )
 
@@ -270,13 +266,7 @@ function __mano_ui_input()
    self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
                                                                         self.o.save =  true
                                                                         self.o.window:SetVisible(false)
-                                                                        mano.events.savetrigger, mano.events.saveevent   =  Utility.Event.Create(addon.identifier, "userinput.save")
-
---                                                                         mano.events.savetrigger(self, self.o)
-                                                                        mano.events.saveevent(self, self)
-
-                                                                        print(string.format("addon.identifier=($s)", addon.identifier))
-
+                                                                        mano.events.savetrigger(self:GetInput())
                                                                      end,
                                                                      "MaNo input: Save Button Pressed"
                                  )

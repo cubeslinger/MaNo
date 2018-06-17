@@ -9,6 +9,43 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 
+local function detacheventsonexit()
+
+   Command.Event.Detach(Event.Unit.Detail.Zone,       function(...) zonechangeevent(...)        end,  "MaNo: Zone Change Event")
+   Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+   Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")  
+   
+   return
+end
+
+local function zonechangeevent(h, t)
+   
+      print(string.format("zonechangeevent: h=%s t=%s", h, t ))
+      
+      local unitid   =  nil
+      local cnt      =  1
+      
+      for unit, zone in pairs(t) do
+         print(string.format("zonechangeevent: (%s) unitid=%s zone=%s", cnt, unit, zone ))
+         cnt = cnt + 1
+         if unitid   == nil   then  
+            unitid   =  unit  
+            zoneid   =  zone
+         end
+      end
+      
+      if unitid   == mano.player.unitid   then  
+         print("zonechangeevent: Zone change event IS for US!")
+         mano.gui.shown.window.loadlistbyzoneid(zoneid)
+      else
+         print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
+      end
+   
+   
+   return
+end
+
+
 local function savevariables(_, addonname)
 
    if addon.name == addonname then
@@ -22,6 +59,8 @@ local function savevariables(_, addonname)
          manonotesdb    =  mano.mapnote.notes
       end
    end
+   
+   detacheventsonexit()
 
    return
 end
@@ -36,13 +75,13 @@ local function loadvariables(_, addonname)
          local key, val = nil, nil
          for key, val in pairs(a) do
             mano.gui[key]  =  val
-            mano.f.dprint(string.format("Importing %s: %s", key, val))
-            if mano.flags.debug then
-               local vvar, vval = nil, nil
-               for vvar, vval in pairs(val) do
-                  print(string.format("  [%s]=[%s]", vvar, vval))
-               end
-            end
+--             mano.f.dprint(string.format("Importing %s: %s", key, val))
+--             if mano.flags.debug then
+--                local vvar, vval = nil, nil
+--                for vvar, vval in pairs(val) do
+--                   print(string.format("  [%s]=[%s]", vvar, vval))
+--                end
+--             end
          end
 
       end
@@ -85,8 +124,15 @@ local function startmeup(h, t)
 
       mano.gui.shown.window.o.window:SetVisible(true)
 
-      print("++ STARMEUP ++")
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
+      
+      
+      -- Save Player's UnitID
+      mano.player.unitid   =  Inspect.Unit.Lookup("player")     
+      
+      -- Start monitoring Player's Zone Changes
+      Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
+      
       mano.init.startup =  true
    end
 
@@ -94,9 +140,12 @@ local function startmeup(h, t)
 end
 
 -- Event tracking initialization -- begin
-Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,     "MaNo: startup event")
-Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
-Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables, "MaNo: Save Variables")
+Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,                                "MaNo: startup event")
+Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   loadvariables,	                           "MaNo: Load Variables")
+Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables,                            "MaNo: Save Variables")
+-- Custom Events
+Command.Event.Attach(Event.MaNo.userinput.cancel,           function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
 --
 -- Event tracking initialization -- end
 --
@@ -106,3 +155,12 @@ table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(
 if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
 --
+
+      
+--[[
+Error: Event hook returned unexpected parameters
+    In MaNo / MaNo input: Save, event Event.MaNo.userinput.save
+nil    
+    ]]--
+
+    
