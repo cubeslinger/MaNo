@@ -2,14 +2,29 @@
 -- Addon       __map_notes.lua
 -- Author      marcob@marcob.org
 -- StartDate   06/05/2018
---
-
+--      
+-- local addon, mano = ...
+--      
 function __map_notes(basedb)
 
    local self =   {
                   notes    =  {},
                   lastidx  =  0,
                   }
+                  
+   local function countarray(array)
+
+      local k, v  =  nil, nil
+      local count =  0
+      local t     =  array
+
+      if array then
+         for k, v in pairs(array) do count = count +1 end
+      end
+
+      return count
+   end
+                  
 
    local function loaddb(db)
 
@@ -64,12 +79,18 @@ function __map_notes(basedb)
    end
    
    function self.getzonedata(zonename)
-      print(string.format("self.getzonedata(%s)", zonename))
+--       print(string.format("self.getzonedata(%s)", zonename))
       local t  =  {}
+      
+--       print("self.getzonedata:", mano.f.dumptable(self.notes))
       
       if zonename ~= nil then
          if self.notes[zonename] ~= nil then
             t  =  self.notes[zonename]
+--             print(string.format("self.getzonedata(%s) returning (%s) notes", zonename, countarray(t)))
+--             print("", mano.f.dumptable(t))
+         else
+            print(string.format("self.getzonedata(%s) is == nil", zonename))
          end
       end
          
@@ -77,12 +98,12 @@ function __map_notes(basedb)
    end   
    
    function self.getzonedatabyid(zoneid)
-      print(string.format("self.getzonedatabyid(%s)", zoneid))
+--       print(string.format("self.getzonedatabyid(%s)", zoneid))
       local t   =  {}
       
       if zoneid ~= nil then
          local zone  =  Inspect.Zone.Detail(zoneid)
-         local t  =  self.getzonedata(zone.name)
+         t           =  self.getzonedata(zone.name)
       end
       
       return   t

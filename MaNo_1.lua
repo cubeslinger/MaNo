@@ -86,11 +86,13 @@ local function loadvariables(_, addonname)
 
       end
 
+      local notesdb  =  {}
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
          if not mano.mapnote then
-            mano.mapnote =  __map_notes(manonotesdb)
+            notesdb  =  manonotesdb
          end
       end
+      mano.mapnote =  __map_notes(notesdb)
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
@@ -130,6 +132,15 @@ local function startmeup(h, t)
       -- Save Player's UnitID
       mano.player.unitid   =  Inspect.Unit.Lookup("player")     
       
+      -- Let's see if we have notes for the starting zone to load
+      local bool0, t = pcall(Inspect.Unit.Detail, "player")
+      if bool0  then
+         local bool1, zonedata = pcall(Inspect.Zone.Detail, t.zone)
+         if bool1 then
+            mano.gui.shown.window.loadlistbyzoneid(zonedata.id)
+         end
+      end
+          
       -- Start monitoring Player's Zone Changes
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
       
@@ -152,7 +163,7 @@ Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f
 --
 table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
 --
-if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
+-- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
 --
 

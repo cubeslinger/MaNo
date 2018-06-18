@@ -14,6 +14,7 @@ function __mano_ui()
                   lineid            =  0,
                   initialized       =  false,
                   o                 =  {},
+                  lastzone          =  nil
                   }
 
    local function countarray(array)
@@ -27,6 +28,20 @@ function __mano_ui()
       end
 
       return count
+   end
+   
+   local function setzonetitlebyid(zoneid)
+      
+      local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
+      
+      if bool then
+         if zonedata.name ~= self.lastzone  then
+            self.o.titlezone:SetText(zonedata.name)
+            self.lastzone  =	zonedata.name
+         end
+      end
+      
+      return
    end
 
 
@@ -63,8 +78,16 @@ function __mano_ui()
          T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT", 0, 1)
          T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
       end
+      
+      -- Note's Category Icon
+      T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
+      T.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+      T.icon:SetHeight(mano.gui.font.size)
+      T.icon:SetWidth(mano.gui.font.size)
+      T.icon:SetLayer(3)
+      T.icon:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     1)
 
-      -- Item's Name
+      -- Note's Text
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
       if mano.gui.font.name then
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
@@ -74,9 +97,9 @@ function __mano_ui()
       T.text:SetLayer(3)
       T.text:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected_" .. self.lineid )
       T.text:SetVisible(true)
-      T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
-      T.text:SetPoint("TOPRIGHT",   T.frame, "TOPRIGHT", -mano.gui.borders.right,   0)
-
+--       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
+      T.text:SetPoint("TOPLEFT",    T.icon,  "TOPRIGHT",  mano.gui.borders.left,     0)
+      T.text:SetPoint("TOPRIGHT",   T.frame, "TOPRIGHT",  -mano.gui.borders.right,   0)
       table.insert(self.linestock, T)
 
       return(T)
@@ -119,8 +142,15 @@ function __mano_ui()
          self.o.lastlinecontainer =  newline.frame
       else
          print("re-using old frame")
-         -- frame
+         
+         -- frame --
          newline.frame:SetVisible(true)
+         
+         -- icon  --
+         newline.icon:SetVisible(true)
+         newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+         
+         -- text  --
          newline.text:SetText(t.text or "lorem ipsum")
          newline.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
                                     function()
@@ -128,6 +158,8 @@ function __mano_ui()
                                     end,
                                     "Way Point Added" )
          newline.text:SetVisible(true)
+         
+         -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
       end
 
@@ -256,8 +288,11 @@ function __mano_ui()
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
          
       for _, tbl in pairs(zonedata) do 
+         print("loadlistbyzoneid:", mano.f.dumptable(tbl))
          local newframe       =  mano.gui.shown.window.addline(tbl)
       end      
+      
+      setzonetitlebyid(zoneid)
       
       return
    end
@@ -340,12 +375,20 @@ function __mano_ui()
       self.o.windowtitle:SetLayer(3)
       self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
-      -- MaNo Version
-      self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
-      self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
-      self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
-      self.o.titleversion:SetLayer(3)
-      self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+--       -- MaNo Version
+--       self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
+--       self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+--       self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
+--       self.o.titleversion:SetLayer(3)
+--       self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+
+      -- Current Zone
+      self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
+      self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+      self.o.titlezone:SetText(self.lastzone or "???", true)
+      self.o.titlezone:SetLayer(3)
+      self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+
 
       -- Iconize Button
       self.o.iconizebutton = UI.CreateFrame("Texture", "mano_iconize_button", self.o.titleframe)
