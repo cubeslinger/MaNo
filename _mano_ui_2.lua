@@ -29,29 +29,29 @@ function __mano_ui()
 
       return count
    end
-   
-   local function setzonetitlebyid(zoneid)
-      
+
+   local function setzonetitlebyid(zoneid, count)
+
       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
-      
+
       if bool then
          if zonedata.name ~= self.lastzone  then
-            self.o.titlezone:SetText(zonedata.name)
+            self.o.titlezone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
             self.lastzone  =	zonedata.name
          end
       end
-      
+
       return
    end
 
 
    local function buildforstock(t)
 
---       print("buildforstock(t): ", mano.f.dumptable(t))
+      print("buildforstock(t): ", mano.f.dumptable(t))
 
       local parent      =  nil
       local T           =  {}
-      
+
       T.inuse           =  true
 
       self.lineid    =  self.lineid + 1
@@ -66,7 +66,7 @@ function __mano_ui()
       -- Line Frame container
       T.frame =  UI.CreateFrame("Frame", "line_item_frame_" .. self.lineid, parent)
       T.frame:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
-      T.frame:SetHeight(mano.gui.font.size+2)
+      T.frame:SetHeight(mano.gui.font.size + 2)
       T.frame:SetLayer(3)
       T.frame:SetVisible(true)
       if self.o.lastlinecontainer ~= nil and next(self.o.lastlinecontainer) ~= nil then
@@ -75,19 +75,29 @@ function __mano_ui()
          T.frame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
       else
          mano.f.dprint("attaching to maskframe")
-         T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT", 0, 1)
-         T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",0, 1)
+         T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT",    0, 1)
+         T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",   0, 1)
       end
-      
-      -- Note's Category Icon
+
+      -- Note's Category Icon |<--
       T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
-      T.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+--       T.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+      T.icon:SetTexture("Rift", t.icon or "target_portrait_roguepoint.png.dds")
       T.icon:SetHeight(mano.gui.font.size)
       T.icon:SetWidth(mano.gui.font.size)
       T.icon:SetLayer(3)
-      T.icon:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     1)
+      T.icon:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left*2,     1)
 
-      -- Note's Text
+      -- Way Point Icon -->|
+      T.wpicon = UI.CreateFrame("Texture", "line_icon_wp" .. self.lineid, T.frame)
+      T.wpicon:SetTexture("Rift", "target_portrait_roguepoints_off.png.dds")
+      T.wpicon:SetHeight(mano.gui.font.size)
+      T.wpicon:SetWidth(mano.gui.font.size)
+      T.wpicon:SetLayer(3)
+      T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+      T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
+
+      -- Note's Text -->|<--
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
       if mano.gui.font.name then
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
@@ -95,12 +105,13 @@ function __mano_ui()
       T.text:SetFontSize(mano.gui.font.size)
       T.text:SetText(t.text or t.zonename .. " (" .. self.lineid .. ")")
       T.text:SetLayer(3)
-      T.text:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected_" .. self.lineid )
       T.text:SetVisible(true)
 --       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
-      T.text:SetPoint("TOPLEFT",    T.icon,  "TOPRIGHT",  mano.gui.borders.left,     0)
-      T.text:SetPoint("TOPRIGHT",   T.frame, "TOPRIGHT",  -mano.gui.borders.right,   0)
+      T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
+      T.text:SetPoint("TOPRIGHT",   T.wpicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
       table.insert(self.linestock, T)
+
+
 
       return(T)
    end
@@ -114,7 +125,7 @@ function __mano_ui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.position.x, t.position.z, t.zonename) end, "Way Point Selected_" .. self.lineid )
+         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerposcoordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       end
 
       self.o.lastlinecontainer =  nil
@@ -142,14 +153,14 @@ function __mano_ui()
          self.o.lastlinecontainer =  newline.frame
       else
          print("re-using old frame")
-         
+
          -- frame --
          newline.frame:SetVisible(true)
-         
+
          -- icon  --
          newline.icon:SetVisible(true)
          newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
-         
+
          -- text  --
          newline.text:SetText(t.text or "lorem ipsum")
          newline.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
@@ -158,7 +169,7 @@ function __mano_ui()
                                     end,
                                     "Way Point Added" )
          newline.text:SetVisible(true)
-         
+
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
       end
@@ -280,20 +291,22 @@ function __mano_ui()
 
       return stockframe
    end
-   
+
    function self.loadlistbyzoneid(zoneid)
       print(string.format("loadlistbyzoneid(%s)", zoneid))
       clearlist()
-         
+
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
-         
-      for _, tbl in pairs(zonedata) do 
-         print("loadlistbyzoneid:", mano.f.dumptable(tbl))
-         local newframe       =  mano.gui.shown.window.addline(tbl)
-      end      
-      
-      setzonetitlebyid(zoneid)
-      
+      local counter  =  1
+
+      for _, tbl in pairs(zonedata) do
+--          print("loadlistbyzoneid:", mano.f.dumptable(tbl))
+         local newframe =  mano.gui.shown.window.addline(tbl)
+         counter        =  counter + 1
+      end
+
+      setzonetitlebyid(zoneid, counter)
+
       return
    end
 
@@ -384,7 +397,8 @@ function __mano_ui()
 
       -- Current Zone
       self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
-      self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+--       self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+      self.o.titlezone:SetFontSize(mano.gui.font.size)
       self.o.titlezone:SetText(self.lastzone or "???", true)
       self.o.titlezone:SetLayer(3)
       self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
@@ -496,9 +510,6 @@ function __mano_ui()
    if self ~= nil and next(self) ~= nil   then
       self.initialized =   true
    end
-
---    print("ui2_2: o ", mano.f.dump(self.o))
---    print("ui2_2: window ", mano.f.dump(self.o.window))
 
    return self
 

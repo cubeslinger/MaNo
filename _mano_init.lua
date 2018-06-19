@@ -7,7 +7,7 @@ local addon, mano = ...
 
 --
 local function userinputsave(handle, params)
-   
+
    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
    print("params: ", mano.f.dumptable(params))
 
@@ -25,17 +25,31 @@ local function userinputsave(handle, params)
          --             print("{noterecord}: ", mano.f.dumptable(noterecord))
          --             print(string.format("noterecord.text => [%s]", noterecord.text))
 
-         local	t			= {   text        = noterecord.text,
+--          local	t			= {   text        = noterecord.text,
+--                               category    = noterecord.category,
+--                               timestamp   = noterecord.timestamp,
+--                               position    = {   x  =  noterecord.playerpos.coordX,
+--                                                 y  =  noterecord.playerpos.coordY,
+--                                                 z  =  noterecord.playerpos.coordZ,
+--                                              },
+--             zoneid      =   noterecord.playerpos.zoneid,
+--             zonename    =   noterecord.playerpos.zonename,
+--             zonetype    =   noterecord.playerpos.zonetype,
+--          }
+
+         local	t        =  {  text        = noterecord.text,
                               category    = noterecord.category,
                               timestamp   = noterecord.timestamp,
-                              position    = {   x  =  noterecord.playerpos.coordX,
-                                                y  =  noterecord.playerpos.coordY,
-                                                z  =  noterecord.playerpos.coordZ,
+                              playerpos   = {   coordX   =  noterecord.playerpos.coordX,
+                                                coordY   =  noterecord.playerpos.coordY,
+                                                coordZ   =  noterecord.playerpos.coordZ,
+                                                zonename =  noterecord.playerpos.zonename,
                                              },
-            zoneid      =   noterecord.playerpos.zoneid,
-            zonename    =   noterecord.playerpos.zonename,
-            zonetype    =   noterecord.playerpos.zonetype,
+                              zoneid      =   noterecord.playerpos.zoneid,
+                              zonename    =   noterecord.playerpos.zonename,
+                              zonetype    =   noterecord.playerpos.zonetype,
          }
+
 
          local newframe       =  mano.gui.shown.window.addline(t)
       end
@@ -253,7 +267,7 @@ mano.html.title	         =  "<font color=\'" .. mano.html.green .. "\'>MaNo</fon
 -- Fonts
 --
 mano.gui.font              =  {}
-mano.gui.font.size         =  12
+mano.gui.font.size         =  14
 mano.gui.font.name         =  nil
 --
 mano.gui.shown             =  {}
