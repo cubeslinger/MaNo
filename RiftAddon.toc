@@ -17,16 +17,18 @@ Dependencies = {
 }
 
 RunOnStartup = {
-   "__map_notes.lua",
+   "__mapnotes.lua",
+   "__mapnotes_db_puzzle_and_cairns.lua",
    "__menus.lua",
    "_mano_init.lua",
    "_mano_ui_input.lua",
    "_mano_ui_2.lua",
    "_mano_minibutton.lua",
-   "MaNo_1.lua"
+   "MaNo_1.lua",
 }
 
 SavedVariables = {
    manoguidata =  'character',
-   manonotesdb =  'character'
+   manonotesdb =  'character',
+   manodbs     =  'global',
 }

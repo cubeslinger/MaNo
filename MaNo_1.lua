@@ -13,35 +13,35 @@ local function detacheventsonexit()
 
    Command.Event.Detach(Event.Unit.Detail.Zone,       function(...) zonechangeevent(...)        end,  "MaNo: Zone Change Event")
    Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
-   Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")  
-   
+   Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+
    return
 end
 
 local function zonechangeevent(h, t)
-   
+
       print(string.format("zonechangeevent: h=%s t=%s", h, t ))
-      
+
       local unitid   =  nil
       local cnt      =  1
-      
+
       for unit, zone in pairs(t) do
          print(string.format("zonechangeevent: (%s) unitid=%s zone=%s", cnt, unit, zone ))
          cnt = cnt + 1
-         if unitid   == nil   then  
-            unitid   =  unit  
+         if unitid   == nil   then
+            unitid   =  unit
             zoneid   =  zone
          end
       end
-      
-      if unitid   == mano.player.unitid   then  
+
+      if unitid   == mano.player.unitid   then
          print("zonechangeevent: Zone change event IS for US!")
          mano.gui.shown.window.loadlistbyzoneid(zoneid)
       else
          print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
       end
-   
-   
+
+
    return
 end
 
@@ -58,8 +58,13 @@ local function savevariables(_, addonname)
       if next(mano.mapnote.notes) then
          manonotesdb    =  mano.mapnote.notes
       end
+
+      if next(mano.db)  then
+         manodbs  =  mano.db
+      end
+
    end
-   
+
    detacheventsonexit()
 
    return
@@ -94,6 +99,10 @@ local function loadvariables(_, addonname)
       end
       mano.mapnote =  __map_notes(notesdb)
 
+      if manodbs then
+         mano.db  =  manodbs
+      end
+
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
 
@@ -127,11 +136,11 @@ local function startmeup(h, t)
       mano.gui.shown.window.o.window:SetVisible(true)
 
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
-      
-      
+
+
       -- Save Player's UnitID
-      mano.player.unitid   =  Inspect.Unit.Lookup("player")     
-      
+      mano.player.unitid   =  Inspect.Unit.Lookup("player")
+
       -- Let's see if we have notes for the starting zone to load
       local bool0, t = pcall(Inspect.Unit.Detail, "player")
       if bool0  then
@@ -140,10 +149,17 @@ local function startmeup(h, t)
             mano.gui.shown.window.loadlistbyzoneid(zonedata.id)
          end
       end
-          
+
       -- Start monitoring Player's Zone Changes
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
-      
+
+      -- Load External DBs if it's first run
+      if mano.db == nil or next(mano.db) ==  nil then
+         mano.extdbhandle  =  __externaldbs()
+         local retval      =  mano.extdbhandle.filldbs()
+         print("...initializing EXTERNAL DBs...")
+      end
+
       mano.init.startup =  true
    end
 
@@ -166,12 +182,3 @@ table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(
 -- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
 --
-
-      
---[[
-Error: Event hook returned unexpected parameters
-    In MaNo / MaNo input: Save, event Event.MaNo.userinput.save
-nil    
-    ]]--
-
-    

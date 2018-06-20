@@ -18,10 +18,18 @@ local function userinputsave(handle, params)
 
       if userinput.save ~= nil and userinput.save == true then
 
-         local notetext       =  userinput.note
-         local notecategory   =  userinput.category
+--          local notetext       =  userinput.note
+--          local notecategory   =  userinput.category
+--          local noterecord     =  mano.mapnote.new(notetext, notecategory)
+         local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
+                                                      text        =  userinput.note,
+                                                      category    =  userinput.category,
+                                                      playerpos   =  nil,
+                                                      idx         =  nil,
+                                                      timestamp   =  nil,
+                                                   }
+                                                )
 
-         local noterecord     =  mano.mapnote.new(notetext, notecategory)
          --             print("{noterecord}: ", mano.f.dumptable(noterecord))
          --             print(string.format("noterecord.text => [%s]", noterecord.text))
 
