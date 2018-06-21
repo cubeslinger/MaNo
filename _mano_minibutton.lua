@@ -21,9 +21,6 @@ function mano.createminimapbutton()
    btn.border:SetWidth(mano.gui.mmbtn.width)
    btn.border:SetLayer(1)
    btn.border:EventAttach(Event.UI.Input.Mouse.Left.Click,     function()
---                                                                   local playerposition = mano.mapnote.getplayerposition()
---                                                                   mano.noteinputform.show(playerposition)
---                                                                   mano.mapnote.new(playerposition)
                                                                      mano.gui.shown.window.o.window:SetVisible(not mano.gui.shown.window.o.window:GetVisible())
                                                                   return
                                                                end,

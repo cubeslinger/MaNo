@@ -81,59 +81,14 @@ local function parseslashcommands(params)
    for i in string.gmatch(params, "%S+") do
 
       if i  == "add"         then
-
          print("pre mano.mapnote.new")
          mano.mapnoteinput.o.window:SetVisible(true)
          print("post mano.mapnote.new")
-
---          print("addon: ", mano.f.dumptable(addon))
-
---          Command.Event.Attach(Event.MaNo.userinput.cancel, userinputsave,    "MaNo input: Cancel")
---          Command.Event.Attach(Event.MaNo.userinput.save,   userinputcancel,  "MaNo input: Save")
-
-
-
---[[
-
-         local userinput   =  mano.mapnoteinput:GetInput()
-
-         if userinput ~= nil and next(userinput) then
-
-            if userinput.save ~= nil and userinput.save == true then
-
-               local notetext       =  userinput.note
-               local notecategory   =  userinput.category
-
---                local notetext       =  "Lorem Ipsum"
---                local notecategory   =  "Default Category"
-
-               local noterecord     =  mano.mapnote.new(notetext, notecategory)
---             print("{noterecord}: ", mano.f.dumptable(noterecord))
---             print(string.format("noterecord.text => [%s]", noterecord.text))
-
-               local	t			= {   text        =   noterecord.text,
-                                    category    =   noterecord.category,
-                                    timestamp   =   noterecord.timestamp,
-                                    position    =   { x  =  noterecord.playerpos.coordX,
-                                                      y  =  noterecord.playerpos.coordY,
-                                                      z  =  noterecord.playerpos.coordZ,
-                                                   },
-                                    zoneid      =   noterecord.playerpos.zoneid,
-                                    zonename    =   noterecord.playerpos.zonename,
-                                    zonetype    =   noterecord.playerpos.zonetype,
-                                 }
-
-               local newframe       =  mano.gui.shown.window.addline(t)
---             print("pre addnewline(t): ", mano.f.dumptable(t))]]
---             end
---          end
       end
    end
 
    return
 end
-
-
 
 
 -- local print nested tables

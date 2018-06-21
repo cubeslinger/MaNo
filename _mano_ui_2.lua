@@ -103,7 +103,7 @@ function __mano_ui()
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
       T.text:SetFontSize(mano.gui.font.size)
-      T.text:SetText(t.text or t.zonename .. " (" .. self.lineid .. ")")
+      T.text:SetText(t.label or t.text)
       T.text:SetLayer(3)
       T.text:SetVisible(true)
 --       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
@@ -125,7 +125,7 @@ function __mano_ui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerposcoordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       end
 
       self.o.lastlinecontainer =  nil
@@ -162,10 +162,10 @@ function __mano_ui()
          newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
 
          -- text  --
-         newline.text:SetText(t.text or "lorem ipsum")
+         newline.text:SetText(t.label or t.text)
          newline.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
                                     function()
-                                       mano.f.setwaypoint(t.position.x, t.position.z, t.zonename)
+                                       mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename)
                                     end,
                                     "Way Point Added" )
          newline.text:SetVisible(true)
