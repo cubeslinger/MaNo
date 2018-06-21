@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.2.11"
+Version     =  "0.2.12"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -30,5 +30,4 @@ RunOnStartup = {
 SavedVariables = {
    manoguidata =  'character',
    manonotesdb =  'character',
-   manodbs     =  'global',
 }

@@ -305,6 +305,8 @@ function __mano_ui()
          counter        =  counter + 1
       end
 
+      self.adjustheight()
+
       setzonetitlebyid(zoneid, counter)
 
       return

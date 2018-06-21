@@ -59,9 +59,9 @@ local function savevariables(_, addonname)
          manonotesdb    =  mano.mapnote.notes
       end
 
-      if next(mano.db)  then
-         manodbs  =  mano.db
-      end
+--       if next(mano.db)  then
+--          manodbs  =  mano.db
+--       end
 
    end
 
@@ -99,9 +99,9 @@ local function loadvariables(_, addonname)
       end
       mano.mapnote =  __map_notes(notesdb)
 
-      if manodbs then
-         mano.db  =  manodbs
-      end
+--       if manodbs then
+--          mano.db  =  manodbs
+--       end
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
@@ -122,9 +122,6 @@ local function startmeup(h, t)
       end
 
 
-      -- remove tracking for this event
-
-
       mano.gui.shown.window   =  __mano_ui()
 
 --       print("mano.gui.shown.window: ", mano.f.dumptable(mano.gui.shown.window))
@@ -135,6 +132,7 @@ local function startmeup(h, t)
 
       mano.gui.shown.window.o.window:SetVisible(true)
 
+      -- remove tracking for this event
       Command.Event.Detach(Event.Unit.Availability.Full, startmeup, "MaNo: startup event")
 
 
@@ -154,11 +152,11 @@ local function startmeup(h, t)
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
 
       -- Load External DBs if it's first run
-      if mano.db == nil or next(mano.db) ==  nil then
-         mano.extdbhandle  =  __externaldbs()
-         local retval      =  mano.extdbhandle.filldbs()
-         print("...initializing EXTERNAL DBs...")
-      end
+--       if mano.db == nil or next(mano.db) ==  nil then
+--          mano.extdbhandle  =  __externaldbs()
+--          local retval      =  mano.extdbhandle.filldbs()
+--          print("...initializing EXTERNAL DBs...")
+--       end
 
       mano.init.startup =  true
    end

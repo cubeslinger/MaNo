@@ -323,3 +323,31 @@ mano.player                =  {}
 --
 -- end declarations
 --
+--[[
+    Error: MaNo/_mano_init.lua:141: stack overflow
+   In MaNo / MaNo: Load Variables, event Event.Addon.SavedVariables.Load.End
+   stack traceback:
+   [C]: in function '__index'
+   MaNo/_mano_init.lua:141: in function 'dumptable'
+   MaNo/_mano_init.lua:147: in function 'dumptable'
+   MaNo/__mapnotes.lua:200: in function 'new'
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   MaNo/__mapnotes.lua:205: in function 'new'
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   MaNo/__mapnotes.lua:205: in function 'new'
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   ...
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   MaNo/__mapnotes.lua:205: in function 'new'
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   MaNo/__mapnotes.lua:205: in function 'new'
+   MaNo/__mapnotes.lua:78: in function 'fillextdb'
+   MaNo/__mapnotes.lua:130: in function 'loaddb'
+   MaNo/__mapnotes.lua:257: in function '__map_notes'
+   MaNo/MaNo_1.lua:100: in function <MaNo/MaNo_1.lua:73>
+    ]]

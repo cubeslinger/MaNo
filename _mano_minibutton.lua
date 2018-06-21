@@ -15,8 +15,8 @@ function mano.createminimapbutton()
 
    -- MiniMapButton Border
    btn.border = UI.CreateFrame("Texture", "mmBtnIconBorder", btn.context)
---    btn.border:SetTexture("Rift", "sml_icon_border_(over)_yellow.png.dds")
-   btn.border:SetTexture("Rift", "smI_icon_border_(over)_yellow.png.dds")
+   btn.border:SetTexture("Rift", "sml_icon_border_(over)_yellow.png.dds")
+--    btn.border:SetTexture("Rift", "smI_icon_border_(over)_yellow.png.dds")
    btn.border:SetHeight(mano.gui.mmbtn.height)
    btn.border:SetWidth(mano.gui.mmbtn.width)
    btn.border:SetLayer(1)
