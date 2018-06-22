@@ -11,16 +11,13 @@ local function userinputsave(handle, params)
    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
    print("params: ", mano.f.dumptable(params))
 
-
    local userinput   =  mano.mapnoteinput:GetInput()
 
    if userinput ~= nil and next(userinput) then
 
       if userinput.save ~= nil and userinput.save == true then
 
---          local notetext       =  userinput.note
---          local notecategory   =  userinput.category
---          local noterecord     =  mano.mapnote.new(notetext, notecategory)
+         -- add note to User's DB
          local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
                                                       text        =  userinput.note,
                                                       category    =  userinput.category,
@@ -30,27 +27,12 @@ local function userinputsave(handle, params)
                                                    }
                                                 )
 
-         --             print("{noterecord}: ", mano.f.dumptable(noterecord))
-         --             print(string.format("noterecord.text => [%s]", noterecord.text))
-
---          local	t			= {   text        = noterecord.text,
---                               category    = noterecord.category,
---                               timestamp   = noterecord.timestamp,
---                               position    = {   x  =  noterecord.playerpos.coordX,
---                                                 y  =  noterecord.playerpos.coordY,
---                                                 z  =  noterecord.playerpos.coordZ,
---                                              },
---             zoneid      =   noterecord.playerpos.zoneid,
---             zonename    =   noterecord.playerpos.zonename,
---             zonetype    =   noterecord.playerpos.zonetype,
---          }
-
          local	t        =  {  text        = noterecord.text,
                               category    = noterecord.category,
                               timestamp   = noterecord.timestamp,
-                              playerpos   = {   coordX   =  noterecord.playerpos.coordX,
-                                                coordY   =  noterecord.playerpos.coordY,
-                                                coordZ   =  noterecord.playerpos.coordZ,
+                              playerpos   = {   x        =  noterecord.playerpos.x,
+                                                y        =  noterecord.playerpos.y,
+                                                z        =  noterecord.playerpos.z,
                                                 zonename =  noterecord.playerpos.zonename,
                                              },
                               zoneid      =   noterecord.playerpos.zoneid,
@@ -58,8 +40,11 @@ local function userinputsave(handle, params)
                               zonetype    =   noterecord.playerpos.zonetype,
          }
 
+         -- Show new Note in Index
 
-         local newframe       =  mano.gui.shown.window.addline(t)
+--          local newframe       =  mano.gui.shown.window.addline(t)
+--          local newframe       =  mano.gui.shown.window.addline(t)
+         mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
       end
    end
 
@@ -278,31 +263,3 @@ mano.player                =  {}
 --
 -- end declarations
 --
---[[
-    Error: MaNo/_mano_init.lua:141: stack overflow
-   In MaNo / MaNo: Load Variables, event Event.Addon.SavedVariables.Load.End
-   stack traceback:
-   [C]: in function '__index'
-   MaNo/_mano_init.lua:141: in function 'dumptable'
-   MaNo/_mano_init.lua:147: in function 'dumptable'
-   MaNo/__mapnotes.lua:200: in function 'new'
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   MaNo/__mapnotes.lua:205: in function 'new'
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   MaNo/__mapnotes.lua:205: in function 'new'
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   ...
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   MaNo/__mapnotes.lua:205: in function 'new'
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   MaNo/__mapnotes.lua:205: in function 'new'
-   MaNo/__mapnotes.lua:78: in function 'fillextdb'
-   MaNo/__mapnotes.lua:130: in function 'loaddb'
-   MaNo/__mapnotes.lua:257: in function '__map_notes'
-   MaNo/MaNo_1.lua:100: in function <MaNo/MaNo_1.lua:73>
-    ]]

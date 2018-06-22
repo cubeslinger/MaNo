@@ -47,7 +47,7 @@ function __mano_ui()
 
    local function buildforstock(t)
 
-      print("buildforstock(t): ", mano.f.dumptable(t))
+--       print("buildforstock(t): ", mano.f.dumptable(t))
 
       local parent      =  nil
       local T           =  {}
@@ -94,7 +94,7 @@ function __mano_ui()
       T.wpicon:SetHeight(mano.gui.font.size)
       T.wpicon:SetWidth(mano.gui.font.size)
       T.wpicon:SetLayer(3)
-      T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+      T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
 
       -- Note's Text -->|<--
@@ -125,7 +125,7 @@ function __mano_ui()
       for idx, tbl in pairs(self.linestock) do
          tbl.inuse = false
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       end
 
       self.o.lastlinecontainer =  nil
@@ -165,7 +165,7 @@ function __mano_ui()
          newline.text:SetText(t.label or t.text)
          newline.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
                                     function()
-                                       mano.f.setwaypoint(t.playerpos.coordX, t.playerpos.coordZ, t.playerpos.zonename)
+                                       mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename)
                                     end,
                                     "Way Point Added" )
          newline.text:SetVisible(true)
@@ -297,13 +297,24 @@ function __mano_ui()
       clearlist()
 
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
-      local counter  =  1
+      local counter  =  0
 
-      for _, tbl in pairs(zonedata) do
---          print("loadlistbyzoneid:", mano.f.dumptable(tbl))
-         local newframe =  mano.gui.shown.window.addline(tbl)
-         counter        =  counter + 1
-      end
+--       for _, tbl in pairs(zonedata) do
+-- --          print("loadlistbyzoneid:", mano.f.dumptable(tbl))
+--          local newframe =  mano.gui.shown.window.addline(tbl)
+--          counter        =  counter + 1
+--       end
+
+--       print("----------------------------------")
+--       print("loadlistbyzoneid:", mano.f.dumptable(zonedata))
+--       print("----------------------------------")
+
+      for _, tbl in ipairs(zonedata) do
+--             print("loadlistbyzoneid:", mano.f.dumptable(tbl))
+            local newframe =  mano.gui.shown.window.addline(tbl)
+            counter        =  counter + 1
+         end
+
 
       self.adjustheight()
 

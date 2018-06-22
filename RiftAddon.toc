@@ -17,8 +17,9 @@ Dependencies = {
 }
 
 RunOnStartup = {
+  "db/__puzzles.lua",
+  "db/__cairns.lua",
    "__mapnotes.lua",
-   "__mapnotes_db_puzzle_and_cairns.lua",
    "__menus.lua",
    "_mano_init.lua",
    "_mano_ui_input.lua",

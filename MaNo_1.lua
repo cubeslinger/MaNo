@@ -59,10 +59,6 @@ local function savevariables(_, addonname)
          manonotesdb    =  mano.mapnote.notes
       end
 
---       if next(mano.db)  then
---          manodbs  =  mano.db
---       end
-
    end
 
    detacheventsonexit()
@@ -97,11 +93,8 @@ local function loadvariables(_, addonname)
             notesdb  =  manonotesdb
          end
       end
-      mano.mapnote =  __map_notes(notesdb)
 
---       if manodbs then
---          mano.db  =  manodbs
---       end
+      mano.mapnote =  __map_notes(notesdb)
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
