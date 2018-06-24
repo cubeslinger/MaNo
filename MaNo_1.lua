@@ -89,9 +89,9 @@ local function loadvariables(_, addonname)
 
       local notesdb  =  {}
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
-         if not mano.mapnote then
+--          if not mano.mapnote then
             notesdb  =  manonotesdb
-         end
+--          end
       end
 
       mano.mapnote =  __map_notes(notesdb)

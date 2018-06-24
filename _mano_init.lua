@@ -27,18 +27,18 @@ local function userinputsave(handle, params)
                                                    }
                                                 )
 
-         local	t        =  {  text        = noterecord.text,
-                              category    = noterecord.category,
-                              timestamp   = noterecord.timestamp,
-                              playerpos   = {   x        =  noterecord.playerpos.x,
-                                                y        =  noterecord.playerpos.y,
-                                                z        =  noterecord.playerpos.z,
-                                                zonename =  noterecord.playerpos.zonename,
-                                             },
-                              zoneid      =   noterecord.playerpos.zoneid,
-                              zonename    =   noterecord.playerpos.zonename,
-                              zonetype    =   noterecord.playerpos.zonetype,
-         }
+--          local	t        =  {  text        = noterecord.text,
+--                               category    = noterecord.category,
+--                               timestamp   = noterecord.timestamp,
+--                               playerpos   = {   x        =  noterecord.playerpos.x,
+--                                                 y        =  noterecord.playerpos.y,
+--                                                 z        =  noterecord.playerpos.z,
+--                                                 zonename =  noterecord.playerpos.zonename,
+--                                              },
+--                               zoneid      =   noterecord.playerpos.zoneid,
+--                               zonename    =   noterecord.playerpos.zonename,
+--                               zonetype    =   noterecord.playerpos.zonetype,
+--          }
 
          -- Show new Note in Index
 

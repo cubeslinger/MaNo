@@ -51,16 +51,13 @@ function __mano_ui()
 
       local parent      =  nil
       local T           =  {}
-
       T.inuse           =  true
-
-      self.lineid    =  self.lineid + 1
+      self.lineid       =  self.lineid + 1
 
       if self.o.lastlinecontainer ~= nil and next(self.o.lastlinecontainer) ~= nil then
          parent = self.o.lastlinecontainer
       else
          parent = self.o.manoframe
---             parent = self.o.maskframe
       end
 
       -- Line Frame container
@@ -81,7 +78,6 @@ function __mano_ui()
 
       -- Note's Category Icon |<--
       T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
---       T.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
       T.icon:SetTexture("Rift", t.icon or "target_portrait_roguepoint.png.dds")
       T.icon:SetHeight(mano.gui.font.size)
       T.icon:SetWidth(mano.gui.font.size)
@@ -111,21 +107,23 @@ function __mano_ui()
       T.text:SetPoint("TOPRIGHT",   T.wpicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
       table.insert(self.linestock, T)
 
-
-
       return(T)
    end
 
    local function clearlist()
       --
       -- Set all linestock to "invisible"
-      -- and set all linestockk[*].used = false
+      -- and set all linestock[*].used = false
       --
       local idx, tbl = nil, {}
       for idx, tbl in pairs(self.linestock) do
+         
          tbl.inuse = false
+         
          tbl.frame:SetVisible(false)
-         tbl.text:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+         
+         tbl.wpicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+         
       end
 
       self.o.lastlinecontainer =  nil
@@ -134,6 +132,8 @@ function __mano_ui()
    end
 
    local function fetchlinefromstock(t)
+      
+      print("fetchlinefromstock(t) t=>:\n", mano.f.dumptable(t))
 
       local idx, tbl =  nil, {}
       local newline  =  nil
@@ -161,14 +161,12 @@ function __mano_ui()
          newline.icon:SetVisible(true)
          newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
 
-         -- text  --
+         -- label or text  --
          newline.text:SetText(t.label or t.text)
-         newline.text:EventAttach(   Event.UI.Input.Mouse.Left.Click,
-                                    function()
-                                       mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename)
-                                    end,
-                                    "Way Point Added" )
          newline.text:SetVisible(true)
+         
+         -- Way Point Icon --
+         newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
 
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
@@ -273,18 +271,8 @@ function __mano_ui()
 
    function self.addline(t)
 
---       print("addline(t): ", mano.f.dumptable(t))
-
-      local inuse, frame, icon, text   =  nil, nil, nil, nil
-
---       if not self.initialized then
---          mano.f.dprint("MY WAY ON THE HIGHWAY!")
---          self = self.new()
---       end
-
       local stockframe  =  fetchlinefromstock(t)
       self.o.lastlinecontainer   =  stockframe.frame
-
 
       -- auto adjust window Y size
       self.adjustheight()
@@ -294,27 +282,16 @@ function __mano_ui()
 
    function self.loadlistbyzoneid(zoneid)
       print(string.format("loadlistbyzoneid(%s)", zoneid))
+      
       clearlist()
 
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
       local counter  =  0
 
---       for _, tbl in pairs(zonedata) do
--- --          print("loadlistbyzoneid:", mano.f.dumptable(tbl))
---          local newframe =  mano.gui.shown.window.addline(tbl)
---          counter        =  counter + 1
---       end
-
---       print("----------------------------------")
---       print("loadlistbyzoneid:", mano.f.dumptable(zonedata))
---       print("----------------------------------")
-
       for _, tbl in ipairs(zonedata) do
---             print("loadlistbyzoneid:", mano.f.dumptable(tbl))
-            local newframe =  mano.gui.shown.window.addline(tbl)
-            counter        =  counter + 1
-         end
-
+         local newframe =  mano.gui.shown.window.addline(tbl)
+         counter        =  counter + 1
+      end
 
       self.adjustheight()
 
@@ -325,201 +302,210 @@ function __mano_ui()
 
 
    function self.adjustheight()
+      
+      local minY  =  0
+      local maxY  =  0
 
       if self.o.lastlinecontainer ~= nil then
-         local maxY  =  self.o.lastlinecontainer:GetBottom()
-         local minY  =  self.o.manoframe:GetTop()
+         maxY  =  self.o.lastlinecontainer:GetBottom()
+         minY  =  self.o.manoframe:GetTop()
 
          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
+      else
+         minY  =  self.o.manoframe:GetTop()
+         maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
       end
 
       return
    end
 
-   -- main  --
-   -- Create/Initialize Menus
-   self.menucfg      =  {}
-   self.menucfg.main =  {
-                           voices   =  {  {  name     =  "Load DB",
-                                             callback =  "_submenu_",
-                                             submenu  =  {  voices   =  {  { name   =  "Puzzles"   },
-                                                                           { name   =  "Cairns"    },
-                                                                        },
-                                                         },
+   if not self.initialized then
+      -- main  --
+      -- Create/Initialize Menus
+      self.menucfg      =  {}
+      self.menucfg.main =  {
+                              voices   =  {  {  name     =  "Load DB",
+                                                callback =  "_submenu_",
+                                                submenu  =  {  voices   =  {  { name   =  "Puzzles"   },
+                                                                              { name   =  "Cairns"    },
+                                                                           },
+                                                            },
+                                             },
+                                             {  name     =  "Add Note Here!",
+                                                callback =  { mano.foo["parseslashcommands"], "add", 'close' },
+                                             },
                                           },
-                                          {  name     =  "Add Note Here!",
-                                             callback =  { mano.foo["parseslashcommands"], "add", 'close' },
-                                          },
-                                       },
-                        }
+                           }
 
 
 
-   --Global context (parent frame-thing).
-   local context  = UI.CreateContext("mano_context")
+      --Global context (parent frame-thing).
+      local context  = UI.CreateContext("mano_context")
 
-   -- Main Window
-   self.o.window  =  UI.CreateFrame("Frame", "MaNo", context)
+      -- Main Window
+      self.o.window  =  UI.CreateFrame("Frame", "MaNo", context)
 
-   mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
+      mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
 
-   if mano.gui.win.x == nil or mano.gui.win.y == nil then
-      -- first run, we position in the screen center
-      self.o.window:SetPoint("CENTER", UIParent, "CENTER")
-   else
-      -- we have coordinates
-      self.o.window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.win.x or 0, mano.gui.win.y or 0)
-   end
-   self.o.window:SetLayer(-1)
-   self.o.window:SetWidth(mano.gui.win.width)
-   self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
-   self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: window_wheel_forward")
-   self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: window_wheel_backward")
+      if mano.gui.win.x == nil or mano.gui.win.y == nil then
+         -- first run, we position in the screen center
+         self.o.window:SetPoint("CENTER", UIParent, "CENTER")
+      else
+         -- we have coordinates
+         self.o.window:SetPoint("TOPLEFT", UIParent, "TOPLEFT", mano.gui.win.x or 0, mano.gui.win.y or 0)
+      end
+      self.o.window:SetLayer(-1)
+      self.o.window:SetWidth(mano.gui.win.width)
+      self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
+      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: window_wheel_forward")
+      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: window_wheel_backward")
 
-   self.o.titleframe =  UI.CreateFrame("Frame", "Cut_title_frame", self.o.window)
-   self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
-   self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT",   0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
-   self.o.titleframe:SetHeight(mano.gui.font.size*1.5)
-   self.o.titleframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
-   self.o.titleframe:SetLayer(1)
+      self.o.titleframe =  UI.CreateFrame("Frame", "Cut_title_frame", self.o.window)
+      self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
+      self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT",   0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
+      self.o.titleframe:SetHeight(mano.gui.font.size*1.5)
+      self.o.titleframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
+      self.o.titleframe:SetLayer(1)
 
-      -- Title Icon
-      self.o.titleicon = UI.CreateFrame("Texture", "mano_tile_icon", self.o.titleframe)
-      self.o.titleicon:SetTexture("Rift", "loot_gold_coins.dds")
-      self.o.titleicon:SetHeight(mano.gui.font.size)
-      self.o.titleicon:SetWidth(mano.gui.font.size)
-      self.o.titleicon:SetLayer(3)
-      self.o.titleicon:SetPoint("CENTERLEFT", self.o.titleframe, "CENTERLEFT", mano.gui.borders.left*2, 0)
+         -- Title Icon
+         self.o.titleicon = UI.CreateFrame("Texture", "mano_tile_icon", self.o.titleframe)
+         self.o.titleicon:SetTexture("Rift", "loot_gold_coins.dds")
+         self.o.titleicon:SetHeight(mano.gui.font.size)
+         self.o.titleicon:SetWidth(mano.gui.font.size)
+         self.o.titleicon:SetLayer(3)
+         self.o.titleicon:SetPoint("CENTERLEFT", self.o.titleframe, "CENTERLEFT", mano.gui.borders.left*2, 0)
 
-      -- Window Title
-      self.o.windowtitle =  UI.CreateFrame("Text", "mano_window_title", self.o.titleframe)
-      self.o.windowtitle:SetFontSize(mano.gui.font.size)
-      --       windowtitle:SetText(string.format("%s", mano.html.title[1]), true)
-      self.o.windowtitle:SetText(string.format("%s", mano.html.title), true)
-      self.o.windowtitle:SetLayer(3)
-      self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+         -- Window Title
+         self.o.windowtitle =  UI.CreateFrame("Text", "mano_window_title", self.o.titleframe)
+         self.o.windowtitle:SetFontSize(mano.gui.font.size)
+         --       windowtitle:SetText(string.format("%s", mano.html.title[1]), true)
+         self.o.windowtitle:SetText(string.format("%s", mano.html.title), true)
+         self.o.windowtitle:SetLayer(3)
+         self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
---       -- MaNo Version
---       self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
---       self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
---       self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
---       self.o.titleversion:SetLayer(3)
---       self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+   --       -- MaNo Version
+   --       self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
+   --       self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+   --       self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
+   --       self.o.titleversion:SetLayer(3)
+   --       self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
-      -- Current Zone
-      self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
---       self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
-      self.o.titlezone:SetFontSize(mano.gui.font.size)
-      self.o.titlezone:SetText(self.lastzone or "???", true)
-      self.o.titlezone:SetLayer(3)
-      self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
-
-
-      -- Iconize Button
-      self.o.iconizebutton = UI.CreateFrame("Texture", "mano_iconize_button", self.o.titleframe)
-      self.o.iconizebutton:SetTexture("Rift", "AlertTray_I54.dds")
-      self.o.iconizebutton:SetHeight(mano.gui.font.size)
-      self.o.iconizebutton:SetWidth(mano.gui.font.size)
-      self.o.iconizebutton:SetLayer(3)
-      self.o.iconizebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() showhidewindow() end, "MaNo: Iconize Button Pressed" )
-      self.o.iconizebutton:SetPoint("CENTERRIGHT",   self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right, 0)
-
-      -- Menu Button
-      self.o.menubutton = UI.CreateFrame("Text", "mano_menu_gui_button", self.o.titleframe)
-      self.o.menubutton:SetText("Menu")
-      self.o.menubutton:SetFontSize(mano.gui.font.size)
-      self.o.menubutton:SetFontColor(unpack(mano.gui.color.white))
-      self.o.menubutton:SetLayer(3)
-      self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                           self.o.menu.main:flip()
-                                                                           self.o.menu.loaddb:flip()
-                                                                        end,
-                                                                        "MaNo: Main Menu GUI Button Pressed" )
-      self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERLEFT", -mano.gui.font.size, 0)
-
-      -- Add Waypoint Button
-      self.o.addwpbutton = UI.CreateFrame("Texture", "mano_menu_wp_button", self.o.titleframe)
-      local icon  =  "AbilityBinder_I15.dds"   -- normal
---                local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
-      self.o.addwpbutton:SetTexture("Rift", icon)
-      self.o.addwpbutton:SetHeight(mano.gui.font.size)
-      self.o.addwpbutton:SetWidth(mano.gui.font.size)
-      self.o.addwpbutton:SetLayer(3)
-      self.o.addwpbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,  function()
-                                                                           mano.foo.parseslashcommands("add")
-                                                                        end,
-                                                                        "MaNo: Main Menu Add WP Button Pressed" )
-      self.o.addwpbutton:SetPoint("CENTERRIGHT",   self.o.menubutton, "CENTERLEFT", -mano.gui.font.size, 0)
+         -- Current Zone
+         self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
+   --       self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+         self.o.titlezone:SetFontSize(mano.gui.font.size)
+         self.o.titlezone:SetText(self.lastzone or "???", true)
+         self.o.titlezone:SetLayer(3)
+         self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
 
+         -- Iconize Button
+         self.o.iconizebutton = UI.CreateFrame("Texture", "mano_iconize_button", self.o.titleframe)
+         self.o.iconizebutton:SetTexture("Rift", "AlertTray_I54.dds")
+         self.o.iconizebutton:SetHeight(mano.gui.font.size)
+         self.o.iconizebutton:SetWidth(mano.gui.font.size)
+         self.o.iconizebutton:SetLayer(3)
+         self.o.iconizebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() showhidewindow() end, "MaNo: Iconize Button Pressed" )
+         self.o.iconizebutton:SetPoint("CENTERRIGHT",   self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right, 0)
 
-      -- Create Menu
-      print("%% CREATE MENU %%")
-      self.o.menu          =  {}
-      self.o.menu.loaddb   =  menu(self.o.menubutton, self.menucfg.loaddb)
-      self.o.menu.loaddb:hide()
-      self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
-      self.o.menu.main:hide()
-      --
+         -- Menu Button
+         self.o.menubutton = UI.CreateFrame("Text", "mano_menu_gui_button", self.o.titleframe)
+         self.o.menubutton:SetText("Menu")
+         self.o.menubutton:SetFontSize(mano.gui.font.size)
+         self.o.menubutton:SetFontColor(unpack(mano.gui.color.white))
+         self.o.menubutton:SetLayer(3)
+         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
+                                                                              self.o.menu.main:flip()
+                                                                              self.o.menu.loaddb:flip()
+                                                                           end,
+                                                                           "MaNo: Main Menu GUI Button Pressed" )
+         self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERLEFT", -mano.gui.font.size, 0)
 
-   -- EXTERNAL CUT CONTAINER FRAME
-   self.o.externalframe =  UI.CreateFrame("Frame", "mano_external_frame", self.o.window)
-   self.o.externalframe:SetPoint("TOPLEFT",     self.o.titleframe,   "BOTTOMLEFT",  mano.gui.borders.left,    0)
-   self.o.externalframe:SetPoint("TOPRIGHT",    self.o.titleframe,   "BOTTOMRIGHT", - mano.gui.borders.right, 0)
-   self.o.externalframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMLEFT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
-   self.o.externalframe:SetPoint("BOTTOMRIGHT", self.o.window,       "BOTTOMRIGHT", - mano.gui.borders.right, - mano.gui.borders.bottom)
-   self.o.externalframe:SetBackgroundColor(unpack(mano.gui.color.black))
-   self.o.externalframe:SetLayer(1)
+         -- Add Waypoint Button
+         self.o.addwpbutton = UI.CreateFrame("Texture", "mano_menu_wp_button", self.o.titleframe)
+         local icon  =  "AbilityBinder_I15.dds"   -- normal
+   --                local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
+         self.o.addwpbutton:SetTexture("Rift", icon)
+         self.o.addwpbutton:SetHeight(mano.gui.font.size)
+         self.o.addwpbutton:SetWidth(mano.gui.font.size)
+         self.o.addwpbutton:SetLayer(3)
+         self.o.addwpbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,  function()
+                                                                              mano.foo.parseslashcommands("add")
+                                                                           end,
+                                                                           "MaNo: Main Menu Add WP Button Pressed" )
+         self.o.addwpbutton:SetPoint("CENTERRIGHT",   self.o.menubutton, "CENTERLEFT", -mano.gui.font.size, 0)
 
-   -- MASK FRAME
-   self.o.maskframe = UI.CreateFrame("Mask", "mano_mask_frame", self.o.externalframe)
-   self.o.maskframe:SetAllPoints(self.o.externalframe)
 
-   -- CONTAINER FRAME
-   self.o.manoframe =  UI.CreateFrame("Frame", "mano_notes_frame", self.o.maskframe)
-   self.o.manoframe:SetAllPoints(self.o.maskframe)
-   self.o.manoframe:SetLayer(1)
 
-   -- RESIZER WIDGET
-   self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
-   self.o.corner:SetTexture("Rift", "chat_resize_(over).png.dds")
-   self.o.corner:SetHeight(mano.gui.font.size)
-   self.o.corner:SetWidth(mano.gui.font.size)
-   self.o.corner:SetLayer(4)
-   self.o.corner:SetPoint("BOTTOMRIGHT", self.o.manoframe, "BOTTOMRIGHT")
-   self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Down,  function()
-                                                                  local mouse = Inspect.Mouse()
-                                                                  self.o.corner.pressed = true
-                                                                  self.o.corner.basex   =  self.o.window:GetLeft()
-                                                                  self.o.corner.basey   =  self.o.window:GetTop()
-                                                               end,
-                                                               "Event.UI.Input.Mouse.Right.Down")
+         -- Create Menu
+         print("%% CREATE MENU %%")
+         self.o.menu          =  {}
+         self.o.menu.loaddb   =  menu(self.o.menubutton, self.menucfg.loaddb)
+         self.o.menu.loaddb:hide()
+         self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
+         self.o.menu.main:hide()
+         --
 
-   self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
-                                                                  if  self.o.corner.pressed then
+      -- EXTERNAL CUT CONTAINER FRAME
+      self.o.externalframe =  UI.CreateFrame("Frame", "mano_external_frame", self.o.window)
+      self.o.externalframe:SetPoint("TOPLEFT",     self.o.titleframe,   "BOTTOMLEFT",  mano.gui.borders.left,    0)
+      self.o.externalframe:SetPoint("TOPRIGHT",    self.o.titleframe,   "BOTTOMRIGHT", - mano.gui.borders.right, 0)
+      self.o.externalframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMLEFT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
+      self.o.externalframe:SetPoint("BOTTOMRIGHT", self.o.window,       "BOTTOMRIGHT", - mano.gui.borders.right, - mano.gui.borders.bottom)
+      self.o.externalframe:SetBackgroundColor(unpack(mano.gui.color.black))
+      self.o.externalframe:SetLayer(1)
+
+      -- MASK FRAME
+      self.o.maskframe = UI.CreateFrame("Mask", "mano_mask_frame", self.o.externalframe)
+      self.o.maskframe:SetAllPoints(self.o.externalframe)
+
+      -- CONTAINER FRAME
+      self.o.manoframe =  UI.CreateFrame("Frame", "mano_notes_frame", self.o.maskframe)
+      self.o.manoframe:SetAllPoints(self.o.maskframe)
+      self.o.manoframe:SetLayer(1)
+
+      -- RESIZER WIDGET
+      self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
+      self.o.corner:SetTexture("Rift", "chat_resize_(over).png.dds")
+      self.o.corner:SetHeight(mano.gui.font.size)
+      self.o.corner:SetWidth(mano.gui.font.size)
+      self.o.corner:SetLayer(4)
+      self.o.corner:SetPoint("BOTTOMRIGHT", self.o.manoframe, "BOTTOMRIGHT")
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Down,  function()
                                                                      local mouse = Inspect.Mouse()
-                                                                     mano.gui.win.width  = mano.f.round(mouse.x - self.o.corner.basex)
-                                                                     mano.gui.win.height = mano.f.round(mouse.y - self.o.corner.basey)
-                                                                     self.o.window:SetWidth(mano.gui.win.width)
-                                                                     self.o.window:SetHeight(mano.gui.win.height)
-                                                                  end
+                                                                     self.o.corner.pressed = true
+                                                                     self.o.corner.basex   =  self.o.window:GetLeft()
+                                                                     self.o.corner.basey   =  self.o.window:GetTop()
+                                                                  end,
+                                                                  "Event.UI.Input.Mouse.Right.Down")
+
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
+                                                                     if  self.o.corner.pressed then
+                                                                        local mouse = Inspect.Mouse()
+                                                                        mano.gui.win.width  = mano.f.round(mouse.x - self.o.corner.basex)
+                                                                        mano.gui.win.height = mano.f.round(mouse.y - self.o.corner.basey)
+                                                                        self.o.window:SetWidth(mano.gui.win.width)
+                                                                        self.o.window:SetHeight(mano.gui.win.height)
+                                                                     end
+                                                                  end,
+                                                                  "Event.UI.Input.Mouse.Cursor.Move")
+
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside,   function()
+                                                                           self.o.corner.pressed = false
+                                                                           self.adjustheight()
+                                                                        end,
+                                                                        "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
+
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Up, function()
+                                                                  self.o.corner.pressed = false
+                                                                  self.adjustheight()
                                                                end,
-                                                               "Event.UI.Input.Mouse.Cursor.Move")
+                                                               "MaNo: Event.UI.Input.Mouse.Right.Up")
 
-   self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside,   function()
-                                                                        self.o.corner.pressed = false
-                                                                        self.adjustheight()
-                                                                     end,
-                                                                     "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
-
-   self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Up, function()
-                                                               self.o.corner.pressed = false
-                                                               self.adjustheight()
-                                                            end,
-                                                            "MaNo: Event.UI.Input.Mouse.Right.Up")
-
+   end
+   
    if self ~= nil and next(self) ~= nil   then
       self.initialized =   true
    end
