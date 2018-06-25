@@ -67,11 +67,9 @@ function __mano_ui()
       T.frame:SetLayer(3)
       T.frame:SetVisible(true)
       if self.o.lastlinecontainer ~= nil and next(self.o.lastlinecontainer) ~= nil then
-         mano.f.dprint("attaching to lastlinecontainer")
          T.frame:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
          T.frame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
       else
-         mano.f.dprint("attaching to maskframe")
          T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT",    0, 1)
          T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",   0, 1)
       end
@@ -133,7 +131,7 @@ function __mano_ui()
 
    local function fetchlinefromstock(t)
 
-      print("fetchlinefromstock(t) t=>:\n", mano.f.dumptable(t))
+--       print("fetchlinefromstock(t) t=>:\n", mano.f.dumptable(t))
 
       local idx, tbl =  nil, {}
       local newline  =  nil
@@ -148,11 +146,11 @@ function __mano_ui()
       end
 
       if not newline then
-         print("NEW frame")
+--          print("NEW frame")
          newline = buildforstock(t)
          self.o.lastlinecontainer =  newline.frame
       else
-         print("re-using old frame")
+--          print("re-using old frame")
 
          -- frame --
          newline.frame:SetVisible(true)
@@ -281,7 +279,7 @@ function __mano_ui()
    end
 
    function self.loadlistbyzoneid(zoneid)
-      print(string.format("loadlistbyzoneid(%s)", zoneid))
+--       print(string.format("loadlistbyzoneid(%s)", zoneid))
 
       clearlist()
 
@@ -312,7 +310,7 @@ function __mano_ui()
 
          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
-         print(string.format("new Height: (%s)", self.o.window:GetHeight()))
+--          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
       else
          minY  =  self.o.manoframe:GetTop()
          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
@@ -339,7 +337,7 @@ function __mano_ui()
                                           },
                            }
 
-      print("self.menucfg.main:\n", mano.f.dumptable(self.menucfg.main ))
+--       print("self.menucfg.main:\n", mano.f.dumptable(self.menucfg.main ))
 
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
@@ -347,7 +345,7 @@ function __mano_ui()
       -- Main Window
       self.o.window  =  UI.CreateFrame("Frame", "MaNo", context)
 
-      mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
+--       mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
 
       if mano.gui.win.x == nil or mano.gui.win.y == nil then
          -- first run, we position in the screen center
@@ -385,21 +383,13 @@ function __mano_ui()
          self.o.windowtitle:SetLayer(3)
          self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
-   --       -- MaNo Version
-   --       self.o.titleversion =  UI.CreateFrame("Text", "mano_title_version", self.o.titleframe)
-   --       self.o.titleversion:SetFontSize(mano.f.round(mano.gui.font.size * .75))
-   --       self.o.titleversion:SetText(string.format("%s", 'v.' .. mano.addon.version), true)
-   --       self.o.titleversion:SetLayer(3)
-   --       self.o.titleversion:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
-
          -- Current Zone
          self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
-   --       self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+         self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
          self.o.titlezone:SetFontSize(mano.gui.font.size)
          self.o.titlezone:SetText(self.lastzone or "???", true)
          self.o.titlezone:SetLayer(3)
          self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
-
 
          -- Iconize Button
          self.o.iconizebutton = UI.CreateFrame("Texture", "mano_iconize_button", self.o.titleframe)
@@ -416,10 +406,7 @@ function __mano_ui()
          self.o.menubutton:SetFontSize(mano.gui.font.size)
          self.o.menubutton:SetFontColor(unpack(mano.gui.color.white))
          self.o.menubutton:SetLayer(3)
-         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                              self.o.menu.main:flip()
-                                                                              self.o.menu.loaddb:flip()
-                                                                           end,
+         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() self.o.menu.main:flip() end,
                                                                            "MaNo: Main Menu GUI Button Pressed" )
          self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.iconizebutton, "CENTERLEFT", -mano.gui.font.size, 0)
 
@@ -440,10 +427,7 @@ function __mano_ui()
 
 
          -- Create Menu
-         print("%% CREATE MENU %%")
          self.o.menu          =  {}
-         self.o.menu.loaddb   =  menu(self.o.menubutton, self.menucfg.loaddb)
-         self.o.menu.loaddb:hide()
          self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
          self.o.menu.main:hide()
          --

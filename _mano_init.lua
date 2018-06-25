@@ -9,7 +9,7 @@ local addon, mano = ...
 local function userinputsave(handle, params)
 
    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
-   print("params: ", mano.f.dumptable(params))
+--    print("params: ", mano.f.dumptable(params))
 
    local userinput   =  mano.mapnoteinput:GetInput()
 
@@ -255,7 +255,7 @@ mano.foo                   =  {
 mano.events                =  {}
 mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
 mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
-mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
+-- mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
 --
 -- Player's Cached Info
 --
@@ -263,8 +263,8 @@ mano.player                =  {}
 --
 -- Default Categories
 --
-mano.categories            =  {  "default" }
-mano.lastcategory          =  "default"
+mano.categories            =  {  [1] = "Default", [2] = "Artifacts", [3] = "Crafting Material" }
+mano.lastcategoryidx       =  1
 --
 --
 -- end declarations
