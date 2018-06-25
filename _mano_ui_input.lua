@@ -16,6 +16,18 @@ function __mano_ui_input()
                   o                 =  {},
                   }
 
+
+--    local function catmenuchoice(idx)
+   function self.catmenuchoice(idx)
+
+      mano.events.catmenutrigger(self.db[idx])
+
+      print("!!! CATMENUCHOICE !!!")
+
+      return
+   end
+
+
    local function countarray(array)
 
       local k, v  =  nil, nil
@@ -101,7 +113,7 @@ function __mano_ui_input()
    end
 
    function self.GetInput()
-      
+
       local t  =  {  label    =  self.o.labeltext:GetText(),
                      note     =  self.o.notetext:GetText(),
                      category =  self.o.cattext:GetText(),
@@ -109,7 +121,7 @@ function __mano_ui_input()
                      save     =  self.o.save
                   }
       return t
-      
+
    end
 
    -- Main
@@ -220,27 +232,79 @@ function __mano_ui_input()
    self.o.notetext:SetPoint("TOPLEFT",    self.o.notelabel, "BOTTOMLEFT")
    self.o.notetext:SetPoint("TOPRIGHT",   self.o.notelabel, "BOTTOMRIGHT")
 
-   -- Category Icon
-   self.o.caticon = UI.CreateFrame("Texture", "mano_input_category_icon", self.o.frame)
-   self.o.caticon:SetTexture("Rift", "loot_gold_coins.dds")
-   self.o.caticon:SetHeight(mano.gui.font.size*2)
-   self.o.caticon:SetWidth(mano.gui.font.size*2)
-   self.o.caticon:SetLayer(3)
-   self.o.caticon:SetPoint("TOPLEFT",  self.o.notetext, "BOTTOMLEFT",   0, mano.gui.borders.top)
---    self.o.caticon:SetPoint("RIGHT",    self.o.frame,     "RIGHT",       -mano.gui.borders.right,   0)
+--    -- Category Icon
+--    self.o.caticon = UI.CreateFrame("Texture", "mano_input_category_icon", self.o.frame)
+--    self.o.caticon:SetTexture("Rift", "loot_gold_coins.dds")
+--    self.o.caticon:SetHeight(mano.gui.font.size*2)
+--    self.o.caticon:SetWidth(mano.gui.font.size*2)
+--    self.o.caticon:SetLayer(3)
+--    self.o.caticon:SetPoint("TOPLEFT",  self.o.notetext, "BOTTOMLEFT",   0, mano.gui.borders.top)
+-- --    self.o.caticon:SetPoint("RIGHT",    self.o.frame,     "RIGHT",       -mano.gui.borders.right,   0)
+--
+--    -- Category field
+--    self.o.cattext     =  UI.CreateFrame("RiftTextfield", "input_category_name", self.o.frame)
+--    if mano.gui.font.name then
+--       self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
+--    end
+--    self.o.cattext:SetText("default")
+--    self.o.cattext:SetLayer(3)
+--    self.o.cattext:SetVisible(true)
+--    self.o.cattext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+--    self.o.cattext:SetPoint("TOPLEFT",  self.o.caticon,   "TOPRIGHT", mano.gui.borders.left,     0)
+-- --    self.o.cattext:SetPoint("RIGHT",    self.o.frame,     "RIGHT",    -mano.gui.borders.right,   0)
+
 
    -- Category field
-   self.o.cattext     =  UI.CreateFrame("RiftTextfield", "input_category_name", self.o.frame)
+   self.o.cattext     =  UI.CreateFrame("Text", "input_category_label", self.o.frame)
    if mano.gui.font.name then
       self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
    end
-   self.o.cattext:SetText("default")
+   self.o.cattext:SetText(mano.lastcategory)
    self.o.cattext:SetLayer(3)
    self.o.cattext:SetVisible(true)
-   self.o.cattext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
-   self.o.cattext:SetPoint("TOPLEFT",  self.o.caticon,   "TOPRIGHT", mano.gui.borders.left,     0)
---    self.o.cattext:SetPoint("RIGHT",    self.o.frame,     "RIGHT",    -mano.gui.borders.right,   0)
+--    self.o.cattext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+--    self.o.cattext:SetPoint("TOPLEFT",  self.o.caticon,   "TOPRIGHT", mano.gui.borders.left,     0)
+   self.o.cattext:SetPoint("TOPLEFT",  self.o.notetext, "BOTTOMLEFT",   0, mano.gui.borders.top)
 
+
+   self.catmenu         =  {}
+   self.catmenu.voices  =  {}
+   for idx, category in ipairs(mano.categories) do
+      local t  =  {  name     =  category,
+                     callback =  { self.catmenuchoice, idx, 'close' },
+                  }
+--       table.insert(self.catmenu.voices,   {  "name    =  \'" .. category .. "\'",
+--                                              "callback=  { self.catmenuchoice, " .. idx .. ", \'close\' }",
+--                                           }
+--                   )
+      table.insert(self.catmenu.voices, t)
+      t  =  {}
+   end
+   print("catmenu:\n", mano.f.dumptable(self.catmenu))
+
+   -- Create Menu
+   print("%% CREATE MENU %%")
+   self.o.catmenu     = {}
+   self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
+   self.o.catmenu:hide()
+
+   -- Category Menu Button
+   self.o.categorybutton = UI.CreateFrame("Texture", "mano_input_category_menu_button", self.o.frame)
+   self.o.categorybutton:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
+   self.o.categorybutton:SetHeight(mano.gui.font.size)
+   self.o.categorybutton:SetWidth(mano.gui.font.size)
+   self.o.categorybutton:SetLayer(3)
+   self.o.categorybutton:SetPoint("TOPLEFT",   self.o.cattext, "TOPRIGHT", mano.gui.borders.left,	0)
+   self.o.categorybutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() print("click!") self.o.catmenu:flip() end, "MaNo: Category Button Pressed" )
+
+   -- Category AddButton
+   self.o.categoryaddbutton = UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)
+   self.o.categoryaddbutton:SetTexture("Rift", "AbilityBinder_I15.dds")
+   self.o.categoryaddbutton:SetHeight(mano.gui.font.size)
+   self.o.categoryaddbutton:SetWidth(mano.gui.font.size)
+   self.o.categoryaddbutton:SetLayer(3)
+   self.o.categoryaddbutton:SetPoint("TOPLEFT",   self.o.categorybutton, "TOPRIGHT", mano.gui.borders.left,	0)
+   self.o.categoryaddbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() print("click!") self.o.catmenu:flip() end, "MaNo: Category Button Pressed" )
 
    -- Cancel Button
    self.o.cancelbutton = UI.CreateFrame("Texture", "mano_input_cancel_button", self.o.frame)

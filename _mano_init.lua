@@ -253,12 +253,18 @@ mano.foo                   =  {
 -- Events
 --
 mano.events                =  {}
-mano.events.canceltrigger, mano.events.cancelevent =  Utility.Event.Create(addon.identifier, "userinput.cancel")
-mano.events.savetrigger,   mano.events.saveevent   =  Utility.Event.Create(addon.identifier, "userinput.save")
+mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
+mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
+mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
 --
 -- Player's Cached Info
 --
 mano.player                =  {}
+--
+-- Default Categories
+--
+mano.categories            =  {  "default" }
+mano.lastcategory          =  "default"
 --
 --
 -- end declarations

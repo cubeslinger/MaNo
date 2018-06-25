@@ -117,13 +117,13 @@ function __mano_ui()
       --
       local idx, tbl = nil, {}
       for idx, tbl in pairs(self.linestock) do
-         
+
          tbl.inuse = false
-         
+
          tbl.frame:SetVisible(false)
-         
+
          tbl.wpicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
-         
+
       end
 
       self.o.lastlinecontainer =  nil
@@ -132,7 +132,7 @@ function __mano_ui()
    end
 
    local function fetchlinefromstock(t)
-      
+
       print("fetchlinefromstock(t) t=>:\n", mano.f.dumptable(t))
 
       local idx, tbl =  nil, {}
@@ -164,7 +164,7 @@ function __mano_ui()
          -- label or text  --
          newline.text:SetText(t.label or t.text)
          newline.text:SetVisible(true)
-         
+
          -- Way Point Icon --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
 
@@ -282,7 +282,7 @@ function __mano_ui()
 
    function self.loadlistbyzoneid(zoneid)
       print(string.format("loadlistbyzoneid(%s)", zoneid))
-      
+
       clearlist()
 
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
@@ -302,7 +302,7 @@ function __mano_ui()
 
 
    function self.adjustheight()
-      
+
       local minY  =  0
       local maxY  =  0
 
@@ -339,7 +339,7 @@ function __mano_ui()
                                           },
                            }
 
-
+      print("self.menucfg.main:\n", mano.f.dumptable(self.menucfg.main ))
 
       --Global context (parent frame-thing).
       local context  = UI.CreateContext("mano_context")
@@ -505,7 +505,7 @@ function __mano_ui()
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
 
    end
-   
+
    if self ~= nil and next(self) ~= nil   then
       self.initialized =   true
    end
