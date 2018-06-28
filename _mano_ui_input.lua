@@ -130,7 +130,8 @@ function __mano_ui_input(action)
 
    end
 
-   local refresh_category_menu()
+
+   local function refresh_category_menu()
 
       -- Dynamic Category Menu
       local idx,  tbl,  category =  nil, {}, nil
@@ -138,19 +139,23 @@ function __mano_ui_input(action)
 
       --    for idx, category in pairs(mano.categories) do
          for idx, tbl in pairs(mano.categories) do
-            for _, category in pairs(mano.categories) do
-               local t  =  {  name     =  category.name,
-                  icon     =  category.icon,
+--             print("------------------------------------------")
+--             print("catmenu TBL:\n", mano.f.dumptable(tbl))
+--             print("------------------------------------------")
+            
+--             for _, category in pairs(mano.categories) do
+               local t  =  {  name     =  tbl.name,
+                              icon     =  tbl.icon,
                   --                      callback =  { self.catmenuchoice, idx, 'close' },
                               callback =  { catmenuchoice, idx, 'close' },
                }
                table.insert(T, t)
                t  =  {}
-            end
+--             end
          end
-         print("------------------------------------------")
-         print("catmenu:\n", mano.f.dumptable(self.catmenu))
-         print("------------------------------------------")
+--          print("------------------------------------------")
+--          print("catmenu:\n", mano.f.dumptable(T))
+--          print("------------------------------------------")
 
       return T
    end
