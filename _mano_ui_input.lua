@@ -130,30 +130,59 @@ function __mano_ui_input(action)
 
    end
 
+   local refresh_category_menu()
+
+      -- Dynamic Category Menu
+      local idx,  tbl,  category =  nil, {}, nil
+      local T  =  {}
+
+      --    for idx, category in pairs(mano.categories) do
+         for idx, tbl in pairs(mano.categories) do
+            for _, category in pairs(mano.categories) do
+               local t  =  {  name     =  category.name,
+                  icon     =  category.icon,
+                  --                      callback =  { self.catmenuchoice, idx, 'close' },
+                              callback =  { catmenuchoice, idx, 'close' },
+               }
+               table.insert(T, t)
+               t  =  {}
+            end
+         end
+         print("------------------------------------------")
+         print("catmenu:\n", mano.f.dumptable(self.catmenu))
+         print("------------------------------------------")
+
+      return T
+   end
+
    local function __init(action)
       --
       -- Main
       --
       self.o.save =  false
 
-      -- Dynamic Category Menu
-      local idx,  tbl,  category =  nil, {}, nil
+--       -- Dynamic Category Menu
+--       local idx,  tbl,  category =  nil, {}, nil
+--       self.catmenu         =  {}
+--       self.catmenu.voices  =  {}
+--
+--    --    for idx, category in pairs(mano.categories) do
+--       for idx, tbl in pairs(mano.categories) do
+--          for _, category in pairs(mano.categories) do
+--             local t  =  {  name     =  category.name,
+--                            icon     =  category.icon,
+--    --                      callback =  { self.catmenuchoice, idx, 'close' },
+--                            callback =  { catmenuchoice, idx, 'close' },
+--                         }
+--             table.insert(self.catmenu.voices, t)
+--             t  =  {}
+--          end
+--       end
+--       print("catmenu:\n", mano.f.dumptable(self.catmenu))
+
       self.catmenu         =  {}
       self.catmenu.voices  =  {}
-
-   --    for idx, category in pairs(mano.categories) do
-      for idx, tbl in pairs(mano.categories) do
-         for _, category in pairs(mano.categories) do
-            local t  =  {  name     =  category.name,
-                           icon     =  category.icon,
-   --                      callback =  { self.catmenuchoice, idx, 'close' },
-                           callback =  { catmenuchoice, idx, 'close' },
-                        }
-            table.insert(self.catmenu.voices, t)
-            t  =  {}
-         end
-      end
-      print("catmenu:\n", mano.f.dumptable(self.catmenu))
+      self.catmenu.voices  =  refresh_category_menu()
 
 
       -- Window Context
