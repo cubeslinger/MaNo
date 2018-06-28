@@ -263,9 +263,24 @@ mano.player                =  {}
 --
 -- Default Categories
 --
-mano.categories            =  {  [1] = "Default", [2] = "Artifacts", [3] = "Crafting Material" }
+mano.categories            =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
+                                 [2]   =  {  name="Artifacts",         icon="macro_icon_smile.dds" },
+                                 [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
+                                 [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
+                              }
 mano.lastcategoryidx       =  1
 --
 --
 -- end declarations
 --
+
+-- "macro_icon_crown.dds"
+-- "macro_icon_arrow.dds"
+-- "macro_icon_no.dds"
+-- "macro_icon_radioactive.dds"
+-- "macro_icon_sad.dds"
+-- "macro_icon_skull.dds"
+-- "macro_icon_smile.dds"
+-- "macro_icon_squirell.dds"
+-- "macro_icon_support.dds"
+-- "macro_icon_tank.dds"

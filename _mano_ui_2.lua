@@ -362,7 +362,8 @@ function __mano_ui()
 
          -- Title Icon
          self.o.titleicon = UI.CreateFrame("Texture", "mano_tile_icon", self.o.titleframe)
-         self.o.titleicon:SetTexture("Rift", "loot_gold_coins.dds")
+--          self.o.titleicon:SetTexture("Rift", "loot_gold_coins.dds")
+         self.o.titleicon:SetTexture("Rift", "Macros_I79.dds")
          self.o.titleicon:SetHeight(mano.gui.font.size)
          self.o.titleicon:SetWidth(mano.gui.font.size)
          self.o.titleicon:SetLayer(3)
@@ -405,8 +406,9 @@ function __mano_ui()
 
          -- Add Waypoint Button
          self.o.addwpbutton = UI.CreateFrame("Texture", "mano_menu_wp_button", self.o.titleframe)
-         local icon  =  "AbilityBinder_I15.dds"   -- normal
+--          local icon  =  "AbilityBinder_I15.dds"   -- normal
    --                local icon  =  "btn_arrow_R_(over).png.dds"   -- mouseover
+         local icon  =  "macro_icon_heal.dds"   -- normal
          self.o.addwpbutton:SetTexture("Rift", icon)
          self.o.addwpbutton:SetHeight(mano.gui.font.size)
          self.o.addwpbutton:SetWidth(mano.gui.font.size)
