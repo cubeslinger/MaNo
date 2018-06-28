@@ -47,8 +47,6 @@ function __mano_ui()
 
    local function buildforstock(t)
 
---       print("buildforstock(t): ", mano.f.dumptable(t))
-
       local parent      =  nil
       local T           =  {}
       T.inuse           =  true
@@ -63,30 +61,31 @@ function __mano_ui()
       -- Line Frame container
       T.frame =  UI.CreateFrame("Frame", "line_item_frame_" .. self.lineid, parent)
       T.frame:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
-      T.frame:SetHeight(mano.gui.font.size + 2)
+      T.frame:SetHeight(mano.gui.font.size + 6)
       T.frame:SetLayer(3)
       T.frame:SetVisible(true)
       if self.o.lastlinecontainer ~= nil and next(self.o.lastlinecontainer) ~= nil then
-         T.frame:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT", 0, 1)
-         T.frame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT",0, 1)
+         T.frame:SetPoint("TOPLEFT",  parent, "BOTTOMLEFT")
+         T.frame:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT")
       else
-         T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT",    0, 1)
-         T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",   0, 1)
+         T.frame:SetPoint("TOPLEFT",  parent, "TOPLEFT",    mano.gui.borders.left,     mano.gui.borders.top)
+         T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",   -mano.gui.borders.right,   mano.gui.borders.top)
       end
 
       -- Note's Category Icon |<--
       T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
       T.icon:SetTexture("Rift", t.icon or "target_portrait_roguepoint.png.dds")
-      T.icon:SetHeight(mano.gui.font.size)
-      T.icon:SetWidth(mano.gui.font.size)
+      T.icon:SetHeight(mano.gui.font.size * 1.5)
+      T.icon:SetWidth(mano.gui.font.size  * 1.5)
       T.icon:SetLayer(3)
       T.icon:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left*2,     1)
 
       -- Way Point Icon -->|
       T.wpicon = UI.CreateFrame("Texture", "line_icon_wp" .. self.lineid, T.frame)
-      T.wpicon:SetTexture("Rift", "target_portrait_roguepoints_off.png.dds")
-      T.wpicon:SetHeight(mano.gui.font.size)
-      T.wpicon:SetWidth(mano.gui.font.size)
+--       T.wpicon:SetTexture("Rift", "target_portrait_roguepoints_off.png.dds")
+      T.wpicon:SetTexture("Rift", "ze_deliver_(yellow).png.dds")
+      T.wpicon:SetHeight(mano.gui.font.size * 1.5)
+      T.wpicon:SetWidth(mano.gui.font.size  * 1.5)
       T.wpicon:SetLayer(3)
       T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
@@ -100,7 +99,6 @@ function __mano_ui()
       T.text:SetText(t.label or t.text)
       T.text:SetLayer(3)
       T.text:SetVisible(true)
---       T.text:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left,     0)
       T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
       T.text:SetPoint("TOPRIGHT",   T.wpicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
       table.insert(self.linestock, T)
@@ -131,8 +129,6 @@ function __mano_ui()
 
    local function fetchlinefromstock(t)
 
---       print("fetchlinefromstock(t) t=>:\n", mano.f.dumptable(t))
-
       local idx, tbl =  nil, {}
       local newline  =  nil
 
@@ -146,12 +142,9 @@ function __mano_ui()
       end
 
       if not newline then
---          print("NEW frame")
          newline = buildforstock(t)
          self.o.lastlinecontainer =  newline.frame
       else
---          print("re-using old frame")
-
          -- frame --
          newline.frame:SetVisible(true)
 

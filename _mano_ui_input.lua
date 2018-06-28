@@ -18,7 +18,7 @@ function __mano_ui_input()
 
 
 -- local function categorychooser(idx)
---    
+--
 --    if idx and mano.categories[idx] ~= nil then
 --       self.o.cattext:SetText(mano.categories[idx])
 --       self.o.catmenu:flip()
@@ -26,24 +26,24 @@ function __mano_ui_input()
 --    else
 --       print(string.format("categorychooser: ERROR: idx is out of range = (%s)", idx))
 --    end
---    
+--
 --    return
 -- end
-                  
+
    local function catmenuchoice(idx)
 --    function self.catmenuchoice(idx)
 
 --       mano.events.catmenutrigger(mano.categories[idx])
 --       print(string.format("!!! CATMENUCHOICE !!! => idx=%s category=>%s", idx, mano.categories[idx]))
-      
+
       if idx and mano.categories[idx] ~= nil then
          self.o.cattext:SetText(mano.categories[idx])
-         self.o.catmenu:hide()
+         self.o.catmenu:flip()
          self.o.categorylastidx = idx
       else
          print(string.format("categorychooser: ERROR: idx is out of range = (%s)", idx))
       end
-      
+
 
       return
    end
@@ -144,12 +144,12 @@ function __mano_ui_input()
       return t
 
    end
-   
+
    --
    -- Main
    --
    self.o.save =  false
-   
+
    -- Dynamic Category Menu
    self.catmenu         =  {}
    self.catmenu.voices  =  {}
@@ -161,8 +161,8 @@ function __mano_ui_input()
       table.insert(self.catmenu.voices, t)
       t  =  {}
    end
---    print("catmenu:\n", mano.f.dumptable(self.catmenu)) 
-   
+--    print("catmenu:\n", mano.f.dumptable(self.catmenu))
+
 
    -- Window Context
    local context  = UI.CreateContext("mano_input_context")
@@ -180,13 +180,13 @@ function __mano_ui_input()
    self.o.titleframe =  UI.CreateFrame("Frame", "input_title_frame", self.o.window)
    self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
    self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT",   0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
-   self.o.titleframe:SetHeight(mano.gui.font.size*1.5)
+   self.o.titleframe:SetHeight(mano.gui.font.size * 1.5)
    self.o.titleframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
    self.o.titleframe:SetLayer(1)
 
       -- Title Icon
       self.o.titleicon = UI.CreateFrame("Texture", "mano_input_tile_icon", self.o.titleframe)
-      self.o.titleicon:SetTexture("Rift", "loot_gold_coins.dds")
+      self.o.titleicon:SetTexture("Rift", "AbilityBinder_I15.dds")
       self.o.titleicon:SetHeight(mano.gui.font.size)
       self.o.titleicon:SetWidth(mano.gui.font.size)
       self.o.titleicon:SetLayer(3)
@@ -195,7 +195,6 @@ function __mano_ui_input()
       -- Window Title
       self.o.windowtitle =  UI.CreateFrame("Text", "mano_input_window_title", self.o.titleframe)
       self.o.windowtitle:SetFontSize(mano.gui.font.size)
-      --       windowtitle:SetText(string.format("%s", mano.html.title[1]), true)
       self.o.windowtitle:SetText("New Note:")
       self.o.windowtitle:SetLayer(3)
       self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
@@ -273,14 +272,11 @@ function __mano_ui_input()
    if mano.gui.font.name then
       self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
    end
-   
---    print(string.format("mano.lastcategoryidx=%s", mano.lastcategoryidx))
---    print(string.format("mano.categories[mano.lastcategoryidx]=%s", mano.categories[mano.lastcategoryidx]))
    self.o.cattext:SetText(mano.categories[mano.lastcategoryidx])
    self.o.cattext:SetLayer(3)
    self.o.cattext:SetVisible(true)
    self.o.cattext:SetPoint("TOPLEFT",  self.o.notetext, "BOTTOMLEFT",   0, mano.gui.borders.top)
-   
+
    -- Category Menu Button
    self.o.categorybutton = UI.CreateFrame("Texture", "mano_input_category_menu_button", self.o.frame)
    self.o.categorybutton:SetTexture("Rift", "splitbtn_arrow_D_(normal).png.dds")
@@ -289,7 +285,7 @@ function __mano_ui_input()
    self.o.categorybutton:SetLayer(3)
    self.o.categorybutton:SetPoint("TOPLEFT",   self.o.cattext, "TOPRIGHT", mano.gui.borders.left,	0)
    self.o.categorybutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() self.o.catmenu:flip() end, "MaNo: Category Button Pressed" )
-   
+
    -- Category Create Menu
    self.o.catmenu     = {}
    self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
@@ -335,7 +331,7 @@ function __mano_ui_input()
 
 
    if not self.initialized then
-      
+
       self.initialized =   true
       Library.LibDraggable.draggify(self.o.window)
 
@@ -347,7 +343,7 @@ function __mano_ui_input()
       self.o.frame:SetHeight(mano.f.round(maxY - maxY))
       self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 --       print(string.format("new Height: (%s)", self.o.window:GetHeight()))
-      
+
    end
 
    return self
