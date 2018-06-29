@@ -15,7 +15,21 @@ function __mano_ui_input(action)
                   initialized       =  false,
                   o                 =  {},
                   }
+                  
+   local function detacheventwatchers()
+      -- Save & Cancel Events
+      Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+      Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+      return
+   end
 
+   local function attacheventwatchers()
+      -- Save & Cancel Events
+      Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+      Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+      return
+   end
+   
 
    local function catmenuchoice(idx)
 
@@ -161,30 +175,12 @@ function __mano_ui_input(action)
       return T
    end
 
-   local function __init(action)
+--    local function __init(action)
+   function self.show(action, tbl)
       --
       -- Main
       --
       self.o.save =  false
-
---       -- Dynamic Category Menu
---       local idx,  tbl,  category =  nil, {}, nil
---       self.catmenu         =  {}
---       self.catmenu.voices  =  {}
---
---    --    for idx, category in pairs(mano.categories) do
---       for idx, tbl in pairs(mano.categories) do
---          for _, category in pairs(mano.categories) do
---             local t  =  {  name     =  category.name,
---                            icon     =  category.icon,
---    --                      callback =  { self.catmenuchoice, idx, 'close' },
---                            callback =  { catmenuchoice, idx, 'close' },
---                         }
---             table.insert(self.catmenu.voices, t)
---             t  =  {}
---          end
---       end
---       print("catmenu:\n", mano.f.dumptable(self.catmenu))
 
       self.catmenu         =  {}
       self.catmenu.voices  =  {}
@@ -294,10 +290,20 @@ function __mano_ui_input(action)
       self.o.notetext:SetPoint("TOPLEFT",    self.o.notelabel, "BOTTOMLEFT")
       self.o.notetext:SetPoint("TOPRIGHT",   self.o.notelabel, "BOTTOMRIGHT")
 
+      
+      -- CATICON & CATNAME
+      local caticon, cattext  =  nil, nil
+      if next(mano.categories) and mano.categories[mano.lastcategoryidx] ~= nil then
+         cattext  = mano.categories[mano.lastcategoryidx].name
+         caticon  = mano.categories[mano.lastcategoryidx].icon
+      else
+         cattext  = "???"
+         caticon  = "target_portrait_roguepoint.png.dds" 
+      end     
 
       -- Category Icon
-      self.o.caticon = UI.CreateFrame("Texture", "input_cat_icon_", self.o.frame)
-      self.o.caticon:SetTexture("Rift", mano.categories[mano.lastcategoryidx].icon or "target_portrait_roguepoint.png.dds")
+      self.o.caticon = UI.CreateFrame("Texture", "input_cat_icon_", self.o.frame)    
+      self.o.caticon:SetTexture("Rift", caticon)
       self.o.caticon:SetHeight(mano.gui.font.size * 1.5)
       self.o.caticon:SetWidth(mano.gui.font.size  * 1.5)
       self.o.caticon:SetLayer(3)
@@ -309,7 +315,7 @@ function __mano_ui_input(action)
          self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
       end
       self.o.cattext:SetHeight(mano.gui.font.size)
-      self.o.cattext:SetText(mano.categories[mano.lastcategoryidx].name)
+      self.o.cattext:SetText(cattext)
       self.o.cattext:SetLayer(3)
       self.o.cattext:SetVisible(true)
       self.o.cattext:SetPoint("TOPLEFT",  self.o.caticon, "TOPRIGHT",   mano.gui.borders.left, mano.gui.borders.top)
@@ -380,6 +386,7 @@ function __mano_ui_input(action)
                                                                            self.o.save =  false
                                                                            self.o.window:SetVisible(false)
                                                                            mano.events.canceltrigger( { save =  false } )
+                                                                           detacheventwatchers()
                                                                         end, "MaNo input: Cancel Button Pressed"
                                        )
 
@@ -394,6 +401,7 @@ function __mano_ui_input(action)
                                                                            self.o.save =  true
                                                                            self.o.window:SetVisible(false)
                                                                            mano.events.savetrigger(self:GetInput())
+                                                                           detacheventwatchers()
                                                                         end,
                                                                         "MaNo input: Save Button Pressed"
                                     )
@@ -410,9 +418,17 @@ function __mano_ui_input(action)
       self.o.frame:SetHeight(mano.f.round(maxY - maxY))
       self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 --       print(string.format("new Height: (%s)", self.o.window:GetHeight()))
-   end
 
-   if not self.initialized then  __init(action) end
+--       -- Custom Events
+--       Command.Event.Attach(Event.MaNo.userinput.cancel,           function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+--       Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")   
+
+      attacheventwatchers()
+
+   end
+      
+
+--    if not self.initialized then  __init(action) end
 
    return self
 

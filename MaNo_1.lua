@@ -50,19 +50,24 @@ local function savevariables(_, addonname)
 
    if addon.name == addonname then
 
+      -- Save Character GUI data
       local a        =  {}
       a.mmbtn        =  mano.gui.mmbtn
       a.win          =  mano.gui.win
       manoguidata    =  a
 
-      if next(mano.mapnote.notes) then
-         manonotesdb    =  mano.mapnote.notes
-      end
+      -- Save Character Notes Db
+      if next(mano.mapnote.notes)      ~= nil then manonotesdb    =  mano.mapnote.notes      end
 
-      if next(mano.sharednote.notes) then
-         manoextnotesdb =  mano.sharednote.notes
-      end
-
+      -- Save Character Shared Notes Db
+      if next(mano.sharednote.notes)   ~= nil then manoextnotesdb =  mano.sharednote.notes   end
+      
+      -- Save Character Categories
+      if next(mano.categories)         ~= nil then manousercats   =  mano.categories         end
+      
+      -- Shared Categories
+      if next(mano.sharedcategories)   ~= nil then manosharedcats =  mano.sharedcategories   end
+      
    end
 
    detacheventsonexit()
@@ -74,34 +79,47 @@ local function loadvariables(_, addonname)
 
    if addon.name == addonname then
 
+      -- Character GUI data
       if manoguidata then
-
-         local a  =  manoguidata
-         local key, val = nil, nil
-         for key, val in pairs(a) do
-            mano.gui[key]  =  val
---             mano.f.dprint(string.format("Importing %s: %s", key, val))
---             if mano.flags.debug then
---                local vvar, vval = nil, nil
---                for vvar, vval in pairs(val) do
---                   print(string.format("  [%s]=[%s]", vvar, vval))
---                end
---             end
-         end
-
+         local a        =  manoguidata
+         local key, val =  nil, nil
+         for key, val in pairs(a) do   mano.gui[key]  =  val   end
       end
 
+      -- Character Notes Db
       local notesdb  =  {}
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
-            notesdb  =  manonotesdb
+         notesdb  =  manonotesdb
       end
       mano.mapnote   =  __map_notes(notesdb)
 
+      -- Shared Notes Db
       local shareddb =  {}
       if manoextnotesdb ~= nil and next(manoextnotesdb) ~= nil then
          shareddb =  manoextnotesdb
       end
       mano.sharednote   =  __map_notes(shareddb)
+      
+      -- Character Categories
+      if manousercats ~= nil and next(manousercats) ~= nil then
+         mano.categories   =  manousercats
+      else
+         if next(mano.categories) == nil then
+            mano.categories = mano.base.usercategories
+         end
+      end
+      local k, v  =  nil, nil
+      for k, v in pairs(mano.categories) do mano.lastcategoryidx  =  math.max(mano.lastcategoryidx, k)  end      
+      
+      -- Shared Categories
+      if manosharedcats ~= nil and next(manosharedcats) ~= nil then
+         mano.sharedcategories   =  manosharedcats
+      else
+         if next(mano.sharedcategories) == nil then
+            mano.sharedcategories = mano.base.sharedcategories
+         end
+      end
+      for k, v in pairs(mano.sharedcategories) do mano.lastsharedcategoryidx  =  math.max(mano.lastsharedcategoryidx, k)  end      
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
@@ -168,9 +186,9 @@ end
 Command.Event.Attach(Event.Unit.Availability.Full,          startmeup,                                "MaNo: startup event")
 Command.Event.Attach(Event.Addon.SavedVariables.Load.End,   loadvariables,	                           "MaNo: Load Variables")
 Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables,                            "MaNo: Save Variables")
--- Custom Events
-Command.Event.Attach(Event.MaNo.userinput.cancel,           function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
-Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+-- -- Custom Events
+-- Command.Event.Attach(Event.MaNo.userinput.cancel,           function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+-- Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
 --
 -- Event tracking initialization -- end
 --
@@ -178,5 +196,6 @@ Command.Event.Attach(Event.MaNo.userinput.save,             function(...) mano.f
 table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
 --
 -- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
-if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
+-- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
+if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
 --

@@ -152,7 +152,7 @@ local function parseslashcommands(params)
 
       if i  == "add"         then
          print("pre mano.mapnote.new")
-         mano.mapnoteinput.o.window:SetVisible(true)
+         mano.mapnoteinput:show('new')
          print("post mano.mapnote.new")
       end
    end
@@ -348,15 +348,25 @@ mano.player                =  {}
 --
 -- Default Categories
 --
-mano.categories            =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
+-- mano.categories            =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
+--                                  [2]   =  {  name="Artifacts",         icon="macro_icon_smile.dds" },
+--                                  [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
+--                                  [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
+--                               }
+mano.categories            =  {}
+mano.lastcategoryidx       =  0
+mano.sharedcategories      =  {}
+mano.lastsharedcategoryidx =  0
+--
+-- Bases
+--
+mano.base                  =  {}
+mano.base.usercategories   =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
                                  [2]   =  {  name="Artifacts",         icon="macro_icon_smile.dds" },
                                  [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
                                  [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
                               }
-
-
-mano.lastcategoryidx       =  1
---
+mano.base.sharedcategories =  mano.base.usercategories
 --
 -- end declarations
 --
