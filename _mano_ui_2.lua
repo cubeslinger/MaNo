@@ -279,9 +279,17 @@ function __mano_ui()
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
       local counter  =  0
 
-      for _, tbl in ipairs(zonedata) do
-         local newframe =  mano.gui.shown.window.addline(tbl)
-         counter        =  counter + 1
+--       for _, tbl in ipairs(zonedata) do
+--          local newframe =  mano.gui.shown.window.addline(tbl)
+--          counter        =  counter + 1
+--       end
+
+      for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
+--          for _, tbl in ipairs(zonedata) do
+         for _, tbl in ipairs(db) do
+            local newframe =  mano.gui.shown.window.addline(tbl)
+            counter        =  counter + 1
+         end
       end
 
       self.adjustheight()

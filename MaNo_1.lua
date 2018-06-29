@@ -59,6 +59,10 @@ local function savevariables(_, addonname)
          manonotesdb    =  mano.mapnote.notes
       end
 
+      if next(mano.sharednote.notes) then
+         manoextnotesdb =  mano.sharednote.notes
+      end
+
    end
 
    detacheventsonexit()
@@ -89,12 +93,15 @@ local function loadvariables(_, addonname)
 
       local notesdb  =  {}
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
---          if not mano.mapnote then
             notesdb  =  manonotesdb
---          end
       end
+      mano.mapnote   =  __map_notes(notesdb)
 
-      mano.mapnote =  __map_notes(notesdb)
+      local shareddb =  {}
+      if manoextnotesdb ~= nil and next(manoextnotesdb) ~= nil then
+         shareddb =  manoextnotesdb
+      end
+      mano.sharednote   =  __map_notes(shareddb)
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end

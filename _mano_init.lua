@@ -6,10 +6,102 @@
 local addon, mano = ...
 
 --
+-- local function userinputsave(handle, params)
+--
+--    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
+-- --    print("params: ", mano.f.dumptable(params))
+--
+--    local userinput   =  mano.mapnoteinput:GetInput()
+--
+--    if userinput ~= nil and next(userinput) then
+--
+--       if userinput.save ~= nil and userinput.save == true then
+--
+--          -- add note to User's DB
+--          local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
+--                                                       text        =  userinput.note,
+--                                                       category    =  userinput.category,
+--                                                       playerpos   =  nil,
+--                                                       idx         =  nil,
+--                                                       timestamp   =  nil,
+--                                                    }
+--                                                 )
+--
+-- --          local	t        =  {  text        = noterecord.text,
+-- --                               category    = noterecord.category,
+-- --                               timestamp   = noterecord.timestamp,
+-- --                               playerpos   = {   x        =  noterecord.playerpos.x,
+-- --                                                 y        =  noterecord.playerpos.y,
+-- --                                                 z        =  noterecord.playerpos.z,
+-- --                                                 zonename =  noterecord.playerpos.zonename,
+-- --                                              },
+-- --                               zoneid      =   noterecord.playerpos.zoneid,
+-- --                               zonename    =   noterecord.playerpos.zonename,
+-- --                               zonetype    =   noterecord.playerpos.zonetype,
+-- --          }
+--
+--          -- Show new Note in Index
+--
+-- --          local newframe       =  mano.gui.shown.window.addline(t)
+-- --          local newframe       =  mano.gui.shown.window.addline(t)
+--          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+--       end
+--    end
+--
+--    return
+--
+-- end
+
+-- local function userinputsave(handle, params)
+--
+--    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
+--    --    print("params: ", mano.f.dumptable(params))
+--
+--    local userinput   =  mano.mapnoteinput:GetInput()
+--
+--    if userinput ~= nil and next(userinput) then
+--
+--       if userinput.save ~= nil and userinput.save == true then
+--
+--          -- add note to User's DB
+--          local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
+--             text        =  userinput.note,
+--             category    =  userinput.category,
+--             playerpos   =  nil,
+--             idx         =  nil,
+--             timestamp   =  nil,
+--          }
+--       )
+--
+--       --          local	t        =  {  text        = noterecord.text,
+--                                        --                               category    = noterecord.category,
+--                                        --                               timestamp   = noterecord.timestamp,
+--                                        --                               playerpos   = {   x        =  noterecord.playerpos.x,
+--                                                                                           --                                                 y        =  noterecord.playerpos.y,
+--                                                                                           --                                                 z        =  noterecord.playerpos.z,
+--                                                                                           --                                                 zonename =  noterecord.playerpos.zonename,
+--                                                                                           --                                              },
+--                                        --                               zoneid      =   noterecord.playerpos.zoneid,
+--                                        --                               zonename    =   noterecord.playerpos.zonename,
+--                                        --                               zonetype    =   noterecord.playerpos.zonetype,
+--                                        --          }
+--
+--       -- Show new Note in Index
+--
+--       --          local newframe       =  mano.gui.shown.window.addline(t)
+--       --          local newframe       =  mano.gui.shown.window.addline(t)
+--       mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+--    end
+-- end
+--
+-- return
+--
+-- end
+
 local function userinputsave(handle, params)
 
    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
---    print("params: ", mano.f.dumptable(params))
+   --    print("params: ", mano.f.dumptable(params))
 
    local userinput   =  mano.mapnoteinput:GetInput()
 
@@ -17,40 +109,33 @@ local function userinputsave(handle, params)
 
       if userinput.save ~= nil and userinput.save == true then
 
-         -- add note to User's DB
-         local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
-                                                      text        =  userinput.note,
-                                                      category    =  userinput.category,
-                                                      playerpos   =  nil,
-                                                      idx         =  nil,
-                                                      timestamp   =  nil,
-                                                   }
-                                                )
+         local noterecord           =  {}
+         local t  =  {  label       =  userinput.label,
+                        text        =  userinput.note,
+                        category    =  userinput.category,
+                        playerpos   =  nil,
+                        idx         =  nil,
+                        timestamp   =  nil,
+                     }
 
---          local	t        =  {  text        = noterecord.text,
---                               category    = noterecord.category,
---                               timestamp   = noterecord.timestamp,
---                               playerpos   = {   x        =  noterecord.playerpos.x,
---                                                 y        =  noterecord.playerpos.y,
---                                                 z        =  noterecord.playerpos.z,
---                                                 zonename =  noterecord.playerpos.zonename,
---                                              },
---                               zoneid      =   noterecord.playerpos.zoneid,
---                               zonename    =   noterecord.playerpos.zonename,
---                               zonetype    =   noterecord.playerpos.zonetype,
---          }
 
-         -- Show new Note in Index
+         if userinput.shared == true then
+            noterecord     =  mano.sharednote.new(t)
+         else
+            -- add note to User's DB
+            noterecord     =  mano.mapnote.new(t)
+         end
 
---          local newframe       =  mano.gui.shown.window.addline(t)
---          local newframe       =  mano.gui.shown.window.addline(t)
-         mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
-      end
+      mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
    end
+end
 
-   return
+return
 
 end
+
+
+
 
 local function userinputcancel()
 
@@ -268,6 +353,8 @@ mano.categories            =  {  [1]   =  {  name="Default",           icon="mac
                                  [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
                                  [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
                               }
+
+
 mano.lastcategoryidx       =  1
 --
 --

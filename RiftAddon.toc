@@ -29,6 +29,7 @@ RunOnStartup = {
 }
 
 SavedVariables = {
-   manoguidata =  'character',
-   manonotesdb =  'character',
+   manoguidata    =  'character',
+   manonotesdb    =  'character',
+   manoextnotesdb =  'global',
 }

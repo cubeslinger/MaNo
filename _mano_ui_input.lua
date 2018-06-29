@@ -124,7 +124,8 @@ function __mano_ui_input(action)
                      note     =  self.o.notetext:GetText(),
                      category =  self.o.cattext:GetText(),
                      icon     =  self.o.caticon:GetTexture(),
-                     save     =  self.o.save
+                     save     =  self.o.save,
+                     shared   =  self.o.sharedbutton:GetChecked()
                   }
       return t
 
@@ -142,7 +143,7 @@ function __mano_ui_input(action)
 --             print("------------------------------------------")
 --             print("catmenu TBL:\n", mano.f.dumptable(tbl))
 --             print("------------------------------------------")
-            
+
 --             for _, category in pairs(mano.categories) do
                local t  =  {  name     =  tbl.name,
                               icon     =  tbl.icon,
@@ -307,6 +308,7 @@ function __mano_ui_input(action)
       if mano.gui.font.name then
          self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
       end
+      self.o.cattext:SetHeight(mano.gui.font.size)
       self.o.cattext:SetText(mano.categories[mano.lastcategoryidx].name)
       self.o.cattext:SetLayer(3)
       self.o.cattext:SetVisible(true)
@@ -327,13 +329,32 @@ function __mano_ui_input(action)
       self.o.catmenu:hide()
 
       -- Category AddButton
-      self.o.categoryaddbutton = UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)
+      self.o.categoryaddbutton   =  UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)
       self.o.categoryaddbutton:SetTexture("Rift", "AbilityBinder_I15.dds")
       self.o.categoryaddbutton:SetHeight(mano.gui.font.size)
       self.o.categoryaddbutton:SetWidth(mano.gui.font.size)
       self.o.categoryaddbutton:SetLayer(3)
       self.o.categoryaddbutton:SetPoint("TOPLEFT",   self.o.categorybutton, "TOPRIGHT", mano.gui.borders.left,	0)
       self.o.categoryaddbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() print("Category ADD click!") end, "MaNo: Category Button Pressed" )
+
+      -- Shared Button
+      self.o.sharedbutton  =  UI.CreateFrame("RiftCheckbox", "mano_input_shared_button", self.o.frame)
+      self.o.sharedbutton:SetHeight(mano.gui.font.size * 1.5)
+      self.o.sharedbutton:SetWidth(mano.gui.font.size  * 1.5)
+      self.o.sharedbutton:SetLayer(3)
+--       self.o.sharedbutton:SetPoint("TOPLEFT",   self.o.frame, "TOPRIGHT", 0,	-mano.gui.borders.bottom)
+      self.o.sharedbutton:SetPoint("TOPRIGHT", self.o.notetext, "BOTTOMRIGHT", 0, mano.gui.borders.top)
+
+      -- Shared Label
+      self.o.sharedlabel   =  UI.CreateFrame("Text", "mano_input_label_label", self.o.frame)
+      if mano.gui.font.name then self.o.sharedlabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+      self.o.sharedlabel:SetFontSize(mano.gui.font.size)
+      self.o.sharedlabel:SetText("Shared")
+      self.o.sharedlabel:SetLayer(3)
+      self.o.sharedlabel:SetVisible(true)
+      self.o.sharedlabel:SetPoint("TOPRIGHT",   self.o.sharedbutton, "TOPLEFT",  -mano.gui.borders.right, 0)
+
+
 
    -- ----------------------------------------------------------------------
          --          playerpos   =  playerpos,
