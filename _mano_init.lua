@@ -99,11 +99,15 @@ local addon, mano = ...
 -- end
 
 local function userinputsave(handle, params)
+   
+   print("*** SAVE EVENT *** HANDLE ***\n:", mano.f.dumptable(handle))
 
-   print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
-   --    print("params: ", mano.f.dumptable(params))
+--    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
+--       print("params: \n", mano.f.dumptable(params))
 
-   local userinput   =  mano.mapnoteinput:GetInput()
+--    local userinput   =  mano.mapnoteinput:GetInput()
+   
+   local userinput   =  params
 
    if userinput ~= nil and next(userinput) then
 
@@ -116,15 +120,15 @@ local function userinputsave(handle, params)
                         playerpos   =  nil,
                         idx         =  nil,
                         timestamp   =  nil,
+                        shared      =  userinput.shared,
                      }
 
 
-         if userinput.shared == true then
-            noterecord     =  mano.sharednote.new(t)
-         else
-            -- add note to User's DB
-            noterecord     =  mano.mapnote.new(t)
-         end
+--          print(string.format("Shared Note: (%s)", userinput.shared))
+         
+         if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t)  -- add note to Shared Notes Db
+                                       else  noterecord     =  mano.mapnote.new(t)     -- add note to User Notes Db
+         end   
 
       mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
    end
@@ -152,8 +156,19 @@ local function parseslashcommands(params)
 
       if i  == "add"         then
          print("pre mano.mapnote.new")
-         mano.mapnoteinput:show('new')
-         print("post mano.mapnote.new")
+         -- ...
+         if mano.mapnoteinput.initialized then
+            local isonscreen  =  mano.mapnoteinput.o.window:GetVisible()
+         else
+            local isonscreen  =  false
+         end
+         
+         if not isonscreen then
+            mano.mapnoteinput:show('new')
+            print("post mano.mapnote.new")
+         else
+            print("Input Form already on Screen")
+         end
       end
    end
 

@@ -97,6 +97,7 @@ function __mano_ui()
       end
       T.text:SetFontSize(mano.gui.font.size)
       T.text:SetText(t.label or t.text)
+      if T.shared ~= nil and T.shared then  T.text:SetFontColor(unpack(mano.gui.color.green))  end
       T.text:SetLayer(3)
       T.text:SetVisible(true)
       T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
@@ -284,9 +285,15 @@ function __mano_ui()
 --          counter        =  counter + 1
 --       end
 
+      -- Search in both User's notes db and sharenotesdb
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
 --          for _, tbl in ipairs(zonedata) do
          for _, tbl in ipairs(db) do
+            
+            print("--------------------------------")
+            print("ui2 addline:\n", mano.f.dumptable(tbl))
+            print("--------------------------------")
+            
             local newframe =  mano.gui.shown.window.addline(tbl)
             counter        =  counter + 1
          end

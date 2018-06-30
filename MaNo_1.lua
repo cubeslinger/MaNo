@@ -12,8 +12,6 @@ mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Ve
 local function detacheventsonexit()
 
    Command.Event.Detach(Event.Unit.Detail.Zone,       function(...) zonechangeevent(...)        end,  "MaNo: Zone Change Event")
-   Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
-   Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
 
    return
 end
@@ -197,5 +195,5 @@ table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(
 --
 -- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 -- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
-if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
+if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input('new') end
 --
