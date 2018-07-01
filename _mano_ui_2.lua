@@ -74,7 +74,9 @@ function __mano_ui()
 
       -- Note's Category Icon |<--
       T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
-      T.icon:SetTexture("Rift", t.icon or "target_portrait_roguepoint.png.dds")
+      local icon  =  mano.f.getcategoryicon(t.category)
+      if icon  == nil then icon   =  "target_portrait_roguepoint.png.dds"   end
+      T.icon:SetTexture("Rift", icon)
       T.icon:SetHeight(mano.gui.font.size * 1.5)
       T.icon:SetWidth(mano.gui.font.size  * 1.5)
       T.icon:SetLayer(3)
@@ -96,8 +98,12 @@ function __mano_ui()
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
       T.text:SetFontSize(mano.gui.font.size)
-      T.text:SetText(t.label or t.text)
-      if T.shared ~= nil and T.shared then  T.text:SetFontColor(unpack(mano.gui.color.green))  end
+      local text  =  t.label or t.text      
+      if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared then  
+         T.text:SetFontColor(unpack(mano.gui.color.lightgreen))
+--          text  =  '<i>' .. text .. '</i>'
+      end
+      T.text:SetText(text, true)
       T.text:SetLayer(3)
       T.text:SetVisible(true)
       T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
@@ -151,15 +157,25 @@ function __mano_ui()
 
          -- icon  --
          newline.icon:SetVisible(true)
-         newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+--          newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
+         local icon  =  mano.f.getcategoryicon(t.category)
+         if icon  == nil then icon   =  "target_portrait_roguepoint.png.dds"   end
+         newline.icon:SetTexture("Rift", icon)
+         
 
          -- label or text  --
-         newline.text:SetText(t.label or t.text)
+--          newline.text:SetText(t.label or t.text)
+         local text  =  t.label or t.text      
+         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared then  
+--             text  =  '<i>' .. text .. '</i>'
+            newline.text:SetFontColor(unpack(mano.gui.color.lightgreen))
+         end
+         newline.text:SetText(text, true)
          newline.text:SetVisible(true)
-
+         
          -- Way Point Icon --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
-
+         
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
       end
@@ -280,20 +296,9 @@ function __mano_ui()
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
       local counter  =  0
 
---       for _, tbl in ipairs(zonedata) do
---          local newframe =  mano.gui.shown.window.addline(tbl)
---          counter        =  counter + 1
---       end
-
       -- Search in both User's notes db and sharenotesdb
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
---          for _, tbl in ipairs(zonedata) do
-         for _, tbl in ipairs(db) do
-            
-            print("--------------------------------")
-            print("ui2 addline:\n", mano.f.dumptable(tbl))
-            print("--------------------------------")
-            
+         for _, tbl in ipairs(db) do           
             local newframe =  mano.gui.shown.window.addline(tbl)
             counter        =  counter + 1
          end
@@ -507,3 +512,16 @@ function __mano_ui()
    return self
 
 end
+--[[
+Error: MaNo/_mano_ui_2.lua:171: attempt to index field 'customtbl' (a nil value)
+    In MaNo / MaNo: input: Save, event Event.MaNo.userinput.save
+stack traceback:
+	[C]: in function '__newindex'
+	MaNo/_mano_ui_2.lua:171: in function 'fetchlinefromstock'
+	MaNo/_mano_ui_2.lua:276: in function 'addline'
+	MaNo/_mano_ui_2.lua:296: in function 'loadlistbyzoneid'
+	MaNo/_mano_init.lua:40: in function 'userinputsave'
+	MaNo/_mano_ui_input.lua:29: in function <MaNo/_mano_ui_input.lua:29>
+	[C]: in function 'savetrigger'
+	MaNo/_mano_ui_input.lua:385: in function <MaNo/_mano_ui_input.lua:382>
+   ]]--

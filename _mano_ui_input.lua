@@ -157,7 +157,7 @@ function __mano_ui_input(action, modifytbl)
 --    local function __init(action)
    function self.show(_, action, modifytbl)
       
-      print(string.format("action=(%s)\n", mano.f.dumptable(action)))
+--       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
 
       self.o.save =  false
 

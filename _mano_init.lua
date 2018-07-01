@@ -5,102 +5,9 @@
 --
 local addon, mano = ...
 
---
--- local function userinputsave(handle, params)
---
---    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
--- --    print("params: ", mano.f.dumptable(params))
---
---    local userinput   =  mano.mapnoteinput:GetInput()
---
---    if userinput ~= nil and next(userinput) then
---
---       if userinput.save ~= nil and userinput.save == true then
---
---          -- add note to User's DB
---          local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
---                                                       text        =  userinput.note,
---                                                       category    =  userinput.category,
---                                                       playerpos   =  nil,
---                                                       idx         =  nil,
---                                                       timestamp   =  nil,
---                                                    }
---                                                 )
---
--- --          local	t        =  {  text        = noterecord.text,
--- --                               category    = noterecord.category,
--- --                               timestamp   = noterecord.timestamp,
--- --                               playerpos   = {   x        =  noterecord.playerpos.x,
--- --                                                 y        =  noterecord.playerpos.y,
--- --                                                 z        =  noterecord.playerpos.z,
--- --                                                 zonename =  noterecord.playerpos.zonename,
--- --                                              },
--- --                               zoneid      =   noterecord.playerpos.zoneid,
--- --                               zonename    =   noterecord.playerpos.zonename,
--- --                               zonetype    =   noterecord.playerpos.zonetype,
--- --          }
---
---          -- Show new Note in Index
---
--- --          local newframe       =  mano.gui.shown.window.addline(t)
--- --          local newframe       =  mano.gui.shown.window.addline(t)
---          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
---       end
---    end
---
---    return
---
--- end
-
--- local function userinputsave(handle, params)
---
---    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
---    --    print("params: ", mano.f.dumptable(params))
---
---    local userinput   =  mano.mapnoteinput:GetInput()
---
---    if userinput ~= nil and next(userinput) then
---
---       if userinput.save ~= nil and userinput.save == true then
---
---          -- add note to User's DB
---          local noterecord     =  mano.mapnote.new( {  label       =  userinput.label,
---             text        =  userinput.note,
---             category    =  userinput.category,
---             playerpos   =  nil,
---             idx         =  nil,
---             timestamp   =  nil,
---          }
---       )
---
---       --          local	t        =  {  text        = noterecord.text,
---                                        --                               category    = noterecord.category,
---                                        --                               timestamp   = noterecord.timestamp,
---                                        --                               playerpos   = {   x        =  noterecord.playerpos.x,
---                                                                                           --                                                 y        =  noterecord.playerpos.y,
---                                                                                           --                                                 z        =  noterecord.playerpos.z,
---                                                                                           --                                                 zonename =  noterecord.playerpos.zonename,
---                                                                                           --                                              },
---                                        --                               zoneid      =   noterecord.playerpos.zoneid,
---                                        --                               zonename    =   noterecord.playerpos.zonename,
---                                        --                               zonetype    =   noterecord.playerpos.zonetype,
---                                        --          }
---
---       -- Show new Note in Index
---
---       --          local newframe       =  mano.gui.shown.window.addline(t)
---       --          local newframe       =  mano.gui.shown.window.addline(t)
---       mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
---    end
--- end
---
--- return
---
--- end
-
 local function userinputsave(handle, params)
    
-   print("*** SAVE EVENT *** HANDLE ***\n:", mano.f.dumptable(handle))
+--    print("*** SAVE EVENT *** HANDLE ***\n:", mano.f.dumptable(handle))
 
 --    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
 --       print("params: \n", mano.f.dumptable(params))
@@ -126,19 +33,35 @@ local function userinputsave(handle, params)
 
 --          print(string.format("Shared Note: (%s)", userinput.shared))
          
-         if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t)  -- add note to Shared Notes Db
-                                       else  noterecord     =  mano.mapnote.new(t)     -- add note to User Notes Db
+         if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
+                                       else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
          end   
 
-      mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+         mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+      end
    end
+
+   return
+
 end
 
-return
-
+local function getcategoryicon(category)
+   
+   local icon  =  nil
+   local tbl   =  {}
+   local db    =  {}
+   
+   for _, tbl in pairs({mano.categories, mano.sharedcategories}) do
+      for _, db in pairs(tbl) do
+--          print("db:\n", mano.f.dumptable(db))
+         if category == db.name then icon  =  db.icon   break end
+      end
+   end
+   
+   print(string.format("getcategoryicon: category=(%s) found(%s)", category, icon))
+   
+   return   icon
 end
-
-
 
 
 local function userinputcancel()
@@ -292,6 +215,7 @@ mano.gui.color.black       =  {  0,  0,  0, .5}
 mano.gui.color.deepblack   =  {  0,  0,  0,  1}
 mano.gui.color.red         =  { .2,  0,  0, .5}
 mano.gui.color.green       =  {  0,  1,  0, .5}
+mano.gui.color.lightgreen  =  {  0,  6,  0, .5}
 mano.gui.color.blue        =  {  0,  0,  6, .1}
 mano.gui.color.lightblue   =  {  0,  0, .4, .1}
 mano.gui.color.darkblue    =  {  0,  0, .2, .1}
@@ -331,6 +255,7 @@ mano.f.setwaypoint         =  setwaypoint
 mano.f.dumptable           =  dumptable
 mano.f.userinputcancel     =  userinputcancel
 mano.f.userinputsave       =  userinputsave
+mano.f.getcategoryicon     =  getcategoryicon
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end
