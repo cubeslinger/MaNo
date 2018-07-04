@@ -5,14 +5,10 @@
 --
 local addon, mano = ...
 
-local function userinputsave(handle, params)
+local function userinputsave(handle, action, params)
    
---    print("*** SAVE EVENT *** HANDLE ***\n:", mano.f.dumptable(handle))
-
---    print(string.format("userinputsave: handle=(%s) params=(%s)", handle, params))
---       print("params: \n", mano.f.dumptable(params))
-
---    local userinput   =  mano.mapnoteinput:GetInput()
+   print(string.format("userinputsave: handle=(%s) action=(%s) params=(%s)", handle, action, params))
+   print("params:\n", mano.f.dumptable(params))
    
    local userinput   =  params
 
@@ -20,23 +16,47 @@ local function userinputsave(handle, params)
 
       if userinput.save ~= nil and userinput.save == true then
 
-         local noterecord           =  {}
-         local t  =  {  label       =  userinput.label,
-                        text        =  userinput.note,
-                        category    =  userinput.category,
-                        playerpos   =  nil,
-                        idx         =  nil,
-                        timestamp   =  nil,
-                        shared      =  userinput.shared,
-                     }
-
+         local noterecord  =  {}
+         local t           =  {}
+         
+         if action   == 'modify' then
+            
+            print("save modify")
+            
+            t  =  {	label       =  userinput.label,
+                     text        =  userinput.note,
+                     category    =  userinput.category,
+                     playerpos   =  userinput.playerpos,
+                     idx         =  userinput.idx,
+                     timestamp   =  userinput.timestamp,
+                     shared      =  userinput.shared,
+                  }            
+            if userinput.shared == true   then  noterecord     =  mano.sharednote.modify(t.playerpos.zonename, t.idx, t) -- add note to Shared Notes Db
+                                          else  noterecord     =  mano.mapnote.modify(t.playerpos.zonename, t.idx, t)    -- add note to User Notes Db
+            end
+                  
+         else
+            
+            print("save New")
+            
+            t  =  {  label       =  userinput.label,
+                     text        =  userinput.note,
+                     category    =  userinput.category,
+                     playerpos   =  nil,
+                     idx         =  nil,
+                     timestamp   =  nil,
+                     shared      =  userinput.shared,
+                  }
+            if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
+                                          else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
+            end   
+                  
+         end
 
 --          print(string.format("Shared Note: (%s)", userinput.shared))
-         
-         if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
-                                       else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
-         end   
 
+         print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
+         
          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
       end
    end
@@ -58,7 +78,7 @@ local function getcategoryicon(category)
       end
    end
    
-   print(string.format("getcategoryicon: category=(%s) found(%s)", category, icon))
+--    print(string.format("getcategoryicon: category=(%s) found(%s)", category, icon))
    
    return   icon
 end
@@ -93,6 +113,7 @@ local function parseslashcommands(params)
             print("Input Form already on Screen")
          end
       end
+           
    end
 
    return

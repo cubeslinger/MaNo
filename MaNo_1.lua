@@ -68,7 +68,7 @@ local function savevariables(_, addonname)
       
    end
 
-   detacheventsonexit()
+--    detacheventsonexit()
 
    return
 end

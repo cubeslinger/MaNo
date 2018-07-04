@@ -155,9 +155,11 @@ function __mano_ui_input(action, modifytbl)
    end
 
 --    local function __init(action)
-   function self.show(_, action, modifytbl)
+   function self.show(dummy, action, modifytbl)
       
 --       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
+      print(string.format("dummy=%s, action=%s. modifytbl=%s\n", dummy, action, modifytbl))
+      print("modifytbl\n", mano.f.dumptable(modifytbl))
 
       self.o.save =  false
 
@@ -230,7 +232,7 @@ function __mano_ui_input(action, modifytbl)
                self.o.labellabel:SetFont(mano.addon.name, mano.gui.font.name)
             end
             self.o.labellabel:SetFontSize(mano.gui.font.size)
-            self.o.labellabel:SetText("Title:")
+            self.o.labellabel:SetText("Title")
             self.o.labellabel:SetLayer(3)
             self.o.labellabel:SetVisible(true)
             self.o.labellabel:SetPoint("TOPLEFT",    self.o.frame, "TOPLEFT",  mano.gui.borders.left,     mano.gui.borders.top)
@@ -254,19 +256,23 @@ function __mano_ui_input(action, modifytbl)
                self.o.notelabel:SetFont(mano.addon.name, mano.gui.font.name)
             end
             self.o.notelabel:SetFontSize(mano.gui.font.size)
-            self.o.notelabel:SetText("Note:")
+            self.o.notelabel:SetText("Note")
             self.o.notelabel:SetLayer(3)
             self.o.notelabel:SetVisible(true)
             self.o.notelabel:SetPoint("TOPLEFT",    self.o.labeltext, "BOTTOMLEFT",    0, mano.gui.borders.top)
             self.o.notelabel:SetPoint("TOPRIGHT",   self.o.labeltext, "BOTTOMRIGHT",   0,   mano.gui.borders.top)
 
             -- Note's input field
-            self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+--             self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+            self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)            
             if mano.gui.font.name then
                self.o.noteltext:SetFont(mano.addon.name, mano.gui.font.name)
             end
+            self.o.notetext:SetFontSize(mano.gui.font.size)
             self.o.notetext:SetText("")
+            self.o.notetext:SetWordwrap(true)
             self.o.notetext:SetLayer(3)
+            self.o.notetext:SetHeight(mano.gui.font.size * 4)
             self.o.notetext:SetVisible(true)
             self.o.notetext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
             self.o.notetext:SetPoint("TOPLEFT",    self.o.notelabel, "BOTTOMLEFT")
@@ -279,8 +285,8 @@ function __mano_ui_input(action, modifytbl)
                cattext  = mano.categories[mano.lastcategoryidx].name
                caticon  = mano.categories[mano.lastcategoryidx].icon
             else
-               cattext  = "???"
-               caticon  = "target_portrait_roguepoint.png.dds" 
+               cattext  = "Default"
+               caticon  = mano.f.getcategoryicon(cattext)
             end     
 
             -- Category Icon
@@ -313,7 +319,8 @@ function __mano_ui_input(action, modifytbl)
 
             -- Category Create Menu
             self.o.catmenu     = {}
-            self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
+--             self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
+            self.o.catmenu     = menu(self.o.cattext, self.catmenu)
             self.o.catmenu:hide()
 
             -- Category AddButton
@@ -379,13 +386,42 @@ function __mano_ui_input(action, modifytbl)
             self.o.savebutton:SetWidth(mano.gui.font.size*2)
             self.o.savebutton:SetLayer(3)
             self.o.savebutton:SetPoint("BOTTOMRIGHT",   self.o.frame, "BOTTOMRIGHT", -mano.gui.borders.right,	-mano.gui.borders.bottom)
-            self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                                 self.o.save =  true
-                                                                                 self.o.window:SetVisible(false)
-                                                                                 mano.events.savetrigger(self:GetInput())
---                                                                                  detacheventwatchers()
-                                                                              end,
-                                                                              "MaNo input: Save Button Pressed"
+            self.o.savebutton:EventAttach(   Event.UI.Input.Mouse.Left.Click,   
+                                             function()
+                                                self.o.save =  true
+                                                self.o.window:SetVisible(false)
+                                                if action   == 'modify' then
+
+--                                                 local t  =  {  label    =  self.o.labeltext:GetText(),
+--                                                                note     =  self.o.notetext:GetText(),
+--                                                                category =  self.o.cattext:GetText(),
+--                                                                icon     =  icon,
+--                                                                save     =  self.o.save,
+--                                                                shared   =  self.o.sharedbutton:GetChecked()
+--                                                             }                                                                                                     
+                                                   
+                                                   local t     =  modifytbl                                                                                    
+                                                   t.label     =  self.o.notetext:GetText()
+                                                   t.note      =  self.o.labeltext:GetText()
+                                                   t.category  =  self.o.cattext:GetText()
+                                                   t.icon      =  self.o.caticon:GetTexture()
+                                                   t.save      =  self.o.save
+                                                   
+--                                                    if modifytbl.customtbl ~= nil and next(modifytbl.customtbl ~= nil) then
+                                                      if modifytbl.customtbl ~= nil then
+                                                      t.customtbl =  modifytbl.customtbl
+                                                   else
+                                                      t.customtbl =	{}
+                                                   end
+                                                   t.customtbl.shared   =  self.o.sharedbutton  
+                                                   
+                                                   mano.events.savetrigger(action, t)
+                                                else
+                                                   mano.events.savetrigger(action, self:GetInput())
+                                                end
+--                                              detacheventwatchers()
+                                                end,
+                                                "MaNo input: Save Button Pressed"
                                           )
 
          
@@ -404,38 +440,44 @@ function __mano_ui_input(action, modifytbl)
          
          self.o.labeltext:SetKeyFocus(true)
    
-      else       
+      end       
          
-         if action   == 'new' then
-            -- New Note but not first
-            print("New Note but not first")
+      if action   == 'new' then
+         -- New Note but not first
+         print("New Note but not first")
 
-            self.o.labeltext:SetText("")
-            self.o.notetext:SetText("")
-            self.o.window:SetVisible(true)
-            self.o.sharedbutton:SetChecked(false)
+         self.o.labeltext:SetText("")
+         self.o.notetext:SetText("")
+         self.o.window:SetVisible(true)
+         self.o.sharedbutton:SetChecked(false)
 
---             attacheventwatchers()
-            self.o.labeltext:SetKeyFocus(true)
-         else
-            print("MODIFY Note")
-            -- modify
-            local t  =  {  label =  "",   text  =  "" }
-            
-            if modifytbl.label   ~= nil   then  t.label  =  modifytbl.label   end
-            if modifytbl.name    ~= nil   then  t.name   =  modifytbl.name    end
-            
-            self.o.labeltext:SetText(t.label)
-            self.o.notetext:SetText(t.text)
-            self.o.window:SetVisible(true)
-            self.o.sharedbutton:SetChecked(false)
-
---             attacheventwatchers()
-            self.o.labeltext:SetKeyFocus(true)
-            
+--          attacheventwatchers()
+         self.o.labeltext:SetKeyFocus(true)
+      else
+         print("MODIFY Note")
+         -- modify
+         local t  =  {  label =  "",   text  =  "", shared  =  false, category   =  "",   caticon  =  "" }
+         
+         if modifytbl.label      ~= nil   then  t.label  =  modifytbl.label   end
+         if modifytbl.name       ~= nil   then  t.name   =  modifytbl.name    end
+         if modifytbl.customtbl  ~= nil   and 
+            modifytbl.customtbl.shared ~= nil then  t.shared   =  modifytbl.customtbl.shared  
          end
+         if modifytbl.category	~= nil   then  t.category	=  modifytbl.category   end
+         if modifytbl.icon			~= nil   then  t.icon		=  modifytbl.icon	      end
          
+         self.o.labeltext:SetText(t.label)
+         self.o.notetext:SetText(t.text)
+         self.o.window:SetVisible(true)
+         if t.category  ~= nil   then  self.o.cattext:SetText(t.category)		end
+         if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", mano.f.getcategoryicon(t.category))   end
+         self.o.sharedbutton:SetChecked(t.shared)
+
+--          attacheventwatchers()
+         self.o.labeltext:SetKeyFocus(true)            
       end
+         
+--       end
    
    end
 

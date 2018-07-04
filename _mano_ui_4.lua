@@ -1,5 +1,5 @@
 --
--- Addon       _mano_ui_2.lua
+-- Addon       _mano_ui_4.lua
 -- Author      marcob@marcob.org
 -- StartDate   29/05/2017
 --
@@ -30,13 +30,48 @@ function __mano_ui()
       return count
    end
 
-   local function setzonetitlebyid(zoneid, count)
+--    local function setzonetitlebyid(zoneid, count)
+-- 
+--       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
+-- 
+--       if bool then
+--          if zonedata.name ~= self.lastzone  then
+--             self.o.titlezone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+--             self.lastzone  =	zonedata.name
+--          end
+--       end
+-- 
+--       return
+--    end
+
+--    local function modifynote(zonename, idx, shared)
+   local function modifynote(t, customtbl)
+      
+      print("modifynote(t)\n", mano.f.dumptable(t))
+      print("modifynote(customtbl)\n", mano.f.dumptable(customtbl))
+
+      local note  =  {}
+      
+      if	shared then
+         note  =  mano.sharednote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
+      else
+         note  =  mano.mapnote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)               
+      end           
+      
+      if note  ~= nil and next(note) ~= nil then
+         mano.mapnoteinput:show('modify', note) 
+      end
+      
+      return
+   end
+
+   local function setstatusbarbyzoneid(zoneid, count)
 
       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
 
       if bool then
          if zonedata.name ~= self.lastzone  then
-            self.o.titlezone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+            self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
             self.lastzone  =	zonedata.name
          end
       end
@@ -72,7 +107,7 @@ function __mano_ui()
          T.frame:SetPoint("TOPRIGHT", parent, "TOPRIGHT",   -mano.gui.borders.right,   mano.gui.borders.top)
       end
 
-      -- Note's Category Icon |<--
+      -- Note's Category Icon ||<--
       T.icon = UI.CreateFrame("Texture", "line_icon_" .. self.lineid, T.frame)
       local icon  =  mano.f.getcategoryicon(t.category)
       if icon  == nil then icon   =  "target_portrait_roguepoint.png.dds"   end
@@ -82,16 +117,31 @@ function __mano_ui()
       T.icon:SetLayer(3)
       T.icon:SetPoint("TOPLEFT",    T.frame, "TOPLEFT",  mano.gui.borders.left*2,     1)
 
-      -- Way Point Icon -->|
+      -- Way Point Icon -->||
       T.wpicon = UI.CreateFrame("Texture", "line_icon_wp" .. self.lineid, T.frame)
---       T.wpicon:SetTexture("Rift", "target_portrait_roguepoints_off.png.dds")
       T.wpicon:SetTexture("Rift", "ze_deliver_(yellow).png.dds")
       T.wpicon:SetHeight(mano.gui.font.size * 1.5)
       T.wpicon:SetWidth(mano.gui.font.size  * 1.5)
       T.wpicon:SetLayer(3)
       T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
-
+      
+      -- Edit Point Icon -->|-->||
+      T.editicon = UI.CreateFrame("Texture", "line_icon_edit" .. self.lineid, T.frame)
+      T.editicon:SetTexture("Rift", "Macros_I79.dds")
+      T.editicon:SetHeight(mano.gui.font.size * .75)
+      T.editicon:SetWidth(mano.gui.font.size  * .75)
+      T.editicon:SetLayer(3)
+      T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() 
+                                                                  local shared   =  false
+                                                                  if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
+                                                                     shared   =  true
+                                                                  end
+                                                                  modifynote(t, t.customtbl) 
+                                                               end, 
+                              "edit_note_" .. self.lineid )
+      T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
+      
       -- Note's Text -->|<--
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
       if mano.gui.font.name then
@@ -99,15 +149,17 @@ function __mano_ui()
       end
       T.text:SetFontSize(mano.gui.font.size)
       local text  =  t.label or t.text      
-      if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared then  
+      if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
          T.text:SetFontColor(unpack(mano.gui.color.lightgreen))
 --          text  =  '<i>' .. text .. '</i>'
+      else
+         T.text:SetFontColor(unpack(mano.gui.color.white))
       end
       T.text:SetText(text, true)
       T.text:SetLayer(3)
       T.text:SetVisible(true)
       T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
-      T.text:SetPoint("TOPRIGHT",   T.wpicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
+      T.text:SetPoint("TOPRIGHT",   T.editicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
       table.insert(self.linestock, T)
 
       return(T)
@@ -166,10 +218,12 @@ function __mano_ui()
          -- label or text  --
 --          newline.text:SetText(t.label or t.text)
          local text  =  t.label or t.text      
-         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared then  
+         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
 --             text  =  '<i>' .. text .. '</i>'
             newline.text:SetFontColor(unpack(mano.gui.color.lightgreen))
-         end
+         else
+            newline.text:SetFontColor(unpack(mano.gui.color.white))
+         end         
          newline.text:SetText(text, true)
          newline.text:SetVisible(true)
          
@@ -306,7 +360,8 @@ function __mano_ui()
 
       self.adjustheight()
 
-      setzonetitlebyid(zoneid, counter)
+--       setzonetitlebyid(zoneid, counter)
+      setstatusbarbyzoneid(zoneid, counter)
 
       return
    end
@@ -326,11 +381,44 @@ function __mano_ui()
 --          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
       else
          minY  =  self.o.manoframe:GetTop()
-         maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
+--          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
+         maxY  =  self.o.titleframe:GetBottom()
+         
+         self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
+         self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
       end
 
       return
    end
+
+--    function self.adjustheight()
+-- 
+--       local minY  =  0
+--       local maxY  =  0
+-- 
+--       if self.o.lastlinecontainer ~= nil then
+-- 
+--          maxY  =  self.o.lastlinecontainer:GetBottom()
+--          minY  =  self.o.manoframe:GetTop()
+-- 
+--          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
+-- --          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
+-- --          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
+--          self.o.window:SetHeight(self.o.titleframe:GetHeight() + 1 + self.o.manoframe:GetHeight() + 1 + self.o.statusframe:GetHeight())
+--       else
+--          minY  =  self.o.manoframe:GetTop()
+-- --          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
+--          maxY  =  self.o.manoframe:GetBottom()
+--          
+--          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))         
+--          self.o.window:SetHeight(self.o.titleframe:GetHeight() + 1 + self.o.manoframe:GetHeight() + 1 + self.o.statusframe:GetHeight())
+--          
+--       end
+-- 
+--       return
+--    end
+
+
 
    if not self.initialized then
       -- main  --
@@ -370,12 +458,15 @@ function __mano_ui()
       self.o.window:SetLayer(-1)
       self.o.window:SetWidth(mano.gui.win.width)
       self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
-      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: window_wheel_forward")
-      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: window_wheel_backward")
+--       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: window_wheel_forward")
+--       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: window_wheel_backward")
 
       self.o.titleframe =  UI.CreateFrame("Frame", "mano_title_frame", self.o.window)
-      self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
-      self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT",   0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
+--       self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
+--       self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT",   0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
+      self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT")     -- move up, outside externalframe
+      self.o.titleframe:SetPoint("TOPRIGHT", self.o.window, "TOPRIGHT")    -- move up, outside externalframe
+
       self.o.titleframe:SetHeight(mano.gui.font.size*1.5)
       self.o.titleframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
       self.o.titleframe:SetLayer(1)
@@ -397,13 +488,13 @@ function __mano_ui()
          self.o.windowtitle:SetLayer(3)
          self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
-         -- Current Zone
-         self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
-         self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
-         self.o.titlezone:SetFontSize(mano.gui.font.size)
-         self.o.titlezone:SetText(self.lastzone or "???", true)
-         self.o.titlezone:SetLayer(3)
-         self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+--          -- Current Zone
+--          self.o.titlezone =  UI.CreateFrame("Text", "mano_zone_name", self.o.titleframe)
+--          self.o.titlezone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+--          self.o.titlezone:SetFontSize(mano.gui.font.size)
+--          self.o.titlezone:SetText(self.lastzone or "???", true)
+--          self.o.titlezone:SetLayer(3)
+--          self.o.titlezone:SetPoint("CENTERLEFT", self.o.windowtitle, "CENTERRIGHT", mano.gui.borders.left*2, 0)
 
          -- Iconize Button
          self.o.iconizebutton = UI.CreateFrame("Texture", "mano_iconize_button", self.o.titleframe)
@@ -451,8 +542,11 @@ function __mano_ui()
       self.o.externalframe =  UI.CreateFrame("Frame", "mano_external_frame", self.o.window)
       self.o.externalframe:SetPoint("TOPLEFT",     self.o.titleframe,   "BOTTOMLEFT",  mano.gui.borders.left,    0)
       self.o.externalframe:SetPoint("TOPRIGHT",    self.o.titleframe,   "BOTTOMRIGHT", - mano.gui.borders.right, 0)
-      self.o.externalframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMLEFT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
-      self.o.externalframe:SetPoint("BOTTOMRIGHT", self.o.window,       "BOTTOMRIGHT", - mano.gui.borders.right, - mano.gui.borders.bottom)
+--       self.o.externalframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMLEFT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
+--       self.o.externalframe:SetPoint("BOTTOMRIGHT", self.o.window,       "BOTTOMRIGHT", - mano.gui.borders.right, - mano.gui.borders.bottom)
+      self.o.externalframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMLEFT",  mano.gui.borders.left,    0)
+      self.o.externalframe:SetPoint("BOTTOMRIGHT", self.o.window,       "BOTTOMRIGHT", - mano.gui.borders.right, 0)
+
       self.o.externalframe:SetBackgroundColor(unpack(mano.gui.color.black))
       self.o.externalframe:SetLayer(1)
 
@@ -465,20 +559,78 @@ function __mano_ui()
       self.o.manoframe:SetAllPoints(self.o.maskframe)
       self.o.manoframe:SetLayer(1)
 
+--       -- RESIZER WIDGET
+--       self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
+--       self.o.corner:SetTexture("Rift", "chat_resize_(over).png.dds")
+--       self.o.corner:SetHeight(mano.gui.font.size)
+--       self.o.corner:SetWidth(mano.gui.font.size)
+--       self.o.corner:SetLayer(4)
+--       self.o.corner:SetPoint("BOTTOMRIGHT", self.o.manoframe, "BOTTOMRIGHT")
+--       self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Down,  function()
+--                                                                      local mouse = Inspect.Mouse()
+--                                                                      self.o.corner.pressed = true
+--                                                                      self.o.corner.basex   =  self.o.window:GetLeft()
+--                                                                      self.o.corner.basey   =  self.o.window:GetTop()
+--                                                                   end,
+--                                                                   "Event.UI.Input.Mouse.Right.Down")
+--[[
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
+                                                                     if  self.o.corner.pressed then
+                                                                        local mouse = Inspect.Mouse()
+                                                                        mano.gui.win.width  = mano.f.round(mouse.x - self.o.corner.basex)
+                                                                        mano.gui.win.height = mano.f.round(mouse.y - self.o.corner.basey)
+                                                                        self.o.window:SetWidth(mano.gui.win.width)
+                                                                        self.o.window:SetHeight(mano.gui.win.height)
+                                                                     end
+                                                                  end,
+                                                                  "Event.UI.Input.Mouse.Cursor.Move")
+
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Upoutside,   function()
+                                                                           self.o.corner.pressed = false
+                                                                           self.adjustheight()
+                                                                        end,
+                                                                        "MaNo: Event.UI.Input.Mouse.Right.Upoutside")
+
+      self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Up, function()
+                                                                  self.o.corner.pressed = false
+                                                                  self.adjustheight()
+                                                               end,
+                                                               "MaNo: Event.UI.Input.Mouse.Right.Up")
+                                                               ]]
+                                                               
+      -- Status Bar 
+      self.o.statusframe =  UI.CreateFrame("Frame", "mano_status_frame", self.o.window)
+      self.o.statusframe:SetPoint("TOPLEFT",  self.o.window, "BOTTOMLEFT")  -- move up, outside externalframe
+      self.o.statusframe:SetPoint("TOPRIGHT", self.o.window, "BOTTOMRIGHT")  -- move up, outside externalframe
+      self.o.statusframe:SetHeight(mano.gui.font.size)
+      self.o.statusframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
+      self.o.statusframe:SetLayer(1)
+      
+      -- Current Zone
+      self.o.statuszone =  UI.CreateFrame("Text", "mano_zone_name", self.o.statusframe)
+--       self.o.statuszone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
+      self.o.statuszone:SetFontSize(mano.gui.font.size*.75)
+      self.o.statuszone:SetText(self.lastzone or "???", true)
+      self.o.statuszone:SetLayer(3)
+      self.o.statuszone:SetPoint("TOPLEFT", self.o.statusframe, "TOPLEFT", mano.gui.borders.left*2, 0)
+      
+      
       -- RESIZER WIDGET
-      self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
+--       self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
+      self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.statusframe)
       self.o.corner:SetTexture("Rift", "chat_resize_(over).png.dds")
       self.o.corner:SetHeight(mano.gui.font.size)
       self.o.corner:SetWidth(mano.gui.font.size)
       self.o.corner:SetLayer(4)
-      self.o.corner:SetPoint("BOTTOMRIGHT", self.o.manoframe, "BOTTOMRIGHT")
+--       self.o.corner:SetPoint("BOTTOMRIGHT", self.o.manoframe, "BOTTOMRIGHT")
+      self.o.corner:SetPoint("BOTTOMRIGHT", self.o.statusframe, "BOTTOMRIGHT")
       self.o.corner:EventAttach(Event.UI.Input.Mouse.Right.Down,  function()
                                                                      local mouse = Inspect.Mouse()
                                                                      self.o.corner.pressed = true
                                                                      self.o.corner.basex   =  self.o.window:GetLeft()
                                                                      self.o.corner.basey   =  self.o.window:GetTop()
                                                                   end,
-                                                                  "Event.UI.Input.Mouse.Right.Down")
+                                                                  "Event.UI.Input.Mouse.Right.Down")      
 
       self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
                                                                      if  self.o.corner.pressed then
@@ -502,7 +654,33 @@ function __mano_ui()
                                                                   self.adjustheight()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
-
+                                                               
+--       -- Side Menu Bar 
+--       self.o.sidemenuframe =  UI.CreateFrame("Frame", "mano_sidemenu_frame", self.o.window)
+--       self.o.sidemenuframe:SetPoint("TOPLEFT",  self.o.externalframe, "TOPRIGHT")
+--       self.o.sidemenuframe:SetHeight(mano.gui.font.size*1.5)
+--       self.o.sidemenuframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
+--       self.o.sidemenuframe:SetLayer(1)
+--       self.o.sidemenuframe:SetVisible(true)      
+--       
+--          -- Modify Note Button
+--          self.o.deletemenubutton = UI.CreateFrame("Texture", "mano_delete_button", self.o.sidemenuframe)
+--          self.o.deletemenubutton:SetTexture("Rift", "AlertTray_I54.dds")
+--          self.o.deletemenubutton:SetHeight(mano.gui.font.size * 1.5)
+--          self.o.deletemenubutton:SetWidth(mano.gui.font.size  * 1.5)
+--          self.o.deletemenubutton:SetLayer(3)
+--          self.o.deletemenubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() print("WRITE MODIFY NOTE FUNCTION!") end, "MaNo: Modify Note Button Pressed" )
+--          self.o.deletemenubutton:SetPoint("TOPLEFT",   self.o.sidemenuframe, "TOPLEFT")     
+--          
+--          -- Delete Note Button
+--          self.o.deletemenubutton = UI.CreateFrame("Texture", "mano_delete_button", self.o.sidemenuframe)
+--          self.o.deletemenubutton:SetTexture("Rift", "AlertTray_I54.dds")
+--          self.o.deletemenubutton:SetHeight(mano.gui.font.size * 1.5)
+--          self.o.deletemenubutton:SetWidth(mano.gui.font.size  * 1.5)
+--          self.o.deletemenubutton:SetLayer(3)
+--          self.o.deletemenubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() print("WRITE DELETE NOTE FUNCTION!") end, "MaNo: Delete Note Button Pressed" )
+--          self.o.deletemenubutton:SetPoint("TOPLEFT",   self.o.sidemenuframe, "BOTTOMLEFT")
+                                                                                                                           
    end
 
    if self ~= nil and next(self) ~= nil   then
