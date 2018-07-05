@@ -45,6 +45,7 @@ function mano.createminimapbutton()
    btn.button = UI.CreateFrame("Texture", "mmBtnIcon", btn.border)
 --    btn.button:SetTexture("Rift", "AATree_16D.dds")
    btn.button:SetTexture("Rift", "Macros_I79.dds")
+   -- btn_dimensions_top_manage_(normal).png
    btn.button:SetLayer(1)
    btn.button:SetPoint("TOPLEFT",     btn.border, "TOPLEFT",      12, 12)
    btn.button:SetPoint("BOTTOMRIGHT", btn.border, "BOTTOMRIGHT", -12, -12)

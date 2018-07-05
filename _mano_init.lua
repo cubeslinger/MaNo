@@ -5,6 +5,30 @@
 --
 local addon, mano = ...
 
+local function userinputdelete(handle, action, note2delete)
+   
+   if action   == 'delete'  then
+
+      local deletednote =  {}
+      
+      if note2delete.customtbl ~= nil and next(note2delete.customtbl) ~= nil and note2delete.customtbl.shared ~= nil then
+      
+         local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
+         
+      else
+         
+         local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
+         
+      end
+      
+      print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
+      mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
+      
+   end
+   
+   return
+end
+
 local function userinputsave(handle, action, params)
    
    print(string.format("userinputsave: handle=(%s) action=(%s) params=(%s)", handle, action, params))
@@ -55,7 +79,9 @@ local function userinputsave(handle, action, params)
 
 --          print(string.format("Shared Note: (%s)", userinput.shared))
 
+         print("----------------------------")
          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
+         print("----------------------------")
          
          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
       end
@@ -276,6 +302,7 @@ mano.f.setwaypoint         =  setwaypoint
 mano.f.dumptable           =  dumptable
 mano.f.userinputcancel     =  userinputcancel
 mano.f.userinputsave       =  userinputsave
+mano.f.userinputdelete     =  userinputdelete
 mano.f.getcategoryicon     =  getcategoryicon
 --
 -- mano.foo                         =  {}
@@ -301,6 +328,7 @@ mano.foo                   =  {
 mano.events                =  {}
 mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
 mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
+mano.events.deletetrigger,    mano.events.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
 -- mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
 --
 -- Player's Cached Info

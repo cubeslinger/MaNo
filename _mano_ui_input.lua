@@ -20,6 +20,8 @@ function __mano_ui_input(action, modifytbl)
       -- Save & Cancel Events
       Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
       Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+      Command.Event.Detach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")      
+      
       return
    end
 
@@ -27,6 +29,8 @@ function __mano_ui_input(action, modifytbl)
       -- Save & Cancel Events
       Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
       Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+      Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")      
+      
       return
    end
    
@@ -263,14 +267,14 @@ function __mano_ui_input(action, modifytbl)
             self.o.notelabel:SetPoint("TOPRIGHT",   self.o.labeltext, "BOTTOMRIGHT",   0,   mano.gui.borders.top)
 
             -- Note's input field
---             self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
-            self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)            
+            self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+--             self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)            
             if mano.gui.font.name then
                self.o.noteltext:SetFont(mano.addon.name, mano.gui.font.name)
             end
-            self.o.notetext:SetFontSize(mano.gui.font.size)
+--             self.o.notetext:SetFontSize(mano.gui.font.size)
             self.o.notetext:SetText("")
-            self.o.notetext:SetWordwrap(true)
+--             self.o.notetext:SetWordwrap(true)
             self.o.notetext:SetLayer(3)
             self.o.notetext:SetHeight(mano.gui.font.size * 4)
             self.o.notetext:SetVisible(true)
@@ -302,7 +306,7 @@ function __mano_ui_input(action, modifytbl)
             if mano.gui.font.name then
                self.o.cattext:SetFont(mano.addon.name, mano.gui.font.name)
             end
-            self.o.cattext:SetHeight(mano.gui.font.size)
+            self.o.cattext:SetHeight(mano.gui.font.size * 1.5)
             self.o.cattext:SetText(cattext)
             self.o.cattext:SetLayer(3)
             self.o.cattext:SetVisible(true)
@@ -378,6 +382,26 @@ function __mano_ui_input(action, modifytbl)
 --                                                                                  detacheventwatchers()
                                                                               end, "MaNo input: Cancel Button Pressed"
                                              )
+                                             
+            -- btn_DeleteMail_(click).png
+            -- Delete Button
+            self.o.deletebutton = UI.CreateFrame("Texture", "mano_input_delete_button", self.o.frame)
+--             self.o.deletebutton:SetTexture("Rift", "btn_DeleteMail_(click).png")
+            self.o.deletebutton:SetTexture("Rift", "target_portrait_roguepoint.png.dds")
+            self.o.deletebutton:SetHeight(mano.gui.font.size*2)
+            self.o.deletebutton:SetWidth(mano.gui.font.size*2)
+            self.o.deletebutton:SetLayer(3)
+            self.o.deletebutton:SetPoint("BOTTOMCENTER",   self.o.frame, "BOTTOMCENTER", 0,	-mano.gui.borders.bottom)
+            self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
+                                                                                 self.o.save =  false
+                                                                                 self.o.window:SetVisible(false)
+                                                                                 mano.events.deletetrigger('delete', modifytbl)
+--                                                                                  detacheventwatchers()
+                                                                              end, "MaNo input: Delete Button Pressed"
+                                             )
+            
+            
+
 
             -- Save Button
             self.o.savebutton = UI.CreateFrame("Texture", "mano_input_save_button", self.o.frame)
@@ -401,8 +425,8 @@ function __mano_ui_input(action, modifytbl)
 --                                                             }                                                                                                     
                                                    
                                                    local t     =  modifytbl                                                                                    
-                                                   t.label     =  self.o.notetext:GetText()
-                                                   t.note      =  self.o.labeltext:GetText()
+                                                   t.text      =  self.o.notetext:GetText()
+                                                   t.label     =  self.o.labeltext:GetText()
                                                    t.category  =  self.o.cattext:GetText()
                                                    t.icon      =  self.o.caticon:GetTexture()
                                                    t.save      =  self.o.save
@@ -453,13 +477,14 @@ function __mano_ui_input(action, modifytbl)
 
 --          attacheventwatchers()
          self.o.labeltext:SetKeyFocus(true)
+         self.o.deletebutton:SetVisible(false)
       else
          print("MODIFY Note")
          -- modify
          local t  =  {  label =  "",   text  =  "", shared  =  false, category   =  "",   caticon  =  "" }
          
          if modifytbl.label      ~= nil   then  t.label  =  modifytbl.label   end
-         if modifytbl.name       ~= nil   then  t.name   =  modifytbl.name    end
+         if modifytbl.text       ~= nil   then  t.text   =  modifytbl.text    end
          if modifytbl.customtbl  ~= nil   and 
             modifytbl.customtbl.shared ~= nil then  t.shared   =  modifytbl.customtbl.shared  
          end
@@ -475,6 +500,7 @@ function __mano_ui_input(action, modifytbl)
 
 --          attacheventwatchers()
          self.o.labeltext:SetKeyFocus(true)            
+         self.o.deletebutton:SetVisible(true)
       end
          
 --       end

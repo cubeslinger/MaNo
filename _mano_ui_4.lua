@@ -47,6 +47,7 @@ function __mano_ui()
 --    local function modifynote(zonename, idx, shared)
    local function modifynote(t, customtbl)
       
+      print("\n-------------------------------------------")
       print("modifynote(t)\n", mano.f.dumptable(t))
       print("modifynote(customtbl)\n", mano.f.dumptable(customtbl))
 
@@ -391,35 +392,6 @@ function __mano_ui()
       return
    end
 
---    function self.adjustheight()
--- 
---       local minY  =  0
---       local maxY  =  0
--- 
---       if self.o.lastlinecontainer ~= nil then
--- 
---          maxY  =  self.o.lastlinecontainer:GetBottom()
---          minY  =  self.o.manoframe:GetTop()
--- 
---          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
--- --          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
--- --          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
---          self.o.window:SetHeight(self.o.titleframe:GetHeight() + 1 + self.o.manoframe:GetHeight() + 1 + self.o.statusframe:GetHeight())
---       else
---          minY  =  self.o.manoframe:GetTop()
--- --          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
---          maxY  =  self.o.manoframe:GetBottom()
---          
---          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))         
---          self.o.window:SetHeight(self.o.titleframe:GetHeight() + 1 + self.o.manoframe:GetHeight() + 1 + self.o.statusframe:GetHeight())
---          
---       end
--- 
---       return
---    end
-
-
-
    if not self.initialized then
       -- main  --
       -- Create/Initialize Menus
@@ -690,16 +662,3 @@ function __mano_ui()
    return self
 
 end
---[[
-Error: MaNo/_mano_ui_2.lua:171: attempt to index field 'customtbl' (a nil value)
-    In MaNo / MaNo: input: Save, event Event.MaNo.userinput.save
-stack traceback:
-	[C]: in function '__newindex'
-	MaNo/_mano_ui_2.lua:171: in function 'fetchlinefromstock'
-	MaNo/_mano_ui_2.lua:276: in function 'addline'
-	MaNo/_mano_ui_2.lua:296: in function 'loadlistbyzoneid'
-	MaNo/_mano_init.lua:40: in function 'userinputsave'
-	MaNo/_mano_ui_input.lua:29: in function <MaNo/_mano_ui_input.lua:29>
-	[C]: in function 'savetrigger'
-	MaNo/_mano_ui_input.lua:385: in function <MaNo/_mano_ui_input.lua:382>
-   ]]--
