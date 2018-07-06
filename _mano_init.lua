@@ -80,7 +80,7 @@ local function userinputsave(handle, action, params)
             print("save modify")
 
             t  =  {	label       =  userinput.label,
-                     text        =  userinput.note,
+                     text        =  userinput.text,
                      category    =  userinput.category,
                      playerpos   =  userinput.playerpos,
                      idx         =  userinput.idx,
@@ -96,7 +96,7 @@ local function userinputsave(handle, action, params)
             print("save New")
 
             t  =  {  label       =  userinput.label,
-                     text        =  userinput.note,
+                     text        =  userinput.text,
                      category    =  userinput.category,
                      playerpos   =  nil,
                      idx         =  nil,

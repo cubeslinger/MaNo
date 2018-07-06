@@ -416,6 +416,7 @@ function __mano_ui_input(action, modifytbl)
                                              function()
                                                 self.o.save =  true
                                                 self.o.window:SetVisible(false)
+                                                
                                                 if action   == 'modify' then
 
 --                                                 local t  =  {  label    =  self.o.labeltext:GetText(),
@@ -433,7 +434,6 @@ function __mano_ui_input(action, modifytbl)
                                                    t.icon      =  self.o.caticon:GetTexture()
                                                    t.save      =  self.o.save
 
---                                                    if modifytbl.customtbl ~= nil and next(modifytbl.customtbl ~= nil) then
                                                    if modifytbl.customtbl ~= nil then
                                                       t.customtbl =  modifytbl.customtbl
                                                    else
@@ -445,9 +445,9 @@ function __mano_ui_input(action, modifytbl)
                                                 else
                                                    mano.events.savetrigger(action, self:GetInput())
                                                 end
---                                              detacheventwatchers()
-                                                end,
-                                                "MaNo input: Save Button Pressed"
+                                           
+                                             end,
+                                             "MaNo input: Save Button Pressed"
                                           )
 
 
