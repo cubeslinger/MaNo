@@ -31,38 +31,50 @@ function __mano_ui()
    end
 
 --    local function setzonetitlebyid(zoneid, count)
--- 
+--
 --       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
--- 
+--
 --       if bool then
 --          if zonedata.name ~= self.lastzone  then
 --             self.o.titlezone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
 --             self.lastzone  =	zonedata.name
 --          end
 --       end
--- 
+--
 --       return
 --    end
 
 --    local function modifynote(zonename, idx, shared)
-   local function modifynote(t, customtbl)
-      
-      print("\n-------------------------------------------")
-      print("modifynote(t)\n", mano.f.dumptable(t))
-      print("modifynote(customtbl)\n", mano.f.dumptable(customtbl))
+--    local function modifynote(t, customtbl)
+      local function modifynote(tbl, customtbl, shared)
+
+--       local tbl   =  t[1]
+
+      print("\n-------------------------------------------BEGIN")
+--       print("modifynote(tbl)\n", mano.f.dumptable(tbl))
+--       print("modifynote(customtbl)\n", mano.f.dumptable(customtbl))
+--       print("modifynote(t.playerpos)\n", mano.f.dumptable(tbl.playerpos))
 
       local note  =  {}
-      
+
+      print(string.format("tbl.playerpos.zonename=%s, tbl.idx=%s", tbl.playerpos.zonename, tbl.idx))
+
       if	shared then
-         note  =  mano.sharednote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
+         print(string.format("SHARED mano.sharednote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
+         note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
       else
-         note  =  mano.mapnote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)               
-      end           
-      
-      if note  ~= nil and next(note) ~= nil then
-         mano.mapnoteinput:show('modify', note) 
+         print(string.format("LOCAL mano.mapnote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
+         note  =  mano.mapnote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
       end
-      
+
+      if note  ~= nil and next(note) ~= nil then
+         mano.mapnoteinput:show('modify', note)
+      else
+         print("modifynote: Note NOT Found!")
+      end
+
+      print("\n-------------------------------------------END")
+
       return
    end
 
@@ -126,33 +138,35 @@ function __mano_ui()
       T.wpicon:SetLayer(3)
       T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
-      
+
       -- Edit Point Icon -->|-->||
       T.editicon = UI.CreateFrame("Texture", "line_icon_edit" .. self.lineid, T.frame)
       T.editicon:SetTexture("Rift", "Macros_I79.dds")
       T.editicon:SetHeight(mano.gui.font.size * .75)
       T.editicon:SetWidth(mano.gui.font.size  * .75)
       T.editicon:SetLayer(3)
-      T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() 
+      T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
                                                                   local shared   =  false
-                                                                  if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
+                                                                  if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
                                                                      shared   =  true
                                                                   end
-                                                                  modifynote(t, t.customtbl) 
-                                                               end, 
+                                                                  modifynote(t, t.customtbl, shared)
+                                                               end,
                               "edit_note_" .. self.lineid )
       T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
-      
+
       -- Note's Text -->|<--
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
       if mano.gui.font.name then
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
+      print("ui4 t:\n", mano.f.dumptable(t))
       T.text:SetFontSize(mano.gui.font.size)
-      local text  =  t.label or t.text      
-      if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
+      local text  =  ""
+      if t.label  ~= nil then text  =  t.label  end
+      if text == ""  and t.text ~= nil then text  =  t.text end
+      if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
          T.text:SetFontColor(unpack(mano.gui.color.lightgreen))
---          text  =  '<i>' .. text .. '</i>'
       else
          T.text:SetFontColor(unpack(mano.gui.color.white))
       end
@@ -214,23 +228,38 @@ function __mano_ui()
          local icon  =  mano.f.getcategoryicon(t.category)
          if icon  == nil then icon   =  "target_portrait_roguepoint.png.dds"   end
          newline.icon:SetTexture("Rift", icon)
-         
+
 
          -- label or text  --
 --          newline.text:SetText(t.label or t.text)
-         local text  =  t.label or t.text      
-         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then  
+         local text  =  ""
+         if t.label  ~= nil then text  =  t.label  end
+         if text == ""  and t.text ~= nil then text  =  t.text end
+
+         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
 --             text  =  '<i>' .. text .. '</i>'
             newline.text:SetFontColor(unpack(mano.gui.color.lightgreen))
          else
             newline.text:SetFontColor(unpack(mano.gui.color.white))
-         end         
+         end
          newline.text:SetText(text, true)
          newline.text:SetVisible(true)
-         
-         -- Way Point Icon --
+
+         -- Edit Button
+         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click,
+                                       function()
+                                          local shared   =  false
+                                          if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+                                             shared   =  true
+                                          end
+                                          modifynote(t, t.customtbl, shared)
+                                       end,
+                                       "edit_note_" .. self.lineid )
+
+
+         -- WayPoint Button --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
-         
+
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
       end
@@ -353,7 +382,7 @@ function __mano_ui()
 
       -- Search in both User's notes db and sharenotesdb
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
-         for _, tbl in ipairs(db) do           
+         for _, tbl in ipairs(db) do
             local newframe =  mano.gui.shown.window.addline(tbl)
             counter        =  counter + 1
          end
@@ -384,7 +413,7 @@ function __mano_ui()
          minY  =  self.o.manoframe:GetTop()
 --          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
          maxY  =  self.o.titleframe:GetBottom()
-         
+
          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
       end
@@ -569,15 +598,15 @@ function __mano_ui()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
                                                                ]]
-                                                               
-      -- Status Bar 
+
+      -- Status Bar
       self.o.statusframe =  UI.CreateFrame("Frame", "mano_status_frame", self.o.window)
       self.o.statusframe:SetPoint("TOPLEFT",  self.o.window, "BOTTOMLEFT")  -- move up, outside externalframe
       self.o.statusframe:SetPoint("TOPRIGHT", self.o.window, "BOTTOMRIGHT")  -- move up, outside externalframe
       self.o.statusframe:SetHeight(mano.gui.font.size)
       self.o.statusframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
       self.o.statusframe:SetLayer(1)
-      
+
       -- Current Zone
       self.o.statuszone =  UI.CreateFrame("Text", "mano_zone_name", self.o.statusframe)
 --       self.o.statuszone:SetFontSize(mano.f.round(mano.gui.font.size * .75))
@@ -585,8 +614,8 @@ function __mano_ui()
       self.o.statuszone:SetText(self.lastzone or "???", true)
       self.o.statuszone:SetLayer(3)
       self.o.statuszone:SetPoint("TOPLEFT", self.o.statusframe, "TOPLEFT", mano.gui.borders.left*2, 0)
-      
-      
+
+
       -- RESIZER WIDGET
 --       self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.window)
       self.o.corner  =  UI.CreateFrame("Texture", "mano_corner", self.o.statusframe)
@@ -602,7 +631,7 @@ function __mano_ui()
                                                                      self.o.corner.basex   =  self.o.window:GetLeft()
                                                                      self.o.corner.basey   =  self.o.window:GetTop()
                                                                   end,
-                                                                  "Event.UI.Input.Mouse.Right.Down")      
+                                                                  "Event.UI.Input.Mouse.Right.Down")
 
       self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
                                                                      if  self.o.corner.pressed then
@@ -626,15 +655,15 @@ function __mano_ui()
                                                                   self.adjustheight()
                                                                end,
                                                                "MaNo: Event.UI.Input.Mouse.Right.Up")
-                                                               
---       -- Side Menu Bar 
+
+--       -- Side Menu Bar
 --       self.o.sidemenuframe =  UI.CreateFrame("Frame", "mano_sidemenu_frame", self.o.window)
 --       self.o.sidemenuframe:SetPoint("TOPLEFT",  self.o.externalframe, "TOPRIGHT")
 --       self.o.sidemenuframe:SetHeight(mano.gui.font.size*1.5)
 --       self.o.sidemenuframe:SetBackgroundColor(unpack(mano.gui.color.deepblack))
 --       self.o.sidemenuframe:SetLayer(1)
---       self.o.sidemenuframe:SetVisible(true)      
---       
+--       self.o.sidemenuframe:SetVisible(true)
+--
 --          -- Modify Note Button
 --          self.o.deletemenubutton = UI.CreateFrame("Texture", "mano_delete_button", self.o.sidemenuframe)
 --          self.o.deletemenubutton:SetTexture("Rift", "AlertTray_I54.dds")
@@ -642,8 +671,8 @@ function __mano_ui()
 --          self.o.deletemenubutton:SetWidth(mano.gui.font.size  * 1.5)
 --          self.o.deletemenubutton:SetLayer(3)
 --          self.o.deletemenubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() print("WRITE MODIFY NOTE FUNCTION!") end, "MaNo: Modify Note Button Pressed" )
---          self.o.deletemenubutton:SetPoint("TOPLEFT",   self.o.sidemenuframe, "TOPLEFT")     
---          
+--          self.o.deletemenubutton:SetPoint("TOPLEFT",   self.o.sidemenuframe, "TOPLEFT")
+--
 --          -- Delete Note Button
 --          self.o.deletemenubutton = UI.CreateFrame("Texture", "mano_delete_button", self.o.sidemenuframe)
 --          self.o.deletemenubutton:SetTexture("Rift", "AlertTray_I54.dds")
@@ -652,7 +681,7 @@ function __mano_ui()
 --          self.o.deletemenubutton:SetLayer(3)
 --          self.o.deletemenubutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() print("WRITE DELETE NOTE FUNCTION!") end, "MaNo: Delete Note Button Pressed" )
 --          self.o.deletemenubutton:SetPoint("TOPLEFT",   self.o.sidemenuframe, "BOTTOMLEFT")
-                                                                                                                           
+
    end
 
    if self ~= nil and next(self) ~= nil   then

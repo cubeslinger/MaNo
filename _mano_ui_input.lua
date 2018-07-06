@@ -15,13 +15,13 @@ function __mano_ui_input(action, modifytbl)
                   initialized       =  false,
                   o                 =  {},
                   }
-                  
+
    local function detacheventwatchers()
       -- Save & Cancel Events
       Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
       Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
-      Command.Event.Detach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")      
-      
+      Command.Event.Detach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
+
       return
    end
 
@@ -29,11 +29,11 @@ function __mano_ui_input(action, modifytbl)
       -- Save & Cancel Events
       Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
       Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
-      Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")      
-      
+      Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
+
       return
    end
-   
+
 
    local function catmenuchoice(idx)
 
@@ -126,10 +126,12 @@ function __mano_ui_input(action, modifytbl)
    function self.GetInput()
 
       local icontbl           =  self.o.caticon:GetTexture()
-      local texturetype, icon =  unpack(string.split(icontbl, ","))
-      
+--       local texturetype, icon =  unpack(string.split(icontbl, ","))
+      local texturetype, icon =  unpack(mano.f.splitstring(icontbl, ","))
+
       local t  =  {  label    =  self.o.labeltext:GetText(),
-                     note     =  self.o.notetext:GetText(),
+--                      note     =  self.o.notetext:GetText(),
+                     text     =  self.o.notetext:GetText(),
                      category =  self.o.cattext:GetText(),
                      icon     =  icon,
                      save     =  self.o.save,
@@ -160,7 +162,7 @@ function __mano_ui_input(action, modifytbl)
 
 --    local function __init(action)
    function self.show(dummy, action, modifytbl)
-      
+
 --       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
       print(string.format("dummy=%s, action=%s. modifytbl=%s\n", dummy, action, modifytbl))
       print("modifytbl\n", mano.f.dumptable(modifytbl))
@@ -172,7 +174,7 @@ function __mano_ui_input(action, modifytbl)
       self.catmenu.voices  =  refresh_category_menu()
 
       if not self.initialized then
-         
+
          print("FIRST New Note")
 
          -- Window Context
@@ -268,7 +270,7 @@ function __mano_ui_input(action, modifytbl)
 
             -- Note's input field
             self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
---             self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)            
+--             self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)
             if mano.gui.font.name then
                self.o.noteltext:SetFont(mano.addon.name, mano.gui.font.name)
             end
@@ -282,7 +284,7 @@ function __mano_ui_input(action, modifytbl)
             self.o.notetext:SetPoint("TOPLEFT",    self.o.notelabel, "BOTTOMLEFT")
             self.o.notetext:SetPoint("TOPRIGHT",   self.o.notelabel, "BOTTOMRIGHT")
 
-            
+
             -- CATICON & CATNAME
             local caticon, cattext  =  nil, nil
             if next(mano.categories) and mano.categories[mano.lastcategoryidx] ~= nil then
@@ -291,10 +293,10 @@ function __mano_ui_input(action, modifytbl)
             else
                cattext  = "Default"
                caticon  = mano.f.getcategoryicon(cattext)
-            end     
+            end
 
             -- Category Icon
-            self.o.caticon = UI.CreateFrame("Texture", "input_cat_icon_", self.o.frame)    
+            self.o.caticon = UI.CreateFrame("Texture", "input_cat_icon_", self.o.frame)
             self.o.caticon:SetTexture("Rift", caticon)
             self.o.caticon:SetHeight(mano.gui.font.size * 1.5)
             self.o.caticon:SetWidth(mano.gui.font.size  * 1.5)
@@ -382,7 +384,7 @@ function __mano_ui_input(action, modifytbl)
 --                                                                                  detacheventwatchers()
                                                                               end, "MaNo input: Cancel Button Pressed"
                                              )
-                                             
+
             -- btn_DeleteMail_(click).png
             -- Delete Button
             self.o.deletebutton = UI.CreateFrame("Texture", "mano_input_delete_button", self.o.frame)
@@ -399,8 +401,8 @@ function __mano_ui_input(action, modifytbl)
 --                                                                                  detacheventwatchers()
                                                                               end, "MaNo input: Delete Button Pressed"
                                              )
-            
-            
+
+
 
 
             -- Save Button
@@ -410,7 +412,7 @@ function __mano_ui_input(action, modifytbl)
             self.o.savebutton:SetWidth(mano.gui.font.size*2)
             self.o.savebutton:SetLayer(3)
             self.o.savebutton:SetPoint("BOTTOMRIGHT",   self.o.frame, "BOTTOMRIGHT", -mano.gui.borders.right,	-mano.gui.borders.bottom)
-            self.o.savebutton:EventAttach(   Event.UI.Input.Mouse.Left.Click,   
+            self.o.savebutton:EventAttach(   Event.UI.Input.Mouse.Left.Click,
                                              function()
                                                 self.o.save =  true
                                                 self.o.window:SetVisible(false)
@@ -422,23 +424,23 @@ function __mano_ui_input(action, modifytbl)
 --                                                                icon     =  icon,
 --                                                                save     =  self.o.save,
 --                                                                shared   =  self.o.sharedbutton:GetChecked()
---                                                             }                                                                                                     
-                                                   
-                                                   local t     =  modifytbl                                                                                    
+--                                                             }
+
+                                                   local t     =  modifytbl
                                                    t.text      =  self.o.notetext:GetText()
                                                    t.label     =  self.o.labeltext:GetText()
                                                    t.category  =  self.o.cattext:GetText()
                                                    t.icon      =  self.o.caticon:GetTexture()
                                                    t.save      =  self.o.save
-                                                   
+
 --                                                    if modifytbl.customtbl ~= nil and next(modifytbl.customtbl ~= nil) then
-                                                      if modifytbl.customtbl ~= nil then
+                                                   if modifytbl.customtbl ~= nil then
                                                       t.customtbl =  modifytbl.customtbl
                                                    else
                                                       t.customtbl =	{}
                                                    end
-                                                   t.customtbl.shared   =  self.o.sharedbutton  
-                                                   
+                                                   t.customtbl.shared   =  self.o.sharedbutton:GetChecked()
+
                                                    mano.events.savetrigger(action, t)
                                                 else
                                                    mano.events.savetrigger(action, self:GetInput())
@@ -448,7 +450,7 @@ function __mano_ui_input(action, modifytbl)
                                                 "MaNo input: Save Button Pressed"
                                           )
 
-         
+
          self.initialized =   true
          Library.LibDraggable.draggify(self.o.window)
 
@@ -461,11 +463,11 @@ function __mano_ui_input(action, modifytbl)
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 
          attacheventwatchers()
-         
+
          self.o.labeltext:SetKeyFocus(true)
-   
-      end       
-         
+
+      end
+
       if action   == 'new' then
          -- New Note but not first
          print("New Note but not first")
@@ -482,29 +484,30 @@ function __mano_ui_input(action, modifytbl)
          print("MODIFY Note")
          -- modify
          local t  =  {  label =  "",   text  =  "", shared  =  false, category   =  "",   caticon  =  "" }
-         
+
          if modifytbl.label      ~= nil   then  t.label  =  modifytbl.label   end
          if modifytbl.text       ~= nil   then  t.text   =  modifytbl.text    end
-         if modifytbl.customtbl  ~= nil   and 
-            modifytbl.customtbl.shared ~= nil then  t.shared   =  modifytbl.customtbl.shared  
+         if modifytbl.customtbl  ~= nil   and
+            modifytbl.customtbl.shared ~= nil then  t.shared   =  modifytbl.customtbl.shared
          end
          if modifytbl.category	~= nil   then  t.category	=  modifytbl.category   end
          if modifytbl.icon			~= nil   then  t.icon		=  modifytbl.icon	      end
-         
+
          self.o.labeltext:SetText(t.label)
          self.o.notetext:SetText(t.text)
          self.o.window:SetVisible(true)
          if t.category  ~= nil   then  self.o.cattext:SetText(t.category)		end
-         if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", mano.f.getcategoryicon(t.category))   end
+--          if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", mano.f.getcategoryicon(t.category))   end
+         if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", t.caticon)   end
          self.o.sharedbutton:SetChecked(t.shared)
 
 --          attacheventwatchers()
-         self.o.labeltext:SetKeyFocus(true)            
+         self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(true)
       end
-         
+
 --       end
-   
+
    end
 
    return self

@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.2.24"
+Version     =  "0.2.25"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
