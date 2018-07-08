@@ -195,5 +195,6 @@ table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(
 --
 -- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 -- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end
-if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input('new') end
+-- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input('new') end
+if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
 --

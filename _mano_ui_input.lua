@@ -14,6 +14,7 @@ function __mano_ui_input(action, modifytbl)
                   lineid            =  0,
                   initialized       =  false,
                   o                 =  {},
+                  lastfocus         =  nil,
                   }
 
    local function detacheventwatchers()
@@ -33,8 +34,15 @@ function __mano_ui_input(action, modifytbl)
 
       return
    end
+   
+   local function flippppanel()
 
-
+      self.o.externaldxframe:SetVisible(not self.o.externaldxframe:GetVisible())            
+      self.o.dxframe:SetVisible(not self.o.dxframe:GetVisible())
+      
+      return
+   end
+      
    local function catmenuchoice(idx)
 
       if idx and mano.categories[idx] ~= nil then
@@ -136,6 +144,14 @@ function __mano_ui_input(action, modifytbl)
                      icon     =  icon,
                      save     =  self.o.save,
                      shared   =  self.o.sharedbutton:GetChecked()
+                     
+--                      playerpos.x          =  tonumber(self.o.ppxtext:GetText())
+--                      playerpos.z          =  tonumber(self.o.ppztext:GetText())
+--                      playerpos.y          =  tonumber(self.o.ppytext:GetText())
+--                      playerpos.zonename   =  tonumber(self.o.ppzonenametext:GetText())
+--                      playerpos.zoneid     =  tonumber(self.o.ppzoneidtext:GetText())
+--                      playerpos.name       =  tonumber(self.o.ppownertext:GetText())
+                     
                   }
       return t
 
@@ -211,9 +227,25 @@ function __mano_ui_input(action, modifytbl)
             self.o.windowtitle:SetText("New Note:")
             self.o.windowtitle:SetLayer(3)
             self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
+            
+            -- btn_arrow_R_(normal).png
+            -- Title Icon
+            self.o.ppbutton   = UI.CreateFrame("Texture", "mano_input_pp_button", self.o.titleframe)
+--             self.o.ppbutton:SetTexture("Rift", "btn_arrow_R_(normal).png")
+            self.o.ppbutton:SetTexture("Rift", "macro_icon_heal.dds")
+            self.o.ppbutton:SetHeight(mano.gui.font.size)
+            self.o.ppbutton:SetWidth(mano.gui.font.size)
+            self.o.ppbutton:SetLayer(3)
+            self.o.ppbutton:SetPoint("CENTERRIGHT", self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right*2, 0)
+            self.o.ppbutton:EventAttach(  Event.UI.Input.Mouse.Left.Click,  
+                                          function() 
+                                             flippppanel()                                              
+                                          end, 
+                                          "MaNo input: Show/Hide PlayerPos Panel Button Pressed"
+                                       )
+            
 
-
-         -- EXTERNAL NOTES CONTAINER FRAME
+         -- EXTERNAL CONTAINER FRAME
          self.o.externalframe =  UI.CreateFrame("Frame", "mano_input_external_frame", self.o.window)
          self.o.externalframe:SetPoint("TOPLEFT",     self.o.titleframe,   "BOTTOMLEFT",  mano.gui.borders.left,    0)
          self.o.externalframe:SetPoint("TOPRIGHT",    self.o.titleframe,   "BOTTOMRIGHT", - mano.gui.borders.right, 0)
@@ -449,6 +481,143 @@ function __mano_ui_input(action, modifytbl)
                                              end,
                                              "MaNo input: Save Button Pressed"
                                           )
+                                          
+
+         --	DX FRAME -- BEGIN
+                                          
+         -- DX EXTERNAL CONTAINER FRAME
+         self.o.externaldxframe =  UI.CreateFrame("Frame", "mano_input_external_frame", self.o.window)
+         self.o.externaldxframe:SetWidth(self.o.externalframe:GetWidth())
+         self.o.externaldxframe:SetBackgroundColor(unpack(mano.gui.color.black))
+         self.o.externaldxframe:SetLayer(1)                 
+         self.o.externaldxframe:SetPoint("TOPLEFT",     self.o.titleframe,   "BOTTOMRIGHT",  mano.gui.borders.left,    0)
+--          self.o.externaldxframe:SetPoint("BOTTOMLEFT",  self.o.window,       "BOTTOMRIGHT",  mano.gui.borders.left,    - mano.gui.borders.bottom)
+         self.o.externaldxframe:SetPoint("BOTTOMLEFT",  self.o.savebutton,    "TOPRIGHT",  mano.gui.borders.left,    0)
+                        
+         -- DX MASK FRAME
+         self.o.maskdxframe = UI.CreateFrame("Mask", "mano_input_dx_mask_frame", self.o.externaldxframe)
+         self.o.maskdxframe:SetAllPoints(self.o.externaldxframe)
+         self.o.maskdxframe:SetBackgroundColor(unpack(mano.gui.color.black))
+                    
+            -- DX CONTAINER FRAME
+            self.o.dxframe =  UI.CreateFrame("Frame", "mano_input_dx_notes_frame", self.o.maskdxframe)
+            self.o.dxframe:SetBackgroundColor(unpack(mano.gui.color.black))
+            self.o.dxframe:SetAllPoints(self.o.maskdxframe)
+            self.o.dxframe:SetLayer(1)
+                       
+--          playerpos   =  {,
+--                         y              =  tbl.y or nil,
+--                         x              =  tbl.x,
+--                         z              =  tbl.z,
+--                         locationName   =  tbl.location or nil,
+--                         name           =  "forums",
+--                         radius         =  self.default.radius,
+--                         zoneid         =  tbl.zoneid or  self.extdbhandler.zonename2id[zonename],
+--                         zonename       =  zonename,
+            
+            self.o.ppxlabel =  UI.CreateFrame("Text", "input_x_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppxlabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppxlabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppxlabel:SetText("X coordinate:")
+            self.o.ppxlabel:SetLayer(3)
+            self.o.ppxlabel:SetVisible(true)          
+            self.o.ppxlabel:SetPoint("TOPLEFT",  self.o.dxframe, "TOPLEFT",  mano.gui.borders.left*2, mano.gui.borders.top*5)
+                           
+            self.o.ppxtext =  UI.CreateFrame("Text", "input_x_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppxtext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppxtext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppxtext:SetText("")
+            self.o.ppxtext:SetLayer(3)
+            self.o.ppxtext:SetVisible(true)        
+            self.o.ppxtext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+            self.o.ppxtext:SetPoint("TOPRIGHT",  self.o.dxframe, "TOPRIGHT",  -mano.gui.borders.right*2,   mano.gui.borders.top*5)
+                           
+            self.o.ppzlabel =  UI.CreateFrame("Text", "input_z_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppzlabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppzlabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppzlabel:SetText("Z coordinate:")
+            self.o.ppzlabel:SetLayer(3)
+            self.o.ppzlabel:SetVisible(true)          
+            self.o.ppzlabel:SetPoint("TOPLEFT",  self.o.ppxlabel, "BOTTOMLEFT",  0, mano.gui.borders.top)
+                           
+            self.o.ppztext =  UI.CreateFrame("RiftTextfield", "input_z_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppztext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppztext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppztext:SetText("")
+            self.o.ppztext:SetLayer(3)
+            self.o.ppztext:SetVisible(true)          
+            self.o.ppztext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+            self.o.ppztext:SetPoint("TOPRIGHT",  self.o.ppxtext, "BOTTOMRIGHT",  0,   mano.gui.borders.top)                          
+                           
+            self.o.ppylabel =  UI.CreateFrame("Text", "input_y_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppylabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppylabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppylabel:SetText("Y coordinate:")
+            self.o.ppylabel:SetLayer(3)
+            self.o.ppylabel:SetVisible(true)          
+            self.o.ppylabel:SetPoint("TOPLEFT",  self.o.ppzlabel, "BOTTOMLEFT",  0,   mano.gui.borders.top)
+                           
+            self.o.ppytext =  UI.CreateFrame("RiftTextfield", "input_y_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppytext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppytext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppytext:SetText("")
+            self.o.ppytext:SetLayer(3)
+            self.o.ppytext:SetVisible(true)          
+            self.o.ppytext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))
+            self.o.ppytext:SetPoint("TOPRIGHT",  self.o.ppztext, "BOTTOMRIGHT",  0,   mano.gui.borders.top)
+            
+            self.o.ppzonenamelabel =  UI.CreateFrame("Text", "input_zone_name_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppzonenamelabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppzonenamelabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppzonenamelabel:SetText("Zone Name:")
+            self.o.ppzonenamelabel:SetLayer(3)
+            self.o.ppzonenamelabel:SetVisible(true)          
+            self.o.ppzonenamelabel:SetPoint("TOPLEFT",  self.o.ppylabel, "BOTTOMLEFT",  0,   mano.gui.borders.top)
+
+            self.o.ppzonenametext =  UI.CreateFrame("RiftTextfield", "input_zone_name_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppzonenametext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppzonenametext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppzonenametext:SetText("")
+            self.o.ppzonenametext:SetLayer(3)
+            self.o.ppzonenametext:SetVisible(true)          
+            self.o.ppzonenametext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))                           
+            self.o.ppzonenametext:SetPoint("TOPRIGHT",  self.o.ppytext, "BOTTOMRIGHT",  0,   mano.gui.borders.top)
+                                      
+            self.o.ppzoneidlabel =  UI.CreateFrame("Text", "input_zone_id_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppzoneidlabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppzoneidlabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppzoneidlabel:SetText("Zone Id:")
+            self.o.ppzoneidlabel:SetLayer(3)
+            self.o.ppzoneidlabel:SetVisible(true)          
+            self.o.ppzoneidlabel:SetPoint("TOPLEFT",  self.o.ppzonenamelabel, "BOTTOMLEFT",  0,   mano.gui.borders.top)
+                           
+            self.o.ppzoneidtext =  UI.CreateFrame("Text", "input_zone_id_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppzoneidtext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppzoneidtext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppzoneidtext:SetText("")
+            self.o.ppzoneidtext:SetLayer(3)
+            self.o.ppzoneidtext:SetVisible(true)          
+            self.o.ppzoneidtext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))                           
+            self.o.ppzoneidtext:SetPoint("TOPRIGHT",  self.o.ppzonenametext, "BOTTOMRIGHT",  0,   mano.gui.borders.top)                           
+                           
+            self.o.ppownerlabel =  UI.CreateFrame("Text", "input_owner_label", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppownerlabel:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppownerlabel:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppownerlabel:SetText("Note Owner:")
+            self.o.ppownerlabel:SetLayer(3)
+            self.o.ppownerlabel:SetVisible(true)          
+            self.o.ppownerlabel:SetPoint("TOPLEFT",  self.o.ppzoneidlabel, "BOTTOMLEFT",  0,   mano.gui.borders.top)
+                           
+            self.o.ppownertext =  UI.CreateFrame("RiftTextfield", "input_owner_text", self.o.dxframe)
+            if mano.gui.font.name then self.o.ppownertext:SetFont(mano.addon.name, mano.gui.font.name)   end
+            self.o.ppownertext:SetHeight(mano.gui.font.size * 1.5)
+            self.o.ppownertext:SetText("")
+            self.o.ppownertext:SetLayer(3)
+            self.o.ppownertext:SetVisible(true)
+            self.o.ppownertext:SetBackgroundColor(unpack(mano.gui.color.darkgrey))                                                      
+            self.o.ppownertext:SetPoint("TOPRIGHT",  self.o.ppzoneidtext, "BOTTOMRIGHT",  0,   mano.gui.borders.top)
+            
+            --	DX FRAME -- END
 
 
          self.initialized =   true
@@ -460,11 +629,14 @@ function __mano_ui_input(action, modifytbl)
          local minY  =  self.o.frame:GetTop()
 
          self.o.frame:SetHeight(mano.f.round(maxY - maxY))
+         self.o.dxframe:SetHeight(mano.f.round(maxY - maxY))
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 
          attacheventwatchers()
 
-         self.o.labeltext:SetKeyFocus(true)
+--          self.o.labeltext:SetKeyFocus(true)
+         self.o.dxframe:SetVisible(false)
+         self.o.externaldxframe:SetVisible(false)
 
       end
 
@@ -478,7 +650,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.sharedbutton:SetChecked(false)
 
 --          attacheventwatchers()
-         self.o.labeltext:SetKeyFocus(true)
+--          self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(false)
       else
          print("MODIFY Note")
@@ -500,9 +672,18 @@ function __mano_ui_input(action, modifytbl)
 --          if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", mano.f.getcategoryicon(t.category))   end
          if t.caticon   ~= nil   then  self.o.caticon:SetTexture("Rift", t.caticon)   end
          self.o.sharedbutton:SetChecked(t.shared)
+         
+         if modifytbl.playerpos ~= nil and next(modifytbl.playerpos) ~= nil then
+            self.o.ppxtext:SetText(tostring(modifytbl.playerpos.x))
+            self.o.ppztext:SetText(tostring(modifytbl.playerpos.z))
+            self.o.ppytext:SetText(tostring(modifytbl.playerpos.y))
+            self.o.ppzonenametext:SetText(modifytbl.playerpos.zonename)
+            self.o.ppzoneidtext:SetText(modifytbl.playerpos.zoneid)
+            self.o.ppownertext:SetText(modifytbl.playerpos.name)                           
+         end                           
 
 --          attacheventwatchers()
-         self.o.labeltext:SetKeyFocus(true)
+--          self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(true)
       end
 
