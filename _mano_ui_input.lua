@@ -231,8 +231,8 @@ function __mano_ui_input(action, modifytbl)
             -- btn_arrow_R_(normal).png
             -- Title Icon
             self.o.ppbutton   = UI.CreateFrame("Texture", "mano_input_pp_button", self.o.titleframe)
---             self.o.ppbutton:SetTexture("Rift", "btn_arrow_R_(normal).png")
-            self.o.ppbutton:SetTexture("Rift", "macro_icon_heal.dds")
+            self.o.ppbutton:SetTexture("Rift", "btn_arrow_R_(normal).png.dds")
+--             self.o.ppbutton:SetTexture("Rift", "macro_icon_heal.dds")
             self.o.ppbutton:SetHeight(mano.gui.font.size)
             self.o.ppbutton:SetWidth(mano.gui.font.size)
             self.o.ppbutton:SetLayer(3)
@@ -277,7 +277,8 @@ function __mano_ui_input(action, modifytbl)
             self.o.labellabel:SetPoint("TOPRIGHT",   self.o.frame, "TOPRIGHT", -mano.gui.borders.right,   mano.gui.borders.top)
 
             -- Label's input field
-            self.o.labeltext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+--             self.o.labeltext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+            self.o.labeltext     =  UI.CreateFrame("SimpleTextArea", "input_line_name_", self.o.frame)
             if mano.gui.font.name then
                self.o.labeltext:SetFont(mano.addon.name, mano.gui.font.name)
             end
@@ -301,7 +302,8 @@ function __mano_ui_input(action, modifytbl)
             self.o.notelabel:SetPoint("TOPRIGHT",   self.o.labeltext, "BOTTOMRIGHT",   0,   mano.gui.borders.top)
 
             -- Note's input field
-            self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+--             self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
+            self.o.notetext     =  UI.CreateFrame("SimpleTextArea", "input_line_name_", self.o.frame)
 --             self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)
             if mano.gui.font.name then
                self.o.noteltext:SetFont(mano.addon.name, mano.gui.font.name)

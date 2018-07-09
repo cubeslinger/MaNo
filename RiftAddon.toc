@@ -10,10 +10,12 @@ Environment =  "4.0"
 
 Embed = {
    LibDraggable = true,
+   LibSimpleWidgets = true,
 }
 
 Dependencies = {
   LibDraggable     = {"required", "before"},
+  LibSimpleWidgets = {"required", "before"},
 }
 
 RunOnStartup = {
@@ -31,7 +33,7 @@ RunOnStartup = {
 SavedVariables = {
    manoguidata    =  'character',
    manonotesdb    =  'character',
-   manoextnotesdb =  'global',
    manousercats   =  'character',
    manosharedcats =  'global',
+   manoextnotesdb =  'global',   
 }

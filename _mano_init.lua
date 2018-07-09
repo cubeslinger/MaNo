@@ -194,6 +194,21 @@ local function dumptable(o)
    end
 end
 
+
+-- local function dumptable(tab, level)
+--    if level == nil then level = 1 end
+--    for key, val in pairs(tab) do
+--       if type(val) == "table" then
+--          print (level .. ".  Key=" .. key .. " val is table")
+--          dumptable(val, level + 1)
+--       else
+--          print (level .. ".  key=" .. key .. " val=" .. val)
+--       end
+--    end
+-- end
+
+
+
 -- only print if debug is on
 local function dprint(...) if mano.flags.debug == true then print(...) end end
 
