@@ -5,6 +5,19 @@
 --
 local addon, mano = ...
 
+-- rounds a number to the nearest decimal places
+--
+local function rounddecimal(val, decimal)
+
+   if (decimal) then
+      return math.floor( (val * 10^decimal) + 0.5) / (10^decimal)
+   else
+      return math.floor(val+0.5)
+   end
+
+end
+
+
 local function split(pString, pPattern)
 
    local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
@@ -165,7 +178,9 @@ local function parseslashcommands(params)
          end
 
          if not isonscreen then
-            mano.mapnoteinput:show('new')
+            local t     =  {}
+            t.playerpos =  mano.mapnote.getplayerposition()
+            mano.mapnoteinput:show('new', t)
             print("post mano.mapnote.new")
          else
             print("Input Form already on Screen")
@@ -337,6 +352,7 @@ mano.f.userinputsave       =  userinputsave
 mano.f.userinputdelete     =  userinputdelete
 mano.f.getcategoryicon     =  getcategoryicon
 mano.f.splitstring         =  split
+mano.f.rounddecimal        =  rounddecimal
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end
