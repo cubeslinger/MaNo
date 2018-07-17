@@ -30,23 +30,8 @@ function __mano_ui()
       return count
    end
 
---    local function setzonetitlebyid(zoneid, count)
---
---       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
---
---       if bool then
---          if zonedata.name ~= self.lastzone  then
---             self.o.titlezone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
---             self.lastzone  =	zonedata.name
---          end
---       end
---
---       return
---    end
 
---    local function modifynote(zonename, idx, shared)
---    local function modifynote(t, customtbl)
-      local function modifynote(tbl, customtbl, shared)
+   local function modifynote(tbl, customtbl, shared)
 
 --       local tbl   =  t[1]
 
@@ -446,7 +431,7 @@ function __mano_ui()
 
       -- Main Window
       self.o.window  =  UI.CreateFrame("Frame", "MaNo", context)
-    
+
 --       mano.f.dprint(string.format("mano.gui.win.x=%s mano.gui.win.y=%s", mano.gui.win.x, mano.gui.win.y))
 
       if mano.gui.win.x == nil or mano.gui.win.y == nil then
@@ -465,7 +450,7 @@ function __mano_ui()
 
       self.o.tooltip = UI.CreateFrame("SimpleTooltip", "mano_ui_tt", self.o.window)
 --       tooltip:InjectEvents(mybutton, function() return "My Button Tooltip" end)
---       tooltip:InjectEvents(mytextfield , function() return "My Textfield Tooltip" end)      
+--       tooltip:InjectEvents(mytextfield , function() return "My Textfield Tooltip" end)
 
 
 
@@ -643,7 +628,7 @@ function __mano_ui()
                                                                      self.o.corner.basey   =  self.o.window:GetTop()
                                                                   end,
                                                                   "Event.UI.Input.Mouse.Right.Down")
-      self.o.tooltip:InjectEvents(self.o.corner, function() return "Resize Window" end)                                                                  
+      self.o.tooltip:InjectEvents(self.o.corner, function() return "Resize Window" end)
 
       self.o.corner:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function()
                                                                      if  self.o.corner.pressed then

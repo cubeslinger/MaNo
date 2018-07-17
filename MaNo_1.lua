@@ -59,13 +59,13 @@ local function savevariables(_, addonname)
 
       -- Save Character Shared Notes Db
       if next(mano.sharednote.notes)   ~= nil then manoextnotesdb =  mano.sharednote.notes   end
-      
+
       -- Save Character Categories
       if next(mano.categories)         ~= nil then manousercats   =  mano.categories         end
-      
+
       -- Shared Categories
       if next(mano.sharedcategories)   ~= nil then manosharedcats =  mano.sharedcategories   end
-      
+
    end
 
 --    detacheventsonexit()
@@ -97,7 +97,7 @@ local function loadvariables(_, addonname)
          shareddb =  manoextnotesdb
       end
       mano.sharednote   =  __map_notes(shareddb)
-      
+
       -- Character Categories
       if manousercats ~= nil and next(manousercats) ~= nil then
          mano.categories   =  manousercats
@@ -107,8 +107,8 @@ local function loadvariables(_, addonname)
          end
       end
       local k, v  =  nil, nil
-      for k, v in pairs(mano.categories) do mano.lastcategoryidx  =  math.max(mano.lastcategoryidx, k)  end      
-      
+      for k, v in pairs(mano.categories) do mano.lastcategoryidx  =  math.max(mano.lastcategoryidx, k)  end
+
       -- Shared Categories
       if manosharedcats ~= nil and next(manosharedcats) ~= nil then
          mano.sharedcategories   =  manosharedcats
@@ -117,7 +117,7 @@ local function loadvariables(_, addonname)
             mano.sharedcategories = mano.base.sharedcategories
          end
       end
-      for k, v in pairs(mano.sharedcategories) do mano.lastsharedcategoryidx  =  math.max(mano.lastsharedcategoryidx, k)  end      
+      for k, v in pairs(mano.sharedcategories) do mano.lastsharedcategoryidx  =  math.max(mano.lastsharedcategoryidx, k)  end
 
       Command.Event.Detach(Event.Addon.SavedVariables.Load.End,   loadvariables,	"MaNo: Load Variables")
    end
@@ -163,6 +163,7 @@ local function startmeup(h, t)
             mano.gui.shown.window.loadlistbyzoneid(zonedata.id)
          end
       end
+      mano.player.unitname =  t.name
 
       -- Start monitoring Player's Zone Changes
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
@@ -191,7 +192,7 @@ Command.Event.Attach(Event.Addon.SavedVariables.Save.Begin, savevariables,      
 -- Event tracking initialization -- end
 --
 --
-table.insert(Command.Slash.Register("mano"), {function (...) parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
+table.insert(Command.Slash.Register("mano"), {function (...) mano.f.parseslashcommands(...) end, mano.addon.name, "MaNo: add note here"})
 --
 -- if not mano.mapnote        then  mano.mapnote      =  __map_notes({}) end
 -- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() mano.mapnoteinput.o.window:SetVisible(false)  end

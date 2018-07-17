@@ -17,6 +17,33 @@ local function rounddecimal(val, decimal)
 
 end
 
+local function findexactzonename(zonename)
+
+   local retval   =  nil
+
+   if not mano.db.zones or next(mano.db.zones) == nil then
+      mano.db.geo =  __geodata().db
+   end
+
+   local lowcasezonename   =  zonename:lower()
+   local zntbl             =  nil
+   for _, zntbl in pairs(mano.db.geo.zones) do
+
+--       print(string.format("checking input(%s)==(%s)db", lowcasezonename, zntbl.zonename:lower()))
+
+--       if zntbl.zonename:lower() == lowcasezone then
+      if zntbl.zonename:lower():find(lowcasezonename) ~= nil then
+         retval   =  zntbl.zonename
+--          print("FOUND!")
+         break
+--       else
+--          print("no match")
+      end
+   end
+
+   return retval
+end
+
 
 local function split(pString, pPattern)
 
@@ -160,6 +187,75 @@ local function userinputcancel()
    return {}
 end
 
+local function manualaddnote(params)
+
+   local ERROR    =  false
+   local tokens   =  {}
+   local i        =  0
+   local token    =  nil
+
+   local i = 0
+   for token in params:gmatch("%S+") do
+      i = i + 1
+--       table.insert(tokens, token)
+      tokens[i]   =  token
+   end
+
+
+   -- Sintax:
+   -- /mano new zone x z y label [note]
+   --        1   2   3 4 5   6     [7]
+   --
+   if tokens[1] ~= nil and    -- "new"          (action)
+      tokens[2] ~= nil and    -- "zonename"     (mandatory)
+      tokens[3] ~= nil and    -- X coordinate   (mandatory)
+      tokens[4] ~= nil and    -- Z coordinate   (mandatory)
+      tokens[5] ~= nil and    -- Y coordinate   (mandatory)
+      tokens[6] ~= nil then   -- Label          (mandatory)
+
+      print(string.format("ACCEPTING INPUT FOR:\n  zone: %s\n  XYZ: %s, %s, %s\n  Label: %s\n  Note: %s",
+                                                   tokens[2],
+                                                               tokens[3],
+                                                                  tokens[4],
+                                                                     tokens[5],
+                                                                                  tokens[6],
+                                                                                                tokens[7] or 'nil'
+                        )
+      )
+
+
+      local zoneid   =  nil
+      local zonename =  findexactzonename(tokens[2])
+      if zonename ~= nil   then
+         zoneid   =  "" -- NEEDS ROUTINE
+      end
+
+      if zoneid ~=   nil   and zonename ~= nil  then
+         local t              =  {}
+         t.label              =  tokens[6]
+         t.text               =  tokens[7]   or ""
+         t.category           =  "default"
+         t.shared             =  false
+         t.playerpos          =  {}
+         t.playerpos.x        =  tokens[3]   or 0
+         t.playerpos.z        =  tokens[4]   or 0
+         t.playerpos.y        =  tokens[5]   or 0
+         t.playerpos.zoneid   =  "UNKNOWN ZONE ID"
+         t.playerpos.zonename =  findexactzonename(tokens[2]) or "UNKNOWN ZONE NAME"
+         t.playerpos.name     =  mano.player.unitname
+      else
+         ERROR =  "Can't understand Zone: " .. tokens[2] .. "\n"
+      end
+   end
+
+
+   if ERROR then
+      print("ERROR: " .. ERROR .. "\nSintax: /mano new zone x z y label [note]")
+   end
+
+   return
+end
+
 local function parseslashcommands(params)
 --    print(string.format("params: -- begin => params(%s)", params))
 --    print("params: ", mano.f.dumptable(params))
@@ -168,7 +264,7 @@ local function parseslashcommands(params)
 
    for i in string.gmatch(params, "%S+") do
 
-      if i  == "add"         then
+      if i  == "add" then
          print("pre mano.mapnote.new")
          -- ...
          if mano.mapnoteinput.initialized then
@@ -185,6 +281,14 @@ local function parseslashcommands(params)
          else
             print("Input Form already on Screen")
          end
+      end
+
+      if i == "new"  then
+         print("pre manual add")
+         print(string.format("MaNo params: (%s)", params))
+
+         local retval = manualaddnote(params)
+
       end
 
    end
@@ -368,6 +472,7 @@ mano.f.userinputdelete     =  userinputdelete
 mano.f.getcategoryicon     =  getcategoryicon
 mano.f.splitstring         =  split
 mano.f.rounddecimal        =  rounddecimal
+mano.f.parseslashcommands  =  parseslashcommands
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end

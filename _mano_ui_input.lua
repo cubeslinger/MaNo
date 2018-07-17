@@ -144,15 +144,19 @@ function __mano_ui_input(action, modifytbl)
                      icon     =  icon,
                      save     =  self.o.save,
                      shared   =  self.o.sharedbutton:GetChecked()
-
---                      playerpos.x          =  tonumber(self.o.ppxtext:GetText())
---                      playerpos.z          =  tonumber(self.o.ppztext:GetText())
---                      playerpos.y          =  tonumber(self.o.ppytext:GetText())
---                      playerpos.zonename   =  tonumber(self.o.ppzonenametext:GetText())
---                      playerpos.zoneid     =  tonumber(self.o.ppzoneidtext:GetText())
---                      playerpos.name       =  tonumber(self.o.ppownertext:GetText())
-
                   }
+
+      local p  =  {}
+      if self.o.ppxtext:GetText()         ~= "" then p.x          =  mano.f.rounddecimal(tonumber(self.o.ppxtext:GetText()), 2)        end
+      if self.o.ppztext:GetText()         ~= "" then p.z          =  mano.f.rounddecimal(tonumber(self.o.ppztext:GetText()), 2)        end
+      if self.o.ppytext:GetText()         ~= "" then p.y          =  mano.f.rounddecimal(tonumber(self.o.ppytext:GetText()), 2)        end
+      if self.o.ppzonenametext:GetText()  ~= "" then p.zonename   =  self.o.ppzonenametext:GetText()  end
+      if self.o.ppzoneidtext:GetText()    ~= "" then p.zoneid     =  self.o.ppzoneidtext:GetText()    end
+      if self.o.ppownertext:GetText()     ~= "" then p.name       =  self.o.ppownertext:GetText()     end
+
+      if p  ~= {} and next(p) ~= nil then t.playerpos =  p  end
+
+
       return t
 
    end
@@ -720,3 +724,16 @@ function __mano_ui_input(action, modifytbl)
 
 end
 
+
+
+
+--[[
+    Error: MaNo/_mano_init.lua:13: attempt to perform arithmetic on local 'val' (a nil value)
+   In MaNo / MaNo.mano_input_save_button:Event.UI.Input.Mouse.Left.Click
+   stack traceback:
+   [C]: in function '__mul'
+   MaNo/_mano_init.lua:13: in function 'rounddecimal'
+   MaNo/_mano_ui_input.lua:153: in function 'GetInput'
+   MaNo/_mano_ui_input.lua:484: in function <MaNo/_mano_ui_input.lua:454>
+
+    ]]
