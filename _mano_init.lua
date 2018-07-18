@@ -5,6 +5,39 @@
 --
 local addon, mano = ...
 
+
+local function splitquotedstringbyspace(text)
+
+   local retval   =  {}
+
+--    local text = [[I "am" 'the text' and "some more text with '" and "escaped \" text"]]
+   local spat, epat, buf, quoted = [=[^(['"])]=], [=[(['"])$]=]
+
+   for str in text:gmatch("%S+") do
+
+      local squoted = str:match(spat)
+      local equoted = str:match(epat)
+      local escaped = str:match([=[(\*)['"]$]=])
+
+      if squoted and not quoted and not equoted then
+         buf, quoted = str, squoted
+      elseif buf and equoted == quoted and #escaped % 2 == 0 then
+         str, buf, quoted = buf .. ' ' .. str, nil, nil
+      elseif buf then
+         buf = buf .. ' ' .. str
+      end
+      if not buf then
+         local piece =  (str:gsub(spat,""):gsub(epat,""))
+         print(piece)
+         table.insert(retval, piece)
+      end
+   end
+   if buf then print("Missing matching quote for "..buf) end
+
+   return retval
+end
+
+--
 -- rounds a number to the nearest decimal places
 --
 local function rounddecimal(val, decimal)
@@ -17,27 +50,49 @@ local function rounddecimal(val, decimal)
 
 end
 
+local function findexactcategoryname(category)
+
+   local retval   =  nil
+
+   if category ~= nil then
+
+      local lowcasecategory  =  category:lower()
+
+      for _, tbl in pairs({mano.categories, mano.sharedcategories}) do
+         for _, db in pairs(tbl) do
+            if db.name:lower():find(lowcasecategory) ~= nil then
+               retval   =  db.name
+               break
+            end
+         end
+      end
+   end
+
+   return retval
+end
 local function findexactzonename(zonename)
 
    local retval   =  nil
 
-   if not mano.db.zones or next(mano.db.zones) == nil then
-      mano.db.geo =  __geodata().db
-   end
+   if zonename ~= nil then
 
-   local lowcasezonename   =  zonename:lower()
-   local zntbl             =  nil
-   for _, zntbl in pairs(mano.db.geo.zones) do
+      if not mano.db.zones or next(mano.db.zones) == nil then
+         mano.db.geo =  __geodata().db
+      end
 
---       print(string.format("checking input(%s)==(%s)db", lowcasezonename, zntbl.zonename:lower()))
+      local lowcasezonename   =  zonename:lower()
+      local zntbl             =  nil
+      for _, zntbl in pairs(mano.db.geo.zones) do
 
---       if zntbl.zonename:lower() == lowcasezone then
-      if zntbl.zonename:lower():find(lowcasezonename) ~= nil then
-         retval   =  zntbl.zonename
---          print("FOUND!")
-         break
---       else
---          print("no match")
+--          print(string.format("checking input(%s)==(%s)db", lowcasezonename, zntbl.zonename:lower()))
+
+         if zntbl.zonename:lower():find(lowcasezonename) ~= nil then
+            retval   =  { zntbl.zonename, zntbl.zoneid }
+--             print("FOUND!")
+            break
+   --       else
+   --          print("no match")
+         end
       end
    end
 
@@ -70,9 +125,9 @@ end
 
 local function userinputdelete(handle, action, note2delete)
 
-   print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
-
-   print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
+--    print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
+--
+--    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
 
    if action   == 'delete'  then
 
@@ -81,19 +136,19 @@ local function userinputdelete(handle, action, note2delete)
 
       if note2delete.customtbl ~= nil and next(note2delete.customtbl) ~= nil and note2delete.customtbl.shared ~= nil then
 
-         print("DELETING SHARED MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
+--          print("DELETING SHARED MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
 
          local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
       else
 
-         print("DELETING LOCAL MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
+--          print("DELETING LOCAL MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
 
          local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
       end
 
-      print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
+--       print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
       mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
 
    end
@@ -103,8 +158,8 @@ end
 
 local function userinputsave(handle, action, params)
 
-   print(string.format("userinputsave: handle=(%s) action=(%s) params=(%s)", handle, action, params))
-   print("params:\n", mano.f.dumptable(params))
+--    print(string.format("userinputsave: handle=(%s) action=(%s) params=(%s)", handle, action, params))
+--    print("params:\n", mano.f.dumptable(params))
 
    local userinput   =  params
 
@@ -149,11 +204,9 @@ local function userinputsave(handle, action, params)
 
          end
 
---          print(string.format("Shared Note: (%s)", userinput.shared))
-
-         print("----------------------------")
-         print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
-         print("----------------------------")
+--          print("----------------------------")
+--          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
+--          print("----------------------------")
 
          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
       end
@@ -171,12 +224,9 @@ local function getcategoryicon(category)
 
    for _, tbl in pairs({mano.categories, mano.sharedcategories}) do
       for _, db in pairs(tbl) do
---          print("db:\n", mano.f.dumptable(db))
          if category == db.name then icon  =  db.icon   break end
       end
    end
-
---    print(string.format("getcategoryicon: category=(%s) found(%s)", category, icon))
 
    return   icon
 end
@@ -189,68 +239,102 @@ end
 
 local function manualaddnote(params)
 
-   local ERROR    =  false
+   local ERROR    =  ""
+   local t        =  {}
    local tokens   =  {}
-   local i        =  0
    local token    =  nil
+   local zonename =  nil
+   local zoneid   =  nil
 
-   local i = 0
-   for token in params:gmatch("%S+") do
-      i = i + 1
---       table.insert(tokens, token)
-      tokens[i]   =  token
-   end
-
+   tokens   =  splitquotedstringbyspace(params)
 
    -- Sintax:
-   -- /mano new zone x z y label [note]
-   --        1   2   3 4 5   6     [7]
+   -- /mano new category zone x z y label [note] [shared]
+   --        1     2      3   4 5 6  7      [8]    [9]
+   --
+   -- [shared] is false if missing, true any other value
    --
    if tokens[1] ~= nil and    -- "new"          (action)
-      tokens[2] ~= nil and    -- "zonename"     (mandatory)
-      tokens[3] ~= nil and    -- X coordinate   (mandatory)
-      tokens[4] ~= nil and    -- Z coordinate   (mandatory)
-      tokens[5] ~= nil and    -- Y coordinate   (mandatory)
-      tokens[6] ~= nil then   -- Label          (mandatory)
+      tokens[2] ~= nil and    -- "category"     (mandatory)
+      tokens[3] ~= nil and    -- "zonename"     (mandatory)
+      tokens[4] ~= nil and    -- X coordinate   (mandatory)
+      tokens[5] ~= nil and    -- Z coordinate   (mandatory)
+      tokens[6] ~= nil and    -- Y coordinate             (mandatory)
+      tokens[7] ~= nil then   -- Label          (mandatory)
 
-      print(string.format("ACCEPTING INPUT FOR:\n  zone: %s\n  XYZ: %s, %s, %s\n  Label: %s\n  Note: %s",
-                                                   tokens[2],
-                                                               tokens[3],
-                                                                  tokens[4],
-                                                                     tokens[5],
-                                                                                  tokens[6],
-                                                                                                tokens[7] or 'nil'
-                        )
-      )
+--       print(string.format("ACCEPTING INPUT FOR:\n  category: %s\n  zone: %s\n  XYZ: %s, %s, %s\n  Label: %s\n  Note: %s\n  Shared: %s",
+--                                                    tokens[2],
+--                                                                    tokens[3],
+--                                                                                     tokens[4],
+--                                                                                         tokens[5],
+--                                                                                              tokens[6],
+--                                                                                                   tokens[7],
+--                                                                                                                 tokens[8] or 'nil',
+--                                                                                                                             tokens[9] or 'false'
+--                         )
+--       )
 
-
-      local zoneid   =  nil
-      local zonename =  findexactzonename(tokens[2])
-      if zonename ~= nil   then
-         zoneid   =  "" -- NEEDS ROUTINE
+      local categoryname   =  findexactcategoryname(tokens[2])
+      local zonetbl        =  findexactzonename(tokens[3])
+      if zonetbl ~= nil and next(zonetbl) ~= nil then
+         zonename, zoneid  =  unpack(zonetbl)
       end
 
-      if zoneid ~=   nil   and zonename ~= nil  then
-         local t              =  {}
-         t.label              =  tokens[6]
-         t.text               =  tokens[7]   or ""
-         t.category           =  "default"
-         t.shared             =  false
-         t.playerpos          =  {}
-         t.playerpos.x        =  tokens[3]   or 0
-         t.playerpos.z        =  tokens[4]   or 0
-         t.playerpos.y        =  tokens[5]   or 0
-         t.playerpos.zoneid   =  "UNKNOWN ZONE ID"
-         t.playerpos.zonename =  findexactzonename(tokens[2]) or "UNKNOWN ZONE NAME"
-         t.playerpos.name     =  mano.player.unitname
+--       print(string.format("zname=%s zid=%s", zonename, zoneid))
+
+      if zonename ~= nil then
+
+         if zoneid   ~= nil   then
+
+            if categoryname   ~= nil   then
+
+               t.label              =  tokens[7]
+               t.text               =  tokens[8]      or ""
+               t.category           =  categoryname   or "Default"
+               t.shared             =  tokens[9]      or false
+               t.playerpos          =  {}
+               t.playerpos.x        =  tokens[4]      or 0
+               t.playerpos.z        =  tokens[5]      or 0
+               t.playerpos.y        =  tokens[6]      or 0
+               t.playerpos.zoneid   =  zoneid
+               t.playerpos.zonename =  zonename
+               t.playerpos.name     =  mano.player.unitname
+            else
+               ERROR =  ERROR .. "Can't understand Category: " .. tokens[2] .. "\n"
+            end
+         else
+            ERROR =  ERROR .. "Can't get zoneid for Zonename: " .. tokens[3] .. "\n"
+         end
       else
-         ERROR =  "Can't understand Zone: " .. tokens[2] .. "\n"
+         ERROR =  ERROR .. "Can't understand Zone: " .. tokens[3] .. "\n"
       end
    end
 
 
-   if ERROR then
-      print("ERROR: " .. ERROR .. "\nSintax: /mano new zone x z y label [note]")
+   if ERROR ~= "" then
+      print("ERROR: " .. ERROR .. "\nSintax: /mano new category zone x z y label [note] [shared]")
+   else
+      -- Commit Note
+      local noterecord  =  nil
+
+--       print(string.format("zname=%s zid=%s", zonename, zoneid))
+
+      if t.shared == true  then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
+                           else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
+      end
+
+
+      -- we show new note only if we are in the same zone of new note
+      local current  =  mano.mapnote.getplayerposition()
+
+      if zonename == current.zonename then
+--          print("note IN current zone (zid: ".. zoneid .. ")")
+         mano.gui.shown.window.loadlistbyzoneid(zoneid)
+      else
+--          print("note not in current zone, not showing.")
+      end
+
+      print("Succesfully added note in ".. zonename .. ".")
    end
 
    return
@@ -506,11 +590,6 @@ mano.player                =  {}
 --
 -- Default Categories
 --
--- mano.categories            =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
---                                  [2]   =  {  name="Artifacts",         icon="macro_icon_smile.dds" },
---                                  [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
---                                  [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
---                               }
 mano.categories            =  {}
 mano.lastcategoryidx       =  0
 mano.sharedcategories      =  {}
@@ -519,23 +598,23 @@ mano.lastsharedcategoryidx =  0
 -- Bases
 --
 mano.base                  =  {}
-mano.base.usercategories   =  {  [1]   =  {  name="Default",           icon="macro_icon_clover.dds" },
-                                 [2]   =  {  name="Artifacts",         icon="macro_icon_smile.dds" },
-                                 [3]   =  {  name="Crafting Material", icon="outfitter1.dds" },
-                                 [4]   =  {  name="Villain",           icon="target_portrait_roguepoint.png.dds" },
+mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="macro_icon_clover.dds" },
+                                 [2]   =  {  name="Artifacts",          icon="macro_icon_smile.dds" },
+                                 [3]   =  {  name="Crafting Material",  icon="outfitter1.dds" },
+                                 [4]   =  {  name="Villain",            icon="target_portrait_roguepoint.png.dds" },
+                                 [5]   =  {  name="user0",              icon="macro_icon_crown.dds" },
+                                 [6]   =  {  name="user1",              icon="macro_icon_arrow.dds" },
+                                 [7]   =  {  name="user2",              icon="macro_icon_no.dds" },
+                                 [8]   =  {  name="user3",              icon="macro_icon_radioactive.dds" },
+                                 [9]   =  {  name="user4",              icon="macro_icon_sad.dds" },
+                                 [10]  =  {  name="user5",              icon="macro_icon_skull.dds" },
+                                 [11]  =  {  name="user6",              icon="macro_icon_smile.dds" },
+                                 [12]  =  {  name="user7",              icon="macro_icon_squirell.dds" },
+                                 [13]  =  {  name="user8",              icon="macro_icon_support.dds" },
+                                 [14]  =  {  name="user9",              icon="macro_icon_tank.dds" },
+
                               }
 mano.base.sharedcategories =  mano.base.usercategories
 --
 -- end declarations
 --
-
--- "macro_icon_crown.dds"
--- "macro_icon_arrow.dds"
--- "macro_icon_no.dds"
--- "macro_icon_radioactive.dds"
--- "macro_icon_sad.dds"
--- "macro_icon_skull.dds"
--- "macro_icon_smile.dds"
--- "macro_icon_squirell.dds"
--- "macro_icon_support.dds"
--- "macro_icon_tank.dds"

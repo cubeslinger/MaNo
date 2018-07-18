@@ -27,11 +27,11 @@ our $AUTHOR;
 
 sub _read_params
   {
-  ##
-  ##  Valid Switches:
-  ##
-  ##    -i <FILE>         input file to fix
-  ##
+  #
+  #  Valid Switches:
+  #
+  #    -i <FILE>         input file to fix
+  #
   my  (%u)        = ();
   my  ($in)       = undef;
   #

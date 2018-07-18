@@ -35,20 +35,20 @@ function __mano_ui()
 
 --       local tbl   =  t[1]
 
-      print("\n-------------------------------------------BEGIN")
+--       print("\n-------------------------------------------BEGIN")
 --       print("modifynote(tbl)\n", mano.f.dumptable(tbl))
 --       print("modifynote(customtbl)\n", mano.f.dumptable(customtbl))
 --       print("modifynote(t.playerpos)\n", mano.f.dumptable(tbl.playerpos))
 
       local note  =  {}
 
-      print(string.format("tbl.playerpos.zonename=%s, tbl.idx=%s", tbl.playerpos.zonename, tbl.idx))
+--       print(string.format("tbl.playerpos.zonename=%s, tbl.idx=%s", tbl.playerpos.zonename, tbl.idx))
 
       if	shared then
-         print(string.format("SHARED mano.sharednote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
+--          print(string.format("SHARED mano.sharednote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
          note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
       else
-         print(string.format("LOCAL mano.mapnote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
+--          print(string.format("LOCAL mano.mapnote.getnotebyzoneandidx(%s, %s)", tbl.playerpos.zonename, tbl.idx))
          note  =  mano.mapnote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
       end
 
@@ -58,7 +58,7 @@ function __mano_ui()
          print("modifynote: Note NOT Found!")
       end
 
-      print("\n-------------------------------------------END")
+--       print("\n-------------------------------------------END")
 
       return
    end
@@ -145,7 +145,7 @@ function __mano_ui()
       if mano.gui.font.name then
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
-      print("ui4 t:\n", mano.f.dumptable(t))
+--       print("ui4 t:\n", mano.f.dumptable(t))
       T.text:SetFontSize(mano.gui.font.size)
       local text  =  ""
       if t.label  ~= nil then text  =  t.label  end
