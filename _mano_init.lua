@@ -293,9 +293,12 @@ local function manualaddnote(params)
                t.category           =  categoryname   or "Default"
                t.shared             =  tokens[9]      or false
                t.playerpos          =  {}
-               t.playerpos.x        =  tokens[4]      or 0
-               t.playerpos.z        =  tokens[5]      or 0
-               t.playerpos.y        =  tokens[6]      or 0
+--                t.playerpos.x        =  tokens[4]      or 0
+--                t.playerpos.z        =  tokens[5]      or 0
+--                t.playerpos.y        =  tokens[6]      or 0
+               t.playerpos.x        =  mano.f.rounddecimal(tonumber(tokens[4]), 2) or 0
+               t.playerpos.z        =  mano.f.rounddecimal(tonumber(tokens[5]), 2) or 0
+               t.playerpos.y        =  mano.f.rounddecimal(tonumber(tokens[6]), 2) or 0
                t.playerpos.zoneid   =  zoneid
                t.playerpos.zonename =  zonename
                t.playerpos.name     =  mano.player.unitname

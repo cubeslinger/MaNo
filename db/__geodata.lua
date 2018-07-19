@@ -161,7 +161,6 @@ function __geodata()
    self.db.zones  =  {
                         { zonename="Alittu", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
                         { zonename="Ardent Domain", zonetype="Normal", expansion="Storm Legion", zoneid="z563CB77E4A32233F" },
-                        { zonename="Art_Test_Four", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Ashenfell", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
                         { zonename="Ashora", zonetype="Normal", expansion="Storm Legion", zoneid="z2F1E4708BEC6A608" },
                         { zonename="Cape Jule", zonetype="Normal", expansion="Storm Legion", zoneid="z698CB7B72B3D69E9" },
