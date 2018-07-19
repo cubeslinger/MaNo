@@ -723,17 +723,3 @@ function __mano_ui_input(action, modifytbl)
    return self
 
 end
-
-
-
-
---[[
-    Error: MaNo/_mano_init.lua:13: attempt to perform arithmetic on local 'val' (a nil value)
-   In MaNo / MaNo.mano_input_save_button:Event.UI.Input.Mouse.Left.Click
-   stack traceback:
-   [C]: in function '__mul'
-   MaNo/_mano_init.lua:13: in function 'rounddecimal'
-   MaNo/_mano_ui_input.lua:153: in function 'GetInput'
-   MaNo/_mano_ui_input.lua:484: in function <MaNo/_mano_ui_input.lua:454>
-
-    ]]
