@@ -2,7 +2,7 @@
 -- Addon       __geodata.lua
 -- Author      marcob@marcob.org
 -- StartDate   17/07/2018
--- Version     0.2
+-- Version     0.3
 -- Source:     https://rift.magelo.com/en/zones.jspa
 --
 
@@ -166,41 +166,41 @@ function __geodata()
                         { zonename="Cape Jule", zonetype="Normal", expansion="Storm Legion", zoneid="z698CB7B72B3D69E9" },
                         { zonename="City Core", zonetype="Normal", expansion="Storm Legion", zoneid="z754553DD46F46371" },
                         { zonename="Conquest", zonetype="Normal", expansion="Rift", zoneid="" },
-                        { zonename="Draumheim", zonetype="Normal", expansion="Nightmare Tide", zoneid="" },
+                        { zonename="Draumheim", zonetype="Normal", expansion="Nightmare Tide", zoneid="z0000012E087E78E1" },
                         { zonename="Droughtlands", zonetype="Normal", expansion="Rift", zoneid="z1416248E485F6684" },
                         { zonename="Eastern Holdings", zonetype="Normal", expansion="Storm Legion", zoneid="z48530386ED2EA5AD" },
                         { zonename="Ember Isle", zonetype="Normal", expansion="Rift", zoneid="z76C88A5A51A38D90" },
                         { zonename="Freemarch", zonetype="Normal", expansion="Rift", zoneid="z00000013CAF21BE3" },
                         { zonename="Gedlo Badlands", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
                         { zonename="Gloamwood", zonetype="Normal", expansion="Rift", zoneid="z0000001B2BB9E10E" },
-                        { zonename="Goboro Reef", zonetype="Normal", expansion="Nightmare Tide", zoneid="" },
+                        { zonename="Goboro Reef", zonetype="Normal", expansion="Nightmare Tide", zoneid="z0000012D6EEBB377" },
                         { zonename="Greenscale's Blight", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Iron Pine Peak", zonetype="Normal", expansion="Rift", zoneid="z00000016EB9ECBA5" },
                         { zonename="Kingdom of Pelladane", zonetype="Normal", expansion="Storm Legion", zoneid="z2F1E4708BEC6A608" },
                         { zonename="Kingsward", zonetype="Normal", expansion="Storm Legion", zoneid="z4D8820D7EF52685C" },
                         { zonename="Mathosia", zonetype="Normal", expansion="Rift", zoneid="" },
-                        { zonename="Meridian", zonetype="Normal", expansion="Rift", zoneid="" },
+                        { zonename="Meridian", zonetype="Normal", expansion="Rift", zoneid="z6BA3E574E9564149" },
                         { zonename="Moonshade Highlands", zonetype="Normal", expansion="Rift", zoneid="z0000001804F56C61" },
                         { zonename="Morban", zonetype="Normal", expansion="Storm Legion", zoneid="z39095BA75AD7DC03" },
-                        { zonename="Planetouched Wilds", zonetype="Normal", expansion="Rift", zoneid="" },
+                        { zonename="Planetouched Wilds", zonetype="Normal", expansion="Rift", zoneid="z0000001CE3FE8B2C" },
                         { zonename="Sanctum", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Scarlet Gorge", zonetype="Normal", expansion="Rift", zoneid="z019595DB11E70F58" },
                         { zonename="Scarwood Reach", zonetype="Normal", expansion="Rift", zoneid="z000000142C649218" },
-                        { zonename="Scatherran Forest", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
+                        { zonename="Scatherran Forest", zonetype="Normal", expansion="Starfall Prophecy", zoneid="z7B2B0BB6E3EA1BEC" },
                         { zonename="Seratos", zonetype="Normal", expansion="Storm Legion", zoneid="z59124F7DD7F15825" },
                         { zonename="Shimmersand", zonetype="Normal", expansion="Rift", zoneid="z000000069C1F0227" },
                         { zonename="Silverwood", zonetype="Normal", expansion="Rift", zoneid="z0000000CB7B53FD7" },
                         { zonename="Steppes of Infinity", zonetype="Normal", expansion="Storm Legion", zoneid="z2F9C9E1FF91F9293" },
                         { zonename="Stillmoor", zonetype="Normal", expansion="Rift", zoneid="z0000001A4AF8CD7A" },
                         { zonename="Stonefield", zonetype="Normal", expansion="Rift", zoneid="z585230E5F68EA919" },
-                        { zonename="Tarken Glacier", zonetype="Normal", expansion="Nightmare Tide", zoneid="" },
+                        { zonename="Tarken Glacier", zonetype="Normal", expansion="Nightmare Tide", zoneid="z0000012F14279B5A" },
                         { zonename="Tempest Bay", zonetype="Normal", expansion="Storm Legion", zoneid="" },
                         { zonename="Tenebrean Schism", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
                         { zonename="Tenebrean Trouble", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Terminus", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="The Dendrome", zonetype="Normal", expansion="Storm Legion", zoneid="z10D7E74AB6D7B293" },
-                        { zonename="Tyrant's Throne", zonetype="Normal", expansion="Nightmare Tide", zoneid="" },
-                        { zonename="Vostigar Peaks", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
+                        { zonename="Tyrant's Throne", zonetype="Normal", expansion="Nightmare Tide", zoneid="z196650F5AA524928" },
+                        { zonename="Vostigar Peaks", zonetype="Normal", expansion="Starfall Prophecy", zoneid="z1E81B494CFA05AD0" },
                         { zonename="Xarth Mire", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
    }
 

@@ -18,13 +18,13 @@ end
 
 local function zonechangeevent(h, t)
 
-      print(string.format("zonechangeevent: h=%s t=%s", h, t ))
+--       print(string.format("zonechangeevent: h=%s t=%s", h, t ))
 
       local unitid   =  nil
       local cnt      =  1
 
       for unit, zone in pairs(t) do
-         print(string.format("zonechangeevent: (%s) unitid=%s zone=%s", cnt, unit, zone ))
+--          print(string.format("zonechangeevent: (%s) unitid=%s zone=%s", cnt, unit, zone ))
          cnt = cnt + 1
          if unitid   == nil   then
             unitid   =  unit
@@ -33,10 +33,10 @@ local function zonechangeevent(h, t)
       end
 
       if unitid   == mano.player.unitid   then
-         print("zonechangeevent: Zone change event IS for US!")
+--          print("zonechangeevent: Zone change event IS for US!")
          mano.gui.shown.window.loadlistbyzoneid(zoneid)
       else
-         print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
+--          print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
       end
 
 

@@ -184,8 +184,8 @@ function __mano_ui_input(action, modifytbl)
    function self.show(dummy, action, modifytbl)
 
 --       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
-      print(string.format("dummy=%s, action=%s. modifytbl=%s\n", dummy, action, modifytbl))
-      print("modifytbl\n", mano.f.dumptable(modifytbl))
+--       print(string.format("dummy=%s, action=%s. modifytbl=%s\n", dummy, action, modifytbl))
+--       print("modifytbl\n", mano.f.dumptable(modifytbl))
 
       self.o.save =  false
 
@@ -195,7 +195,7 @@ function __mano_ui_input(action, modifytbl)
 
       if not self.initialized then
 
-         print("FIRST New Note")
+--          print("FIRST New Note")
 
          -- Window Context
          local context  = UI.CreateContext("mano_input_context")
@@ -367,14 +367,14 @@ function __mano_ui_input(action, modifytbl)
             self.o.catmenu     = menu(self.o.cattext, self.catmenu)
             self.o.catmenu:hide()
 
-            -- Category AddButton
-            self.o.categoryaddbutton   =  UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)
-            self.o.categoryaddbutton:SetTexture("Rift", "AbilityBinder_I15.dds")
-            self.o.categoryaddbutton:SetHeight(mano.gui.font.size)
-            self.o.categoryaddbutton:SetWidth(mano.gui.font.size)
-            self.o.categoryaddbutton:SetLayer(3)
-            self.o.categoryaddbutton:SetPoint("TOPLEFT",   self.o.categorybutton, "TOPRIGHT", mano.gui.borders.left,	0)
-            self.o.categoryaddbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() print("Category ADD click!") end, "MaNo: Category Button Pressed" )
+--             -- Category AddButton
+--             self.o.categoryaddbutton   =  UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)
+--             self.o.categoryaddbutton:SetTexture("Rift", "AbilityBinder_I15.dds")
+--             self.o.categoryaddbutton:SetHeight(mano.gui.font.size)
+--             self.o.categoryaddbutton:SetWidth(mano.gui.font.size)
+--             self.o.categoryaddbutton:SetLayer(3)
+--             self.o.categoryaddbutton:SetPoint("TOPLEFT",   self.o.categorybutton, "TOPRIGHT", mano.gui.borders.left,	0)
+--             self.o.categoryaddbutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() print("Category ADD click!") end, "MaNo: Category Button Pressed" )
 
             -- Shared Button
             self.o.sharedbutton  =  UI.CreateFrame("RiftCheckbox", "mano_input_shared_button", self.o.frame)
@@ -662,7 +662,7 @@ function __mano_ui_input(action, modifytbl)
 
       if action   == 'new' then
          -- New Note but not first
-         print("New Note but not first")
+--          print("New Note but not first")
 
          self.o.labeltext:SetText("")
          self.o.notetext:SetText("")
@@ -682,7 +682,7 @@ function __mano_ui_input(action, modifytbl)
             self.o.ppownertext:SetText(modifytbl.playerpos.name)
          end
       else
-         print("MODIFY Note")
+--          print("MODIFY Note")
          -- modify
          local t  =  {  label =  "",   text  =  "", shared  =  false, category   =  "",   caticon  =  "" }
 

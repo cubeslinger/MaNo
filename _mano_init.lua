@@ -28,7 +28,7 @@ local function splitquotedstringbyspace(text)
       end
       if not buf then
          local piece =  (str:gsub(spat,""):gsub(epat,""))
-         print(piece)
+--          print(piece)
          table.insert(retval, piece)
       end
    end
@@ -76,9 +76,9 @@ local function findexactzonename(zonename)
 
    if zonename ~= nil then
 
-      if not mano.db.zones or next(mano.db.zones) == nil then
-         mano.db.geo =  __geodata().db
-      end
+--       if not mano.db.zones or next(mano.db.zones) == nil then
+--          mano.db.geo =  __geodata().db
+--       end
 
       local lowcasezonename   =  zonename:lower()
       local zntbl             =  nil
@@ -172,7 +172,7 @@ local function userinputsave(handle, action, params)
 
          if action   == 'modify' then
 
-            print("save modify")
+--             print("save modify")
 
             t  =  {	label       =  userinput.label,
                      text        =  userinput.text,
@@ -188,7 +188,7 @@ local function userinputsave(handle, action, params)
 
          else
 
-            print("save New")
+--             print("save New")
 
             t  =  {  label       =  userinput.label,
                      text        =  userinput.text,
@@ -352,7 +352,7 @@ local function parseslashcommands(params)
    for i in string.gmatch(params, "%S+") do
 
       if i  == "add" then
-         print("pre mano.mapnote.new")
+--          print("pre mano.mapnote.new")
          -- ...
          if mano.mapnoteinput.initialized then
             local isonscreen  =  mano.mapnoteinput.o.window:GetVisible()
@@ -364,15 +364,15 @@ local function parseslashcommands(params)
             local t     =  {}
             t.playerpos =  mano.mapnote.getplayerposition()
             mano.mapnoteinput:show('new', t)
-            print("post mano.mapnote.new")
+--             print("post mano.mapnote.new")
          else
-            print("Input Form already on Screen")
+--             print("Input Form already on Screen")
          end
       end
 
       if i == "new"  then
-         print("pre manual add")
-         print(string.format("MaNo params: (%s)", params))
+--          print("pre manual add")
+--          print(string.format("MaNo params: (%s)", params))
 
          local retval = manualaddnote(params)
 
@@ -469,6 +469,7 @@ end
 --
 mano.db                    =  {}
 mano.db.notes              =  {}
+mano.db.geo                =	__geodata().db
 --
 -- Initialization flags
 --
@@ -603,18 +604,18 @@ mano.lastsharedcategoryidx =  0
 mano.base                  =  {}
 mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="macro_icon_clover.dds" },
                                  [2]   =  {  name="Artifacts",          icon="macro_icon_smile.dds" },
-                                 [3]   =  {  name="Crafting Material",  icon="outfitter1.dds" },
+                                 [3]   =  {  name="Crafting",           icon="outfitter1.dds" },
                                  [4]   =  {  name="Villain",            icon="target_portrait_roguepoint.png.dds" },
-                                 [5]   =  {  name="user0",              icon="macro_icon_crown.dds" },
-                                 [6]   =  {  name="user1",              icon="macro_icon_arrow.dds" },
-                                 [7]   =  {  name="user2",              icon="macro_icon_no.dds" },
-                                 [8]   =  {  name="user3",              icon="macro_icon_radioactive.dds" },
-                                 [9]   =  {  name="user4",              icon="macro_icon_sad.dds" },
-                                 [10]  =  {  name="user5",              icon="macro_icon_skull.dds" },
-                                 [11]  =  {  name="user6",              icon="macro_icon_smile.dds" },
-                                 [12]  =  {  name="user7",              icon="macro_icon_squirell.dds" },
-                                 [13]  =  {  name="user8",              icon="macro_icon_support.dds" },
-                                 [14]  =  {  name="user9",              icon="macro_icon_tank.dds" },
+                                 [5]   =  {  name="User0",              icon="macro_icon_crown.dds" },
+                                 [6]   =  {  name="User1",              icon="macro_icon_arrow.dds" },
+                                 [7]   =  {  name="User2",              icon="macro_icon_no.dds" },
+                                 [8]   =  {  name="User3",              icon="macro_icon_radioactive.dds" },
+                                 [9]   =  {  name="User4",              icon="macro_icon_sad.dds" },
+                                 [10]  =  {  name="User5",              icon="macro_icon_skull.dds" },
+                                 [11]  =  {  name="User6",              icon="macro_icon_smile.dds" },
+                                 [12]  =  {  name="User7",              icon="macro_icon_squirell.dds" },
+                                 [13]  =  {  name="User8",              icon="macro_icon_support.dds" },
+                                 [14]  =  {  name="User9",              icon="macro_icon_tank.dds" },
 
                               }
 mano.base.sharedcategories =  mano.base.usercategories
