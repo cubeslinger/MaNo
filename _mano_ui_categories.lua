@@ -3,9 +3,6 @@
 -- Author      marcob@marcob.org
 -- StartDate   25/06/2017
 --
---[[
-    Command.Event.Attach(Event.MaNo.catmenu.choice, function(...) mano.f.catchoice(...)   end,  "MaNo: Caetegory: choice")
-   ]]
 
 local addon, mano = ...
 
@@ -67,7 +64,6 @@ function __mano_ui_categories(categories)
 
 
    self =   loaddb(categories)
---    Command.Event.Attach(Event.MaNo.userinput.save, function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
 
    return self
 
