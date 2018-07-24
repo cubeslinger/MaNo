@@ -38,7 +38,7 @@ function __mano_ui()
       -- Get the Expansions list
       for _, tbl in ipairs(mano.db.geo.zones) do
 
-         print(string.format("TBL: {%s} EXP: [%s]", tbl, tbl.expansion))
+--          print(string.format("TBL: {%s} EXP: [%s]", tbl, tbl.expansion))
 
          if tbl         ~= nil and
             next(tbl)   ~= nil and
@@ -56,7 +56,7 @@ function __mano_ui()
          for _, tbl in ipairs(mano.db.geo.zones) do
             if tbl.expansion == expname then
                table.insert(t,   {  name     =  tbl.zonename,
-                                    callback =  { mainmenuchoice, tbl.zoneid, 'close' }
+                                    callback =  { self.mainmenuchoice, tbl.zoneid, 'close' }
                                  }
                            )
             end
@@ -413,9 +413,9 @@ function __mano_ui()
       return
    end
 
-   local function mainmenuchoice(zonename)
+   function self.mainmenuchoice(zonename)
 
-      mano.events.mainmenutrigger(mano.db.geo.zones[zonename])
+--       mano.events.mainmenutrigger(mano.db.geo.zones[zonename])
       self.o.menu.main.flip()
 
       return
@@ -455,7 +455,7 @@ function __mano_ui()
       local tbl            =  {}
       for _, tbl in ipairs(mano.db.geo.zones) do
          table.insert(self.menucfg.zones, {  name     =  tbl.zonename,
-                                             callback =  { mainmenuchoice, tbl.zonename, 'close' }
+                                             callback =  { self.mainmenuchoice, tbl.zonename, 'close' }
                                           }
                      )
       end
@@ -522,8 +522,19 @@ function __mano_ui()
          self.o.menubutton:SetFontSize(mano.gui.font.size)
          self.o.menubutton:SetFontColor(unpack(mano.gui.color.white))
          self.o.menubutton:SetLayer(3)
-         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function() self.o.menu.main:flip() end,
-                                                                           "MaNo: Main Menu GUI Button Pressed" )
+         --
+         -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
+         --
+--[[
+         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
+                                                                              self.o.menu.main:flip()
+                                                                           end,
+                                                                           "MaNo: Main Menu GUI Button Pressed"
+                                       )]]
+         --
+         -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
+         --
+
          self.o.menubutton:SetPoint("CENTERRIGHT",   self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right*2, 0)
          self.o.tooltip:InjectEvents(self.o.menubutton, function() return "Config Options" end)
 
@@ -544,8 +555,13 @@ function __mano_ui()
 
          -- Create Menu
          self.o.menu          =  {}
-         self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
-         self.o.menu.main:hide()
+         --
+         -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
+         --
+--          self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
+--          self.o.menu.main:hide()
+         --
+         -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
 
       -- EXTERNAL CONTAINER FRAME
