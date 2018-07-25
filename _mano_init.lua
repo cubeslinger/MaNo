@@ -5,7 +5,6 @@
 --
 local addon, mano = ...
 
-
 local function splitquotedstringbyspace(text)
 
    local retval   =  {}
@@ -616,7 +615,6 @@ mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="ma
                                  [12]  =  {  name="User7",              icon="macro_icon_squirell.dds" },
                                  [13]  =  {  name="User8",              icon="macro_icon_support.dds" },
                                  [14]  =  {  name="User9",              icon="macro_icon_tank.dds" },
-
                               }
 mano.base.sharedcategories =  mano.base.usercategories
 --

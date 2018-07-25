@@ -525,12 +525,12 @@ function __mano_ui()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
---[[
+
          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
                                                                               self.o.menu.main:flip()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed"
-                                       )]]
+                                       )
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
@@ -558,8 +558,8 @@ function __mano_ui()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
---          self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
---          self.o.menu.main:hide()
+         self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
+         self.o.menu.main:hide()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --

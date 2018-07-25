@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.2.35"
+Version     =  "0.2.36"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -14,16 +14,18 @@ Embed = {
 }
 
 Dependencies = {
-  LibDraggable     = {"required", "before"},
-  LibSimpleWidgets = {"required", "before"},
+   LibDraggable      =  {"required", "before"},
+   LibSimpleWidgets  =  {"required", "before"},
 }
 
 RunOnStartup = {
-   "db/__puzzles.lua",
-   "db/__cairns.lua",
-   "db/__geodata.lua",
-   "__mapnotes.lua",
-   "__menus.lua",
+   "__mapnotes/__mapnotes.lua",
+   "__mapnotes/db/__cairns.lua",
+   "__mapnotes/db/__puzzles.lua",
+   "__menus/__menus_init.lua",
+   "__menus/__menus_voices.lua",
+   "__menus/__menus.lua",
+   "__geodata.lua",
    "_mano_init.lua",
    "_mano_ui_input.lua",
    "_mano_ui.lua",
