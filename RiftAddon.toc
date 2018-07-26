@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.2.37"
+Version     =  "0.2.38"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -23,7 +23,7 @@ RunOnStartup = {
    "__mapnotes/db/__cairns.lua",
    "__mapnotes/db/__puzzles.lua",
    "__menus/__menus_init.lua",
-   "__menus/__menus_voices.lua",
+--   "__menus/__menus_voices.lua",
    "__menus/__menus.lua",
    "__geodata.lua",
    "_mano_init.lua",

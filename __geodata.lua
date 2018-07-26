@@ -204,5 +204,23 @@ function __geodata()
                         { zonename="Xarth Mire", zonetype="Normal", expansion="Starfall Prophecy", zoneid="" },
    }
 
+   function self.getzonedatabyzonename(zname)
+
+      local retval   =  {}
+      for _, tbl in ipairs(self.db.zones) do
+
+         if zname == tbl.zonename then
+--             print(string.format("got zone id; %s", tbl.zoneid))
+            retval   =  tbl
+            break
+         end
+
+      end
+
+      return retval
+   end
+
+
+
    return self
 end

@@ -55,10 +55,18 @@ function __mano_ui()
          -- Get Zones for this Expansion
          for _, tbl in ipairs(mano.db.geo.zones) do
             if tbl.expansion == expname then
-               table.insert(t,   {  name     =  tbl.zonename,
-                                    callback =  { self.mainmenuchoice, tbl.zoneid, 'close' }
-                                 }
-                           )
+
+               local zonetbl  =  mano.geo.getzonedatabyzonename(tbl.zonename)
+
+               if zonetbl.zoneid ~= nil and zonetbl.zoneid ~= "" then
+
+                  print(string.format("zname: (%s) zid:(%s)", tbl.zonename, zonetbl.zoneid))
+
+                  table.insert(t,   {  name     =  tbl.zonename,
+                                       callback =  { self.mainmenuchoice, zonetbl.zoneid, 'close' },
+                                    }
+                              )
+               end
             end
          end
 
@@ -68,6 +76,8 @@ function __mano_ui()
                                  }
                      )
          t  =  {}
+
+         print("createzonemenu():\n", mano.f.dumptable(retval))
       end
 
       return retval
@@ -452,27 +462,16 @@ function __mano_ui()
       -- Create/Initialize Menus
       self.menucfg         =  {}
       self.menucfg.zones   =  {}
-      local tbl            =  {}
-      for _, tbl in ipairs(mano.db.geo.zones) do
-         table.insert(self.menucfg.zones, {  name     =  tbl.zonename,
-                                             callback =  { self.mainmenuchoice, tbl.zonename, 'close' }
-                                          }
-                     )
-      end
-
-      self.menucfg.main =  {
-                              voices   =  {  {  name     =  "Show Zone",
-                                                callback =  "_submenu_",
---                                                 submenu  =  self.menucfg.zones,
---                                                 submenu  =  { voices   =  self.menucfg.zones },
-                                                submenu  =  { voices   =  createzonesmenu() },
-
+      self.menucfg.main    =  {
+                                 voices   =  {  {  name     =  "Show Zone",
+                                                   callback =  "_submenu_",
+                                                   submenu  =  { voices   =  createzonesmenu() },
+                                                },
+                                                {  name     =  "Add Note Here!",
+                                                   callback =  { mano.foo["parseslashcommands"], "add", 'close' },
+                                                },
                                              },
-                                             {  name     =  "Add Note Here!",
-                                                callback =  { mano.foo["parseslashcommands"], "add", 'close' },
-                                             },
-                                          },
-                           }
+                              }
 
 
       --Global context (parent frame-thing).
@@ -559,6 +558,7 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
          self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
+         print("self.o.menu.main:\n", mano.f.dumptable(self.o.menu.main))
          self.o.menu.main:hide()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END

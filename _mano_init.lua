@@ -384,34 +384,51 @@ end
 
 
 -- local print nested tables
-local function dumptable(o)
-   if type(o) == 'table' then
-      local s = '{ '
-         for k,v in pairs(o) do
-            if type(k) ~= 'number' then
-               k = '"'..k..'"'
-            end
-            s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ',\n'
-         end
-         return s .. '} '
-   else
-      return tostring(o)
-   end
-end
-
-
--- local function dumptable(tab, level)
---    if level == nil then level = 1 end
---    for key, val in pairs(tab) do
---       if type(val) == "table" then
---          print (level .. ".  Key=" .. key .. " val is table")
---          dumptable(val, level + 1)
---       else
---          print (level .. ".  key=" .. key .. " val=" .. val)
---       end
+-- local function dumptable(o)
+--    if type(o) == 'table' then
+--       local s = '{ '
+--          for k,v in pairs(o) do
+--             if type(k) ~= 'number' then
+--                k = '"'..k..'"'
+--             end
+--             s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ',\n'
+--          end
+--          return s .. '} '
+--    else
+--       return tostring(o)
 --    end
 -- end
 
+--
+-- Print contents of `tbl`, with indentation.
+-- `indent` sets the initial level of indentation.
+-- function tprint (tbl, indent)
+--
+function dumptable(tbl, indent)
+
+   if not indent then indent = 0 end
+
+   for k, v in pairs(tbl) do
+
+      formatting = string.rep("  ", indent) .. '[' .. k .. ']' .. ": "
+
+      if type(v) == "table" then
+         print(formatting)
+         dumptable(v, indent+1)
+      else
+         if type(v) == "function"  or
+            type(v) == "boolean"   then
+            print(formatting .. tostring(v))
+         else
+            if v ~= nil then
+               print(formatting .. v)
+            else
+               print(formatting .. 'nil')
+            end
+         end
+      end
+   end
+end
 
 
 -- only print if debug is on
@@ -463,12 +480,16 @@ end
 
 
 --
+-- Handles
+--
+mano.geo                   =	__geodata()
+--
 --
 -- DBs
 --
 mano.db                    =  {}
 mano.db.notes              =  {}
-mano.db.geo                =	__geodata().db
+mano.db.geo                =	mano.geo.db
 --
 -- Initialization flags
 --
