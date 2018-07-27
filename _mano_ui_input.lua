@@ -55,7 +55,6 @@ function __mano_ui_input(action, modifytbl)
          print(string.format("categorychooser: ERROR: idx is out of range = (%s)", idx))
       end
 
-
       return
    end
 
@@ -364,8 +363,12 @@ function __mano_ui_input(action, modifytbl)
             -- Category Create Menu
             self.o.catmenu     = {}
 --             self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
-            self.o.catmenu     = menu(self.o.cattext, self.catmenu)
-            self.o.catmenu:hide()
+--             self.o.catmenu     = menu(self.o.cattext, self.catmenu)
+            self.o.catmenu     = menu(self.o.cattext, 200, self.catmenu)
+-- 				print("*************************************************")
+-- 				mano.f.dumptable(self.catmenu.voices)
+-- 				print("/////////////////////////////////////////////////")
+--             self.o.catmenu:hide()
 
 --             -- Category AddButton
 --             self.o.categoryaddbutton   =  UI.CreateFrame("Texture", "mano_input_category_add_button", self.o.frame)

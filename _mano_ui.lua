@@ -34,6 +34,7 @@ function __mano_ui()
       local retval      =  {}
       local expansions  =  {}
       local tbl         =  {}
+		local menuid		=	100
 
       -- Get the Expansions list
       for _, tbl in ipairs(mano.db.geo.zones) do
@@ -47,6 +48,7 @@ function __mano_ui()
          end
       end
 
+-- 		local menuid	=	1
       -- Submenu in Expansion Name->Zone list
       for _, expname in pairs(expansions) do
 
@@ -60,7 +62,7 @@ function __mano_ui()
 
                if zonetbl.zoneid ~= nil and zonetbl.zoneid ~= "" then
 
-                  print(string.format("zname: (%s) zid:(%s)", tbl.zonename, zonetbl.zoneid))
+--                   print(string.format("zname: (%s) zid:(%s)", tbl.zonename, zonetbl.zoneid))
 
                   table.insert(t,   {  name     =  tbl.zonename,
                                        callback =  { self.mainmenuchoice, zonetbl.zoneid, 'close' },
@@ -75,9 +77,10 @@ function __mano_ui()
                                     submenu  =  { voices   =  t }
                                  }
                      )
-         t  =  {}
+         t  		=	{}
+-- 			menuid	=	menuid + 1
 
-         print("createzonemenu():\n", mano.f.dumptable(retval))
+--          mano.f.dumptable(retval)
       end
 
       return retval
@@ -426,6 +429,7 @@ function __mano_ui()
    function self.mainmenuchoice(zonename)
 
 --       mano.events.mainmenutrigger(mano.db.geo.zones[zonename])
+		print("mainmenuchoice: FLIP")
       self.o.menu.main.flip()
 
       return
@@ -467,7 +471,7 @@ function __mano_ui()
                                                    callback =  "_submenu_",
                                                    submenu  =  { voices   =  createzonesmenu() },
                                                 },
-                                                {  name     =  "Add Note Here!",
+                                                {	name     =  "Add Note Here!",
                                                    callback =  { mano.foo["parseslashcommands"], "add", 'close' },
                                                 },
                                              },
@@ -525,11 +529,12 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
 
-         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-                                                                              self.o.menu.main:flip()
-                                                                           end,
-                                                                           "MaNo: Main Menu GUI Button Pressed"
-                                       )
+--          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
+-- 																										print("o.menubutton: FLIP")
+--                                                                               self.o.menu.main:flip()
+--                                                                            end,
+--                                                                            "MaNo: Main Menu GUI Button Pressed"
+--                                        )
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
@@ -557,9 +562,7 @@ function __mano_ui()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
-         self.o.menu.main     =  menu(self.o.menubutton, self.menucfg.main)
-         print("self.o.menu.main:\n", mano.f.dumptable(self.o.menu.main))
-         self.o.menu.main:hide()
+--          self.o.menu.main     =  menu(self.o.menubutton, 1, self.menucfg.main)
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
