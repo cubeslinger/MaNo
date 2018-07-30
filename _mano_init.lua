@@ -126,7 +126,7 @@ local function userinputdelete(handle, action, note2delete)
 
    print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
 
-   print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
+--    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
 
    if action   == 'delete'  then
 
@@ -138,13 +138,15 @@ local function userinputdelete(handle, action, note2delete)
 			note2delete.customtbl.shared	~= nil	and
 			note2delete.customtbl.shared	==	true then
 
-         print("DELETING SHARED MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
+         print("DELETING SHARED MESSAGE note2delete:\n")
+-- 			mano.f.dumptable(note2delete)
 
          local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
       else
 
-         print("DELETING LOCAL MESSAGE note2delete:\n", mano.f.dumptable(note2delete))
+         print("DELETING LOCAL MESSAGE note2delete:\n")
+-- 			mano.f.dumptable(note2delete)
 
          local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
@@ -160,8 +162,8 @@ end
 
 local function userinputsave(handle, action, params)
 
-   print(string.format("userinputsave: handle=(%s) action=(%s) params=(%s)", handle, action, params))
-   mano.f.dumptable(params)
+   print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
+--    mano.f.dumptable(params)
 
    local userinput   =  params
 

@@ -89,8 +89,9 @@ function __mano_ui()
 
    local function modifynote(tbl, customtbl, shared)
 
-
       local note  =  {}
+
+		print("searching note with idx: (" .. tbl.idx ..")")
 
       if	shared then
          note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
@@ -99,6 +100,7 @@ function __mano_ui()
       end
 
       if note  ~= nil and next(note) ~= nil then
+			print("FOUND note with idx: (" .. note.idx ..")")
          mano.mapnoteinput:show('modify', note)
       else
          print("modifynote: Note NOT Found!")
@@ -180,6 +182,7 @@ function __mano_ui()
                                                                   if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
                                                                      shared   =  true
                                                                   end
+																						print("going to modify idx: (".. t.idx..")")
                                                                   modifynote(t, t.customtbl, shared)
                                                                end,
                               "edit_note_" .. self.lineid )
@@ -210,6 +213,23 @@ function __mano_ui()
       return(T)
    end
 
+	local function editnotebutton(t)
+
+		local shared   =  false
+
+		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+			shared   =  true
+       end
+
+
+		print("editnotebutton:")
+		mano.f.dumptable(t)
+      modifynote(t, t.customtbl, shared)
+
+		return
+	end
+
+
    local function clearlist()
       --
       -- Set all linestock to "invisible"
@@ -223,6 +243,8 @@ function __mano_ui()
          tbl.frame:SetVisible(false)
 
          tbl.wpicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+
+			tbl.editicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(tbl) end, "edit_note_" .. self.lineid )
 
       end
 
@@ -267,24 +289,28 @@ function __mano_ui()
          if text == ""  and t.text ~= nil then text  =  t.text end
 
          if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
---             text  =  '<i>' .. text .. '</i>'
             newline.text:SetFontColor(unpack(mano.gui.color.lightgreen))
          else
             newline.text:SetFontColor(unpack(mano.gui.color.white))
          end
+
+			-- DEBUG
+			text = string.format("%s (%s)", text, t.idx)
          newline.text:SetText(text, true)
          newline.text:SetVisible(true)
 
          -- Edit Button
-         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click,
-                                       function()
-                                          local shared   =  false
-                                          if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
-                                             shared   =  true
-                                          end
-                                          modifynote(t, t.customtbl, shared)
-                                       end,
-                                       "edit_note_" .. self.lineid )
+--          newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click,
+--                                        function()
+--                                           local shared   =  false
+--                                           if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+--                                              shared   =  true
+--                                           end
+--                                           modifynote(t, t.customtbl, shared)
+--                                        end,
+--                                        "edit_note_" .. self.lineid )
+         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. self.lineid )
+
 
 
          -- WayPoint Button --
