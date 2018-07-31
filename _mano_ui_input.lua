@@ -169,7 +169,6 @@ function __mano_ui_input(action, modifytbl)
       local texturetype, icon =  unpack(mano.f.splitstring(icontbl, ","))
 
       local t  =  {  label    =  self.o.labeltext:GetText(),
---                      note     =  self.o.notetext:GetText(),
                      text     =  self.o.notetext:GetText(),
                      category =  self.o.cattext:GetText(),
                      icon     =  icon,
@@ -186,6 +185,10 @@ function __mano_ui_input(action, modifytbl)
       if self.o.ppownertext:GetText()     ~= "" then p.name       =  self.o.ppownertext:GetText()     end
 
       if p  ~= {} and next(p) ~= nil then t.playerpos =  p  end
+
+		print("-- GetInput() --")
+		mano.f.dumptable(t)
+		print("-- GetInput() --")
 
       return t
 
@@ -224,47 +227,120 @@ function __mano_ui_input(action, modifytbl)
       self.o.save =  true
       self.o.window:SetVisible(false)
 
-		local t	=	{}
-      if action   == 'modify' then
-
---       local t  =  {  label    =  self.o.labeltext:GetText(),
---                      note     =  self.o.notetext:GetText(),
---                      category =  self.o.cattext:GetText(),
---                      icon     =  icon,
---                      save     =  self.o.save,
---                      shared   =  self.o.sharedbutton:GetChecked()
---                   }
-
-         t     		=	modifytbl
-         t.text      =  self.o.notetext:GetText()
-         t.label     =  self.o.labeltext:GetText()
-         t.category  =  self.o.cattext:GetText()
-         t.icon      =  self.o.caticon:GetTexture()
-         t.save      =  self.o.save
-			t.idx			=	modifytbl.idx
--- 			print("SAVE: modifytbl t.idx: (".. modifytbl.idx ..")")
-
-         if modifytbl.customtbl ~= nil then	t.customtbl =  modifytbl.customtbl
-         else											t.customtbl =	{}
-         end
-
-         t.customtbl.shared   =  self.o.sharedbutton:GetChecked()
-
--- 			print("ACTION is 'MODIFY' (" .. t.idx .. ")")
-		end
-
-		if action == "new" then
+-- 		local t	=	{}
+--       if action   == 'modify' then
+--
+-- --       local t  =  {  label    =  self.o.labeltext:GetText(),
+-- --                      note     =  self.o.notetext:GetText(),
+-- --                      category =  self.o.cattext:GetText(),
+-- --                      icon     =  icon,
+-- --                      save     =  self.o.save,
+-- --                      shared   =  self.o.sharedbutton:GetChecked()
+-- --                   }
+--
+--          t     		=	modifytbl
+--          t.text      =  self.o.notetext:GetText()
+--          t.label     =  self.o.labeltext:GetText()
+--          t.category  =  self.o.cattext:GetText()
+--          t.icon      =  self.o.caticon:GetTexture()
+--          t.save      =  self.o.save
+-- 			t.idx			=	modifytbl.idx
+-- -- 			print("SAVE: modifytbl t.idx: (".. modifytbl.idx ..")")
+--
+--          if modifytbl.customtbl ~= nil then	t.customtbl =  modifytbl.customtbl
+--          else											t.customtbl =	{}
+--          end
+--
+--          t.customtbl.shared   =  self.o.sharedbutton:GetChecked()
+--
+-- -- 			print("ACTION is 'MODIFY' (" .. t.idx .. ")")
+-- 		end
+--
+-- 		if action == "new" then
 			t	=	self:GetInput()
 -- 			print("ACTION is 'NEW'")
-		end
+-- 		end
 
 -- 		self.savetriggerc
+
+		if action == 'modify' then t.idx = modifytbl.idx end
+
 		userinputsave(nil, action, t)
 
 		cleareventhandlers()
 
 		return
 	end
+
+
+-- 	local function savebuttonaction(action, modifytbl)
+--
+--       self.o.save =  true
+--       self.o.window:SetVisible(false)
+--
+-- 		local t	=	{}
+--       if action   == 'modify' then
+--
+-- --       local t  =  {  label    =  self.o.labeltext:GetText(),
+-- --                      note     =  self.o.notetext:GetText(),
+-- --                      category =  self.o.cattext:GetText(),
+-- --                      icon     =  icon,
+-- --                      save     =  self.o.save,
+-- --                      shared   =  self.o.sharedbutton:GetChecked()
+-- --                   }
+--
+--          t     		=	modifytbl
+--          t.text      =  self.o.notetext:GetText()
+--          t.label     =  self.o.labeltext:GetText()
+--          t.category  =  self.o.cattext:GetText()
+--          t.icon      =  self.o.caticon:GetTexture()
+--          t.save      =  self.o.save
+-- 			t.idx			=	modifytbl.idx
+--       -- ----------------------------------------------------------------------
+--             --          playerpos   =  playerpos,
+--             --                         y              =  tbl.y or nil,
+--             --                         x              =  tbl.x,
+--             --                         z              =  tbl.z,
+--             --                         locationName   =  tbl.location or nil,
+--             --                         name           =  "forums",
+--             --                         radius         =  self.default.radius,
+--             --                         zoneid         =  tbl.zoneid or  self.extdbhandler.zonename2id[zonename],
+--             --                         zonename       =  zonename,
+--             --                         },
+--       -- ----------------------------------------------------------------------
+-- 			t.playerpos	=	{}
+-- 			t.playerpos.x	=	tonumber(self.o.ppxtext:GetText())
+-- 			t.playerpos.z	=	tonumber(self.o.ppztext:GetText())
+-- 			t.playerpos.y	=	tonumber(self.o.ppytext:GetText())
+-- 			t.locationName	=	modifytbl.locationName
+-- 			t.name			=  modifytbl.name
+-- 			t.radius			=  modifytbl.radius
+-- 			t.zoneid			=  modifytbl.zoneid
+-- 			t.zonename		=  modifytbl.zonename
+--
+-- -- 			print("SAVE: modifytbl t.idx: (".. modifytbl.idx ..")")
+--
+--          if modifytbl.customtbl ~= nil then	t.customtbl =  modifytbl.customtbl
+--          else											t.customtbl =	{}
+--          end
+--
+--          t.customtbl.shared   =  self.o.sharedbutton:GetChecked()
+--
+-- -- 			print("ACTION is 'MODIFY' (" .. t.idx .. ")")
+-- 		end
+--
+-- 		if action == "new" then
+-- 			t	=	self:GetInput()
+-- -- 			print("ACTION is 'NEW'")
+-- 		end
+--
+-- -- 		self.savetriggerc
+-- 		userinputsave(nil, action, t)
+--
+-- 		cleareventhandlers()
+--
+-- 		return
+-- 	end
 
 
 	local function _initialize(action, modifytbl)

@@ -34,9 +34,7 @@ function __mano_ui()
 		local shared   =  false
       local note  	=  {}
 
-		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
-			shared   =  true
-       end
+		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then	shared   =  true	end
 
 -- 		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 -- 		print("editnotebutton:")
@@ -56,7 +54,7 @@ function __mano_ui()
 -- 			print("FOUND note with idx: (" .. note.idx ..")")
          mano.mapnoteinput:show('modify', note)
       else
-         print("ERROR: modifynote: Note NOT Found!")
+         print(string.format("ERROR: modifynote: Note with idx: %s NOT Found!", t.idx))
       end
 
 		return
@@ -83,7 +81,6 @@ function __mano_ui()
          end
       end
 
--- 		local menuid	=	1
       -- Submenu in Expansion Name->Zone list
       for _, expname in pairs(expansions) do
 
