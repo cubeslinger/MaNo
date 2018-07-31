@@ -122,103 +122,103 @@ local function split(pString, pPattern)
    return Table
 end
 
-local function userinputdelete(handle, action, note2delete)
+-- local function userinputdelete(handle, action, note2delete)
+--
+--    print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
+--
+-- --    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
+--
+--    if action   == 'delete'  then
+--
+-- --       local n2d   =  note2delete[1]
+--       local deletednote =  {}
+--
+--       if note2delete.customtbl 			~= nil	and
+-- 			next(note2delete.customtbl)	~= nil	and
+-- 			note2delete.customtbl.shared	~= nil	and
+-- 			note2delete.customtbl.shared	==	true then
+--
+--          print("DELETING SHARED MESSAGE note2delete:\n")
+-- -- 			mano.f.dumptable(note2delete)
+--
+--          local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
+--
+--       else
+--
+--          print("DELETING LOCAL MESSAGE note2delete:\n")
+-- -- 			mano.f.dumptable(note2delete)
+--
+--          local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
+--
+--       end
+--
+--       print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
+--       mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
+--
+--    end
+--
+--    return
+-- end
 
-   print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
-
---    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
-
-   if action   == 'delete'  then
-
---       local n2d   =  note2delete[1]
-      local deletednote =  {}
-
-      if note2delete.customtbl 			~= nil	and
-			next(note2delete.customtbl)	~= nil	and
-			note2delete.customtbl.shared	~= nil	and
-			note2delete.customtbl.shared	==	true then
-
-         print("DELETING SHARED MESSAGE note2delete:\n")
--- 			mano.f.dumptable(note2delete)
-
-         local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
-
-      else
-
-         print("DELETING LOCAL MESSAGE note2delete:\n")
--- 			mano.f.dumptable(note2delete)
-
-         local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
-
-      end
-
-      print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
-      mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
-
-   end
-
-   return
-end
-
-local function userinputsave(handle, action, params)
-
-   print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
---    mano.f.dumptable(params)
-
-   local userinput   =  params
-
-   if userinput ~= nil and next(userinput) then
-
-      if userinput.save ~= nil and userinput.save == true then
-
-         local noterecord  =  {}
-         local t           =  {}
-
-         if action   == 'modify' then
-
---             print("save modify")
-
-            t  =  {	label       =  userinput.label,
-                     text        =  userinput.text,
-                     category    =  userinput.category,
-                     playerpos   =  userinput.playerpos,
-                     idx         =  userinput.idx,
-                     timestamp   =  userinput.timestamp,
-                     shared      =  userinput.shared,
-                  }
-            if userinput.shared == true   then  noterecord     =  mano.sharednote.modify(t.playerpos.zonename, t.idx, t) -- add note to Shared Notes Db
-                                          else  noterecord     =  mano.mapnote.modify(t.playerpos.zonename, t.idx, t)    -- add note to User Notes Db
-            end
-
-         else
-
---             print("save New")
-
-            t  =  {  label       =  userinput.label,
-                     text        =  userinput.text,
-                     category    =  userinput.category,
-                     playerpos   =  nil,
-                     idx         =  nil,
-                     timestamp   =  nil,
-                     shared      =  userinput.shared,
-                  }
-            if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
-                                          else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
-            end
-
-         end
-
---          print("----------------------------")
---          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
---          print("----------------------------")
-
-         mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
-      end
-   end
-
-   return
-
-end
+-- local function userinputsave(handle, action, params)
+--
+--    print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
+-- --    mano.f.dumptable(params)
+--
+--    local userinput   =  params
+--
+--    if userinput ~= nil and next(userinput) then
+--
+--       if userinput.save ~= nil and userinput.save == true then
+--
+--          local noterecord  =  {}
+--          local t           =  {}
+--
+--          if action   == 'modify' then
+--
+-- --             print("save modify")
+--
+--             t  =  {	label       =  userinput.label,
+--                      text        =  userinput.text,
+--                      category    =  userinput.category,
+--                      playerpos   =  userinput.playerpos,
+--                      idx         =  userinput.idx,
+--                      timestamp   =  userinput.timestamp,
+--                      shared      =  userinput.shared,
+--                   }
+--             if userinput.shared == true   then  noterecord     =  mano.sharednote.modify(t.playerpos.zonename, t.idx, t) -- add note to Shared Notes Db
+--                                           else  noterecord     =  mano.mapnote.modify(t.playerpos.zonename, t.idx, t)    -- add note to User Notes Db
+--             end
+--
+--          else
+--
+-- --             print("save New")
+--
+--             t  =  {  label       =  userinput.label,
+--                      text        =  userinput.text,
+--                      category    =  userinput.category,
+--                      playerpos   =  nil,
+--                      idx         =  nil,
+--                      timestamp   =  nil,
+--                      shared      =  userinput.shared,
+--                   }
+--             if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
+--                                           else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
+--             end
+--
+--          end
+--
+-- --          print("----------------------------")
+-- --          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
+-- --          print("----------------------------")
+--
+--          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+--       end
+--    end
+--
+--    return
+--
+-- end
 
 local function getcategoryicon(category)
 
@@ -236,10 +236,10 @@ local function getcategoryicon(category)
 end
 
 
-local function userinputcancel()
-
-   return {}
-end
+-- local function userinputcancel()
+--
+--    return {}
+-- end
 
 local function manualaddnote(params)
 
@@ -608,9 +608,9 @@ mano.foo                   =  {
 -- Events
 --
 mano.events                =  {}
-mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
-mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
-mano.events.deletetrigger,    mano.events.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
+-- mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
+-- mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
+-- mano.events.deletetrigger,    mano.events.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
 -- mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
 --
 -- Player's Cached Info

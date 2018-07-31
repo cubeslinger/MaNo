@@ -17,6 +17,124 @@ function __mano_ui_input(action, modifytbl)
                   lastfocus         =  nil,
                   }
 
+
+
+	local function cleareventhandlers()
+
+		local a,b
+      local eventlist =  self.o.cancelbutton:EventList(Event.UI.Input.Mouse.Left.Click)
+		for a,b in pairs(eventlist) do	self.o.cancelbutton:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
+
+      local eventlist =  self.o.deletebutton:EventList(Event.UI.Input.Mouse.Left.Click)
+		for a,b in pairs(eventlist) do	self.o.deletebutton:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
+
+      local eventlist =  self.o.savebutton:EventList(Event.UI.Input.Mouse.Left.Click)
+		for a,b in pairs(eventlist) do	self.o.savebutton:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
+
+
+		return
+	end
+
+	local function userinputcancel()	cleareventhandlers() return {}	end
+
+	local function userinputdelete(handle, action, note2delete)
+
+		print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
+
+	--    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
+
+		if action   == 'delete'  then
+
+	--       local n2d   =  note2delete[1]
+			local deletednote =  {}
+
+			if note2delete.customtbl 			~= nil	and
+				next(note2delete.customtbl)	~= nil	and
+				note2delete.customtbl.shared	~= nil	and
+				note2delete.customtbl.shared	==	true then
+
+				print("DELETING SHARED MESSAGE note2delete:\n")
+	-- 			mano.f.dumptable(note2delete)
+
+				local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
+
+			else
+
+				print("DELETING LOCAL MESSAGE note2delete:\n")
+	-- 			mano.f.dumptable(note2delete)
+
+				local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
+
+			end
+
+			print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
+			mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
+
+		end
+
+		return
+	end
+
+	local function userinputsave(handle, action, params)
+
+		print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
+	--    mano.f.dumptable(params)
+
+		local userinput   =  params
+
+		if userinput ~= nil and next(userinput) then
+
+			if userinput.save ~= nil and userinput.save == true then
+
+				local noterecord  =  {}
+				local t           =  {}
+
+				if action   == 'modify' then
+
+	--             print("save modify")
+
+					t  =  {	label       =  userinput.label,
+								text        =  userinput.text,
+								category    =  userinput.category,
+								playerpos   =  userinput.playerpos,
+								idx         =  userinput.idx,
+								timestamp   =  userinput.timestamp,
+								shared      =  userinput.shared,
+							}
+					if userinput.shared == true   then  noterecord     =  mano.sharednote.modify(t.playerpos.zonename, t.idx, t) -- add note to Shared Notes Db
+															else  noterecord     =  mano.mapnote.modify(t.playerpos.zonename, t.idx, t)    -- add note to User Notes Db
+					end
+
+				else
+
+	--             print("save New")
+
+					t  =  {  label       =  userinput.label,
+								text        =  userinput.text,
+								category    =  userinput.category,
+								playerpos   =  nil,
+								idx         =  nil,
+								timestamp   =  nil,
+								shared      =  userinput.shared,
+							}
+					if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
+															else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
+					end
+
+				end
+
+	--          print("----------------------------")
+	--          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
+	--          print("----------------------------")
+
+				mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
+			end
+		end
+
+		return
+
+	end
+
 --    local function detacheventwatchers()
 --       -- Save & Cancel Events
 --       Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
@@ -28,9 +146,15 @@ function __mano_ui_input(action, modifytbl)
 
    local function attacheventwatchers()
       -- Save & Cancel Events
-      Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
-      Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
-      Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
+		print("_mano_ui_input: ATTACCHING WATCHERS")
+--       Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
+--       Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
+--       Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
+
+--       Command.Event.Attach(userinput.cancel,  function(...) userinputcancel(...) end,  "MaNo: input: Cancel")
+--       Command.Event.Attach(userinput.save,    function(...) userinputsave(...)   end,  "MaNo: input: Save")
+--       Command.Event.Attach(userinput.delete,  function(...) userinputdelete(...) end,  "MaNo: input: Delete")
+
 
       return
    end
@@ -182,8 +306,12 @@ function __mano_ui_input(action, modifytbl)
 	local function deletebuttonaction(action, modifytbl)
 		self.o.save =  false
       self.o.window:SetVisible(false)
-      mano.events.deletetrigger(action, modifytbl)
+--       self.deletetrigger(action, modifytbl)
+		userinputdelete(nil, action, modifytbl)
 --                                                                               detacheventwatchers()
+
+		cleareventhandlers()
+
 		return
 	end
 
@@ -232,7 +360,10 @@ function __mano_ui_input(action, modifytbl)
 			print("ACTION is 'NEW'")
 		end
 
-		mano.events.savetrigger(action, t)
+-- 		self.savetriggerc
+		userinputsave(nil, action, t)
+
+		cleareventhandlers()
 
 		return
 	end
@@ -241,6 +372,11 @@ function __mano_ui_input(action, modifytbl)
 	local function _initialize(action, modifytbl)
 
 --          print("FIRST New Note")
+
+-- 		self.canceltrigger,  self.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
+-- 		self.savetrigger,    self.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
+-- 		self.deletetrigger,  self.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
+
 
 		-- Window Context
       local context  = UI.CreateContext("mano_input_context")
@@ -252,8 +388,8 @@ function __mano_ui_input(action, modifytbl)
       self.o.window:SetLayer(-1)
       self.o.window:SetWidth(mano.gui.win.width)
       self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
-      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: inputwindow: window_wheel_forward")
-      self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: inputwindow: window_wheel_backward")
+--       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: inputwindow: window_wheel_forward")
+--       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: inputwindow: window_wheel_backward")
 
       self.o.titleframe =  UI.CreateFrame("Frame", "input_title_frame", self.o.window)
       self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
@@ -289,9 +425,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.ppbutton:SetLayer(3)
          self.o.ppbutton:SetPoint("CENTERRIGHT", self.o.titleframe, "CENTERRIGHT", -mano.gui.borders.right*2, 0)
          self.o.ppbutton:EventAttach(  Event.UI.Input.Mouse.Left.Click,
-                                       function()
-                                          flippppanel()
-                                       end,
+                                       function() flippppanel() end,
                                        "MaNo input: Show/Hide PlayerPos Panel Button Pressed"
                                     )
 
@@ -466,13 +600,14 @@ function __mano_ui_input(action, modifytbl)
          self.o.cancelbutton:SetWidth(mano.gui.font.size*2)
          self.o.cancelbutton:SetLayer(3)
          self.o.cancelbutton:SetPoint("BOTTOMLEFT",   self.o.frame, "BOTTOMLEFT", mano.gui.borders.left,	-mano.gui.borders.bottom)
-         self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
-                                                                              self.o.save =  false
-                                                                              self.o.window:SetVisible(false)
-                                                                              mano.events.canceltrigger( { save =  false } )
---                                                                               detacheventwatchers()
-                                                                           end, "MaNo input: Cancel Button Pressed"
-                                          )
+--          self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
+--                                                                               self.o.save =  false
+--                                                                               self.o.window:SetVisible(false)
+-- --                                                                               self.canceltrigger( { save =  false } )
+-- 																										userinputcancel()
+-- --                                                                               detacheventwatchers()
+--                                                                            end, "MaNo input: Cancel Button Pressed"
+--                                           )
 
          -- btn_DeleteMail_(click).png
          -- Delete Button
@@ -490,7 +625,7 @@ function __mano_ui_input(action, modifytbl)
 -- --                                                                               detacheventwatchers()
 --                                                                            end, "MaNo input: Delete Button Pressed"
 --                                           )
-         self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button Pressed"                                       )
+--          self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button Pressed"                                       )
 
 
 
@@ -502,7 +637,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.savebutton:SetWidth(mano.gui.font.size*2)
          self.o.savebutton:SetLayer(3)
          self.o.savebutton:SetPoint("BOTTOMRIGHT",   self.o.frame, "BOTTOMRIGHT", -mano.gui.borders.right,	-mano.gui.borders.bottom)
-         self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
+--          self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
 
 
       --	DX FRAME -- BEGIN
@@ -668,7 +803,7 @@ function __mano_ui_input(action, modifytbl)
       self.o.dxframe:SetHeight(mano.f.round(maxY - maxY))
       self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 
-      attacheventwatchers()
+--       attacheventwatchers()
 
 --       self.o.labeltext:SetKeyFocus(true)
       self.o.dxframe:SetVisible(false)
@@ -683,7 +818,8 @@ function __mano_ui_input(action, modifytbl)
    function self.show(dummy, action, modifytbl)
 
 --       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
-      print(string.format("dummy=%s, action=%s, modifytbl:", dummy, action))
+		print("=======================_ui_input:SHOW()=====================")
+      print(string.format("dummy=%s, action=%s, idx=(%s) modifytbl:", dummy, action, modifytbl.idx))
       mano.f.dumptable(modifytbl)
 		print("============================================================")
 
@@ -718,6 +854,16 @@ function __mano_ui_input(action, modifytbl)
          end
 
 			self.o.windowtitle:SetText("New Note: "  .. (modifytbl.idx or "new"))
+
+         self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
+                                                                              self.o.save =  false
+                                                                              self.o.window:SetVisible(false)
+																										userinputcancel()
+                                                                           end, "MaNo input: Cancel Button"
+                                          )
+         self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button")
+         self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
+
 
 		end
 
@@ -755,16 +901,17 @@ function __mano_ui_input(action, modifytbl)
 
 			self.o.windowtitle:SetText("Modify Note: "  .. modifytbl.idx)
 
---          attacheventwatchers()
 --          self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(true)
-			self.o.savebutton:EventDetach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
-			self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
 
-
-			self.o.deletebutton:EventDetach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button Pressed"                                       )
-			self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button Pressed"                                       )
-
+         self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
+                                                                              self.o.save =  false
+                                                                              self.o.window:SetVisible(false)
+																										userinputcancel()
+                                                                           end, "MaNo input: Cancel Button"
+                                          )
+         self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button")
+         self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
 
       end
 

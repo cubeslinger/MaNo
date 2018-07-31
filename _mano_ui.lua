@@ -29,6 +29,63 @@ function __mano_ui()
       return false
    end
 
+--    local function modifynote(tbl, customtbl, shared)
+--
+--       local note  =  {}
+--
+-- 		print("searching note with idx: (" .. tbl.idx ..")")
+--
+--       if	shared then
+--          note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
+--       else
+--          note  =  mano.mapnote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
+--       end
+--
+--       if note  ~= nil and next(note) ~= nil then
+-- 			print("FOUND note with idx: (" .. note.idx ..")")
+--          mano.mapnoteinput:show('modify', note)
+--       else
+--          print("modifynote: Note NOT Found!")
+--       end
+--
+--       return
+--    end
+
+	local function editnotebutton(t)
+
+		local shared   =  false
+      local note  	=  {}
+
+		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+			shared   =  true
+       end
+
+		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		print("editnotebutton:")
+		mano.f.dumptable(t)
+
+--       modifynote(t, t.customtbl, shared)
+
+		print("searching note with idx: (" .. t.idx ..")")
+
+      if	shared then
+         note  =  mano.sharednote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
+      else
+         note  =  mano.mapnote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
+      end
+
+      if note  ~= nil and next(note) ~= nil then
+			print("FOUND note with idx: (" .. note.idx ..")")
+         mano.mapnoteinput:show('modify', note)
+      else
+         print("modifynote: Note NOT Found!")
+      end
+
+		return
+	end
+
+
+
    local function createzonesmenu()
 
       local retval      =  {}
@@ -87,27 +144,6 @@ function __mano_ui()
 
    end
 
-   local function modifynote(tbl, customtbl, shared)
-
-      local note  =  {}
-
-		print("searching note with idx: (" .. tbl.idx ..")")
-
-      if	shared then
-         note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
-      else
-         note  =  mano.mapnote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
-      end
-
-      if note  ~= nil and next(note) ~= nil then
-			print("FOUND note with idx: (" .. note.idx ..")")
-         mano.mapnoteinput:show('modify', note)
-      else
-         print("modifynote: Note NOT Found!")
-      end
-
-      return
-   end
 
    local function setstatusbarbyzoneid(zoneid, count)
 
@@ -177,15 +213,19 @@ function __mano_ui()
       T.editicon:SetHeight(mano.gui.font.size * .75)
       T.editicon:SetWidth(mano.gui.font.size  * .75)
       T.editicon:SetLayer(3)
-      T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
-                                                                  local shared   =  false
-                                                                  if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
-                                                                     shared   =  true
-                                                                  end
-																						print("going to modify idx: (".. t.idx..")")
-                                                                  modifynote(t, t.customtbl, shared)
-                                                               end,
-                              "edit_note_" .. self.lineid )
+		T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
+--       T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
+--                                                                   local shared   =  false
+--                                                                   if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+--                                                                      shared   =  true
+--                                                                   end
+-- 																						print("going to modify idx: (".. t.idx..")")
+--                                                                   modifynote(t, t.customtbl, shared)
+--                                                                end,
+--                               "edit_note_" .. t.idx )
+
+
+
       T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
 
       -- Note's Text -->|<--
@@ -213,23 +253,6 @@ function __mano_ui()
       return(T)
    end
 
-	local function editnotebutton(t)
-
-		local shared   =  false
-
-		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
-			shared   =  true
-       end
-
-
-		print("editnotebutton:")
-		mano.f.dumptable(t)
-      modifynote(t, t.customtbl, shared)
-
-		return
-	end
-
-
    local function clearlist()
       --
       -- Set all linestock to "invisible"
@@ -242,9 +265,20 @@ function __mano_ui()
 
          tbl.frame:SetVisible(false)
 
-         tbl.wpicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+			--
+			--	reset WayPoint button
+			--
+         local a,b
+         local eventlist =  tbl.wpicon:EventList(Event.UI.Input.Mouse.Left.Click)
+			for a,b in pairs(eventlist) do	tbl.wpicon:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
 
-			tbl.editicon:EventDetach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(tbl) end, "edit_note_" .. self.lineid )
+			--
+         -- reset edit button
+         --
+         local a,b
+         local eventlist =  tbl.editicon:EventList(Event.UI.Input.Mouse.Left.Click)
+			for a,b in pairs(eventlist) do	tbl.editicon:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
+
 
       end
 
@@ -309,12 +343,12 @@ function __mano_ui()
 --                                           modifynote(t, t.customtbl, shared)
 --                                        end,
 --                                        "edit_note_" .. self.lineid )
-         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. self.lineid )
+         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
 
 
 
          -- WayPoint Button --
-         newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
+         newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. t.idx )
 
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
