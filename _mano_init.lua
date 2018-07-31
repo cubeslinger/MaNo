@@ -75,22 +75,13 @@ local function findexactzonename(zonename)
 
    if zonename ~= nil then
 
---       if not mano.db.zones or next(mano.db.zones) == nil then
---          mano.db.geo =  __geodata().db
---       end
-
       local lowcasezonename   =  zonename:lower()
       local zntbl             =  nil
       for _, zntbl in pairs(mano.db.geo.zones) do
 
---          print(string.format("checking input(%s)==(%s)db", lowcasezonename, zntbl.zonename:lower()))
-
          if zntbl.zonename:lower():find(lowcasezonename) ~= nil then
             retval   =  { zntbl.zonename, zntbl.zoneid }
---             print("FOUND!")
             break
-   --       else
-   --          print("no match")
          end
       end
    end
@@ -122,103 +113,6 @@ local function split(pString, pPattern)
    return Table
 end
 
--- local function userinputdelete(handle, action, note2delete)
---
---    print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
---
--- --    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
---
---    if action   == 'delete'  then
---
--- --       local n2d   =  note2delete[1]
---       local deletednote =  {}
---
---       if note2delete.customtbl 			~= nil	and
--- 			next(note2delete.customtbl)	~= nil	and
--- 			note2delete.customtbl.shared	~= nil	and
--- 			note2delete.customtbl.shared	==	true then
---
---          print("DELETING SHARED MESSAGE note2delete:\n")
--- -- 			mano.f.dumptable(note2delete)
---
---          local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
---
---       else
---
---          print("DELETING LOCAL MESSAGE note2delete:\n")
--- -- 			mano.f.dumptable(note2delete)
---
---          local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
---
---       end
---
---       print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
---       mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
---
---    end
---
---    return
--- end
-
--- local function userinputsave(handle, action, params)
---
---    print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
--- --    mano.f.dumptable(params)
---
---    local userinput   =  params
---
---    if userinput ~= nil and next(userinput) then
---
---       if userinput.save ~= nil and userinput.save == true then
---
---          local noterecord  =  {}
---          local t           =  {}
---
---          if action   == 'modify' then
---
--- --             print("save modify")
---
---             t  =  {	label       =  userinput.label,
---                      text        =  userinput.text,
---                      category    =  userinput.category,
---                      playerpos   =  userinput.playerpos,
---                      idx         =  userinput.idx,
---                      timestamp   =  userinput.timestamp,
---                      shared      =  userinput.shared,
---                   }
---             if userinput.shared == true   then  noterecord     =  mano.sharednote.modify(t.playerpos.zonename, t.idx, t) -- add note to Shared Notes Db
---                                           else  noterecord     =  mano.mapnote.modify(t.playerpos.zonename, t.idx, t)    -- add note to User Notes Db
---             end
---
---          else
---
--- --             print("save New")
---
---             t  =  {  label       =  userinput.label,
---                      text        =  userinput.text,
---                      category    =  userinput.category,
---                      playerpos   =  nil,
---                      idx         =  nil,
---                      timestamp   =  nil,
---                      shared      =  userinput.shared,
---                   }
---             if userinput.shared == true   then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
---                                           else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
---             end
---
---          end
---
--- --          print("----------------------------")
--- --          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
--- --          print("----------------------------")
---
---          mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
---       end
---    end
---
---    return
---
--- end
 
 local function getcategoryicon(category)
 
@@ -284,8 +178,6 @@ local function manualaddnote(params)
          zonename, zoneid  =  unpack(zonetbl)
       end
 
---       print(string.format("zname=%s zid=%s", zonename, zoneid))
-
       if zonename ~= nil then
 
          if zoneid   ~= nil   then
@@ -297,9 +189,6 @@ local function manualaddnote(params)
                t.category           =  categoryname   or "Default"
                t.shared             =  tokens[9]      or false
                t.playerpos          =  {}
---                t.playerpos.x        =  tokens[4]      or 0
---                t.playerpos.z        =  tokens[5]      or 0
---                t.playerpos.y        =  tokens[6]      or 0
                t.playerpos.x        =  mano.f.rounddecimal(tonumber(tokens[4]), 2) or 0
                t.playerpos.z        =  mano.f.rounddecimal(tonumber(tokens[5]), 2) or 0
                t.playerpos.y        =  mano.f.rounddecimal(tonumber(tokens[6]), 2) or 0
@@ -324,8 +213,6 @@ local function manualaddnote(params)
       -- Commit Note
       local noterecord  =  nil
 
---       print(string.format("zname=%s zid=%s", zonename, zoneid))
-
       if t.shared == true  then  noterecord     =  mano.sharednote.new(t, { shared=true })   -- add note to Shared Notes Db
                            else  noterecord     =  mano.mapnote.new(t, { shared=false })     -- add note to User Notes Db
       end
@@ -335,7 +222,6 @@ local function manualaddnote(params)
       local current  =  mano.mapnote.getplayerposition()
 
       if zonename == current.zonename then
---          print("note IN current zone (zid: ".. zoneid .. ")")
          mano.gui.shown.window.loadlistbyzoneid(zoneid)
       else
 --          print("note not in current zone, not showing.")
@@ -348,17 +234,12 @@ local function manualaddnote(params)
 end
 
 local function parseslashcommands(params)
---    print(string.format("params: -- begin => params(%s)", params))
---    print("params: ", mano.f.dumptable(params))
---    print("params: -- end")
-
 
    for i in string.gmatch(params, "%S+") do
 
       if i  == "add" then
---          print("pre mano.mapnote.new")
-         -- ...
-         if mano.mapnoteinput.initialized then
+
+			if mano.mapnoteinput.initialized then
             local isonscreen  =  mano.mapnoteinput.o.window:GetVisible()
          else
             local isonscreen  =  false
@@ -368,41 +249,19 @@ local function parseslashcommands(params)
             local t     =  {}
             t.playerpos =  mano.mapnote.getplayerposition()
             mano.mapnoteinput:show('new', t)
---             print("post mano.mapnote.new")
          else
 --             print("Input Form already on Screen")
          end
       end
 
       if i == "new"  then
---          print("pre manual add")
---          print(string.format("MaNo params: (%s)", params))
-
          local retval = manualaddnote(params)
-
       end
 
    end
 
    return
 end
-
-
--- local print nested tables
--- local function dumptable(o)
---    if type(o) == 'table' then
---       local s = '{ '
---          for k,v in pairs(o) do
---             if type(k) ~= 'number' then
---                k = '"'..k..'"'
---             end
---             s =   s ..'['..k..'] = ' ..(dumptable(v) or "nil table").. ',\n'
---          end
---          return s .. '} '
---    else
---       return tostring(o)
---    end
--- end
 
 --
 -- Print contents of `tbl`, with indentation.
@@ -439,14 +298,12 @@ end
 -- only print if debug is on
 local function dprint(...) if mano.flags.debug == true then print(...) end end
 
--- function mano.f.round(num, digits)
 function round(num, digits)
    local floor = math.floor
    local mult = 10^(digits or 0)
 
    return floor(num * mult + .5) / mult
 end
-
 
 local function updateguicoordinates(win, newx, newy)
 
@@ -469,11 +326,8 @@ end
 
 local function setwaypoint(x, z, zonename)
 
---    mano.f.dprint(string.format("setwaypoint: zone=%s @ (%s, %s)", zonename, x, z))
-
    if x and z then
       local retval = Command.Map.Waypoint.Set(x, z)
---       mano.f.dprint(string.format("Command.Map.Waypoint.Set(%s, %s) result=%s", x, z, retval))
    end
 
    local X, Z = Inspect.Map.Waypoint.Get("player")
@@ -602,16 +456,6 @@ mano.foo                   =  {
                               parseslashcommands    =  parseslashcommands,
                               dumptable             =  dumptable,
                               }
-
--- print("mano.foo: ", dumptable(mano.foo))
---
--- Events
---
-mano.events                =  {}
--- mano.events.canceltrigger,    mano.events.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
--- mano.events.savetrigger,      mano.events.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
--- mano.events.deletetrigger,    mano.events.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
--- mano.events.catmenutrigger,   mano.events.catmenuchoice  =  Utility.Event.Create(addon.identifier, "catmenu.choice")
 --
 -- Player's Cached Info
 --

@@ -39,13 +39,10 @@ function __mano_ui_input(action, modifytbl)
 
 	local function userinputdelete(handle, action, note2delete)
 
-		print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
-
-	--    print("userinputdelete note2delete:\n", mano.f.dumptable(note2delete))
+-- 		print(string.format("handle=%s, action=%s, note2delete=%s", handle, action, note2delete))
 
 		if action   == 'delete'  then
 
-	--       local n2d   =  note2delete[1]
 			local deletednote =  {}
 
 			if note2delete.customtbl 			~= nil	and
@@ -53,21 +50,18 @@ function __mano_ui_input(action, modifytbl)
 				note2delete.customtbl.shared	~= nil	and
 				note2delete.customtbl.shared	==	true then
 
-				print("DELETING SHARED MESSAGE note2delete:\n")
-	-- 			mano.f.dumptable(note2delete)
+-- 				print("DELETING SHARED MESSAGE note2delete:\n")
 
 				local deletednote =  mano.sharednote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
 			else
 
-				print("DELETING LOCAL MESSAGE note2delete:\n")
-	-- 			mano.f.dumptable(note2delete)
-
+-- 				print("DELETING LOCAL MESSAGE note2delete:\n")
 				local deletednote =  mano.mapnote.delete(note2delete.playerpos.zonename, note2delete.idx)
 
 			end
 
-			print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
+-- 			print(string.format("After Delete: mano.gui.shown.window.loadlistbyzoneid(%s)", note2delete.playerpos.zoneid))
 			mano.gui.shown.window.loadlistbyzoneid(note2delete.playerpos.zoneid)
 
 		end
@@ -77,8 +71,7 @@ function __mano_ui_input(action, modifytbl)
 
 	local function userinputsave(handle, action, params)
 
-		print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
-	--    mano.f.dumptable(params)
+-- 		print(string.format("userinputsave: handle=(%s) action=(%s) idx=(%s)", handle, action, params.idx))
 
 		local userinput   =  params
 
@@ -123,10 +116,6 @@ function __mano_ui_input(action, modifytbl)
 
 				end
 
-	--          print("----------------------------")
-	--          print("modified note: noterecord:\n", mano.f.dumptable(noterecord))
-	--          print("----------------------------")
-
 				mano.gui.shown.window.loadlistbyzoneid(noterecord.playerpos.zoneid)
 			end
 		end
@@ -135,29 +124,6 @@ function __mano_ui_input(action, modifytbl)
 
 	end
 
---    local function detacheventwatchers()
---       -- Save & Cancel Events
---       Command.Event.Detach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
---       Command.Event.Detach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
---       Command.Event.Detach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
---
---       return
---    end
-
-   local function attacheventwatchers()
-      -- Save & Cancel Events
-		print("_mano_ui_input: ATTACCHING WATCHERS")
---       Command.Event.Attach(Event.MaNo.userinput.cancel,  function(...) mano.f.userinputcancel(...) end,  "MaNo: input: Cancel")
---       Command.Event.Attach(Event.MaNo.userinput.save,    function(...) mano.f.userinputsave(...)   end,  "MaNo: input: Save")
---       Command.Event.Attach(Event.MaNo.userinput.delete,  function(...) mano.f.userinputdelete(...) end,  "MaNo: input: Delete")
-
---       Command.Event.Attach(userinput.cancel,  function(...) userinputcancel(...) end,  "MaNo: input: Cancel")
---       Command.Event.Attach(userinput.save,    function(...) userinputsave(...)   end,  "MaNo: input: Save")
---       Command.Event.Attach(userinput.delete,  function(...) userinputdelete(...) end,  "MaNo: input: Delete")
-
-
-      return
-   end
 
    local function flippppanel()
 
@@ -197,67 +163,9 @@ function __mano_ui_input(action, modifytbl)
    end
 
 
-   local function changefontsize(newfontsize)
-
-      local nfs   =  mano.gui.font.size + newfontsize
-      if (nfs > 24)  then  nfs   =  24 end
-      if (nfs < 6)   then  nfs   =  6  end
-
-      if nfs ~=   mano.gui.font.size then
-         --       print(string.format("Font was %s, now is %s.", mano.gui.font.size, nfs))
-
-         mano.gui.font.size =  nfs
-
---          -- currencies
---          local tbls  =  { self.o.currenttbl, self.o.todaytbl, self.o.weektbl }
---          local TBL   =  {}
---          local currency, tbl = nil, {}
---          for _, TBL in pairs(tbls) do
---             for currency, tbl in pairs(TBL) do
---                tbl.frame:SetHeight(mano.gui.font.size)
---                tbl.label:SetFontSize(mano.gui.font.size)
---                tbl.icon:SetHeight(mano.gui.font.size)
---                tbl.icon:SetWidth(mano.gui.font.size)
---                tbl.value:SetFontSize(mano.gui.font.size)
---             end
---          end
---
---          -- notorieties
---          local tbls  =  { self.o.currentnotorietytbl, self.o.todaynotorietytbl, self.o.weeknotorietytbl }
---          local TBL   = {}
---          local notoriety, tbl = nil, {}
---          for _, TBL in pairs(tbls) do
---             for notoriety, tbl in pairs(TBL) do
---                tbl.frame:SetHeight(mano.gui.font.size)
---                tbl.label:SetFontSize(mano.gui.font.size)
---                tbl.value:SetFontSize(mano.gui.font.size)
---                tbl.standing:SetFontSize(mano.gui.font.size)
---                tbl.percent:SetFontSize(mano.gui.font.size * .75)
---             end
---          end
---
---          -- window title
---          self.o.windowtitle:SetFontSize(mano.gui.font.size*.75)
---          self.o.mano.ersion:SetFontSize(mano.round(mano.gui.font.size/2))
---          self.o.windowinfo:SetFontSize(mano.gui.font.size*.75)
---          self.o.titleicon:SetHeight(mano.gui.font.size*.75)
---          self.o.titleicon:SetWidth(mano.gui.font.size*.75)
---          self.o.corner:SetHeight(mano.gui.font.size)
---          self.o.corner:SetWidth(mano.gui.font.size)
---          self.o.lockbutton:SetHeight(mano.gui.font.size)
---          self.o.lockbutton:SetWidth(mano.gui.font.size)
---          self.o.iconizebutton:SetHeight(mano.gui.font.size)
---          self.o.iconizebutton:SetWidth(mano.gui.font.size)
---          mano.resizewindow(self.o.tracker, self.o.panel)
-      end
-
-      return
-   end
-
    function self.GetInput()
 
       local icontbl           =  self.o.caticon:GetTexture()
---       local texturetype, icon =  unpack(string.split(icontbl, ","))
       local texturetype, icon =  unpack(mano.f.splitstring(icontbl, ","))
 
       local t  =  {  label    =  self.o.labeltext:GetText(),
@@ -278,7 +186,6 @@ function __mano_ui_input(action, modifytbl)
       if self.o.ppownertext:GetText()     ~= "" then p.name       =  self.o.ppownertext:GetText()     end
 
       if p  ~= {} and next(p) ~= nil then t.playerpos =  p  end
-
 
       return t
 
@@ -306,22 +213,13 @@ function __mano_ui_input(action, modifytbl)
 	local function deletebuttonaction(action, modifytbl)
 		self.o.save =  false
       self.o.window:SetVisible(false)
---       self.deletetrigger(action, modifytbl)
 		userinputdelete(nil, action, modifytbl)
---                                                                               detacheventwatchers()
-
 		cleareventhandlers()
 
 		return
 	end
 
 	local function savebuttonaction(action, modifytbl)
-
--- function(event, modifytbl)
-		print("SAVE BUTTON ACTION action=" .. action .. "(modifytbl):")
-		mano.f.dumptable(modifytbl)
-		print("-----------------------")
-
 
       self.o.save =  true
       self.o.window:SetVisible(false)
@@ -344,7 +242,7 @@ function __mano_ui_input(action, modifytbl)
          t.icon      =  self.o.caticon:GetTexture()
          t.save      =  self.o.save
 			t.idx			=	modifytbl.idx
-			print("SAVE: modifytbl t.idx: (".. modifytbl.idx ..")")
+-- 			print("SAVE: modifytbl t.idx: (".. modifytbl.idx ..")")
 
          if modifytbl.customtbl ~= nil then	t.customtbl =  modifytbl.customtbl
          else											t.customtbl =	{}
@@ -352,12 +250,12 @@ function __mano_ui_input(action, modifytbl)
 
          t.customtbl.shared   =  self.o.sharedbutton:GetChecked()
 
-			print("ACTION is 'MODIFY' (" .. t.idx .. ")")
+-- 			print("ACTION is 'MODIFY' (" .. t.idx .. ")")
 		end
 
 		if action == "new" then
 			t	=	self:GetInput()
-			print("ACTION is 'NEW'")
+-- 			print("ACTION is 'NEW'")
 		end
 
 -- 		self.savetriggerc
@@ -371,13 +269,6 @@ function __mano_ui_input(action, modifytbl)
 
 	local function _initialize(action, modifytbl)
 
---          print("FIRST New Note")
-
--- 		self.canceltrigger,  self.cancelevent    =  Utility.Event.Create(addon.identifier, "userinput.cancel")
--- 		self.savetrigger,    self.saveevent      =  Utility.Event.Create(addon.identifier, "userinput.save")
--- 		self.deletetrigger,  self.deleteevent    =  Utility.Event.Create(addon.identifier, "userinput.delete")
-
-
 		-- Window Context
       local context  = UI.CreateContext("mano_input_context")
 
@@ -388,8 +279,6 @@ function __mano_ui_input(action, modifytbl)
       self.o.window:SetLayer(-1)
       self.o.window:SetWidth(mano.gui.win.width)
       self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
---       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Forward, function() changefontsize(1)   end,  "MaNo: inputwindow: window_wheel_forward")
---       self.o.window:EventAttach(Event.UI.Input.Mouse.Wheel.Back,    function() changefontsize(-1)  end,  "MaNo: inputwindow: window_wheel_backward")
 
       self.o.titleframe =  UI.CreateFrame("Frame", "input_title_frame", self.o.window)
       self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT",    0, -(mano.gui.font.size*1.5)+4)  -- move up, outside externalframe
@@ -419,7 +308,6 @@ function __mano_ui_input(action, modifytbl)
          -- Title Icon
          self.o.ppbutton   = UI.CreateFrame("Texture", "mano_input_pp_button", self.o.titleframe)
          self.o.ppbutton:SetTexture("Rift", "btn_arrow_R_(normal).png.dds")
---          self.o.ppbutton:SetTexture("Rift", "macro_icon_heal.dds")
          self.o.ppbutton:SetHeight(mano.gui.font.size)
          self.o.ppbutton:SetWidth(mano.gui.font.size)
          self.o.ppbutton:SetLayer(3)
@@ -487,15 +375,11 @@ function __mano_ui_input(action, modifytbl)
          self.o.notelabel:SetPoint("TOPRIGHT",   self.o.labeltext, "BOTTOMRIGHT",   0,   mano.gui.borders.top)
 
          -- Note's input field
---          self.o.notetext     =  UI.CreateFrame("RiftTextfield", "input_line_name_", self.o.frame)
          self.o.notetext     =  UI.CreateFrame("SimpleTextArea", "input_line_name_", self.o.frame)
---          self.o.notetext     =  UI.CreateFrame("Text", "input_line_name_", self.o.frame)
          if mano.gui.font.name then
             self.o.noteltext:SetFont(mano.addon.name, mano.gui.font.name)
          end
---          self.o.notetext:SetFontSize(mano.gui.font.size)
          self.o.notetext:SetText("")
---          self.o.notetext:SetWordwrap(true)
          self.o.notetext:SetLayer(3)
          self.o.notetext:SetHeight(mano.gui.font.size * 4)
          self.o.notetext:SetVisible(true)
@@ -544,8 +428,6 @@ function __mano_ui_input(action, modifytbl)
 
          -- Category Create Menu
          self.o.catmenu     = {}
---          self.o.catmenu     = menu(self.o.categorybutton, self.catmenu)
---          self.o.catmenu     = menu(self.o.cattext, self.catmenu)
          self.o.catmenu     = menu(self.o.cattext, 200, self.catmenu)
 -- 			print("*************************************************")
 -- 			mano.f.dumptable(self.catmenu.voices)
@@ -578,8 +460,6 @@ function __mano_ui_input(action, modifytbl)
          self.o.sharedlabel:SetVisible(true)
          self.o.sharedlabel:SetPoint("TOPRIGHT",   self.o.sharedbutton, "TOPLEFT",  -mano.gui.borders.right, 0)
 
-
-
       -- ----------------------------------------------------------------------
             --          playerpos   =  playerpos,
             --                         y              =  tbl.y or nil,
@@ -600,16 +480,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.cancelbutton:SetWidth(mano.gui.font.size*2)
          self.o.cancelbutton:SetLayer(3)
          self.o.cancelbutton:SetPoint("BOTTOMLEFT",   self.o.frame, "BOTTOMLEFT", mano.gui.borders.left,	-mano.gui.borders.bottom)
---          self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
---                                                                               self.o.save =  false
---                                                                               self.o.window:SetVisible(false)
--- --                                                                               self.canceltrigger( { save =  false } )
--- 																										userinputcancel()
--- --                                                                               detacheventwatchers()
---                                                                            end, "MaNo input: Cancel Button Pressed"
---                                           )
 
-         -- btn_DeleteMail_(click).png
          -- Delete Button
          self.o.deletebutton = UI.CreateFrame("Texture", "mano_input_delete_button", self.o.frame)
          self.o.deletebutton:SetTexture("Rift", "btn_DeleteMail_(click).png.dds")
@@ -618,17 +489,6 @@ function __mano_ui_input(action, modifytbl)
          self.o.deletebutton:SetWidth(mano.gui.font.size*2)
          self.o.deletebutton:SetLayer(3)
          self.o.deletebutton:SetPoint("BOTTOMCENTER",   self.o.frame, "BOTTOMCENTER", 0,	-mano.gui.borders.bottom)
---          self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
---                                                                               self.o.save =  false
---                                                                               self.o.window:SetVisible(false)
---                                                                               mano.events.deletetrigger('delete', modifytbl)
--- --                                                                               detacheventwatchers()
---                                                                            end, "MaNo input: Delete Button Pressed"
---                                           )
---          self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button Pressed"                                       )
-
-
-
 
          -- Save Button
          self.o.savebutton = UI.CreateFrame("Texture", "mano_input_save_button", self.o.frame)
@@ -637,7 +497,6 @@ function __mano_ui_input(action, modifytbl)
          self.o.savebutton:SetWidth(mano.gui.font.size*2)
          self.o.savebutton:SetLayer(3)
          self.o.savebutton:SetPoint("BOTTOMRIGHT",   self.o.frame, "BOTTOMRIGHT", -mano.gui.borders.right,	-mano.gui.borders.bottom)
---          self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
 
 
       --	DX FRAME -- BEGIN
@@ -803,25 +662,19 @@ function __mano_ui_input(action, modifytbl)
       self.o.dxframe:SetHeight(mano.f.round(maxY - maxY))
       self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
 
---       attacheventwatchers()
-
 --       self.o.labeltext:SetKeyFocus(true)
       self.o.dxframe:SetVisible(false)
       self.o.externaldxframe:SetVisible(false)
 
---    end
-
 		return
 	end
 
---    local function __init(action)
    function self.show(dummy, action, modifytbl)
 
---       print(string.format("action=(%s)\n", mano.f.dumptable(action)))
-		print("=======================_ui_input:SHOW()=====================")
-      print(string.format("dummy=%s, action=%s, idx=(%s) modifytbl:", dummy, action, modifytbl.idx))
-      mano.f.dumptable(modifytbl)
-		print("============================================================")
+-- 		print("=======================_ui_input:SHOW()=====================")
+--       print(string.format("dummy=%s, action=%s, idx=(%s) modifytbl:", dummy, action, modifytbl.idx))
+--       mano.f.dumptable(modifytbl)
+-- 		print("============================================================")
 
       self.o.save =  false
 
@@ -832,15 +685,13 @@ function __mano_ui_input(action, modifytbl)
       if not self.initialized then	_initialize(action, modifytbl)	end
 
       if action   == 'new' then
-         -- New Note but not first
---          print("New Note but not first")
 
+			-- New Note but not first
          self.o.labeltext:SetText("")
          self.o.notetext:SetText("")
          self.o.window:SetVisible(true)
          self.o.sharedbutton:SetChecked(false)
 
---          attacheventwatchers()
 --          self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(false)
 
@@ -869,7 +720,6 @@ function __mano_ui_input(action, modifytbl)
 
 		if action	==	'modify' then
 
---          print("MODIFY Note")
          -- modify
          local t  =  {  label =  "",   text  =  "", shared  =  false, category   =  "",   caticon  =  "",	idx = nil }
 

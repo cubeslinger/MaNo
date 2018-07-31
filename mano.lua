@@ -9,13 +9,6 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 
-local function detacheventsonexit()
-
-   Command.Event.Detach(Event.Unit.Detail.Zone,       function(...) zonechangeevent(...)        end,  "MaNo: Zone Change Event")
-
-   return
-end
-
 local function zonechangeevent(h, t)
 
 --       print(string.format("zonechangeevent: h=%s t=%s", h, t ))
@@ -23,14 +16,28 @@ local function zonechangeevent(h, t)
       local unitid   =  nil
       local cnt      =  1
 
+		print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
       for unit, zone in pairs(t) do
---          print(string.format("zonechangeevent: (%s) unitid=%s zone=%s", cnt, unit, zone ))
+
+			local u = Inspect.Unit.Detail(unit)
+			local z = Inspect.Zone.Detail(zone)
+
+			if u and z then
+				print(string.format("%s) %s: %s", cnt, u, z))
+				print(string.format("%s) %s: %s", cnt, u.name, z.name))
+			else
+				print(string.format("ERROR: u=(%s) z=(%s)", u, z))
+			end
+
          cnt = cnt + 1
          if unitid   == nil   then
             unitid   =  unit
             zoneid   =  zone
          end
       end
+
+-- 		mano.f.dumptable(t)
+		print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
       if unitid   == mano.player.unitid   then
 --          print("zonechangeevent: Zone change event IS for US!")
@@ -67,8 +74,6 @@ local function savevariables(_, addonname)
       if next(mano.sharedcategories)   ~= nil then manosharedcats =  mano.sharedcategories   end
 
    end
-
---    detacheventsonexit()
 
    return
 end

@@ -29,28 +29,6 @@ function __mano_ui()
       return false
    end
 
---    local function modifynote(tbl, customtbl, shared)
---
---       local note  =  {}
---
--- 		print("searching note with idx: (" .. tbl.idx ..")")
---
---       if	shared then
---          note  =  mano.sharednote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
---       else
---          note  =  mano.mapnote.getnotebyzoneandidx(tbl.playerpos.zonename, tbl.idx)
---       end
---
---       if note  ~= nil and next(note) ~= nil then
--- 			print("FOUND note with idx: (" .. note.idx ..")")
---          mano.mapnoteinput:show('modify', note)
---       else
---          print("modifynote: Note NOT Found!")
---       end
---
---       return
---    end
-
 	local function editnotebutton(t)
 
 		local shared   =  false
@@ -60,13 +38,13 @@ function __mano_ui()
 			shared   =  true
        end
 
-		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-		print("editnotebutton:")
-		mano.f.dumptable(t)
+-- 		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+-- 		print("editnotebutton:")
+-- 		mano.f.dumptable(t)
 
 --       modifynote(t, t.customtbl, shared)
 
-		print("searching note with idx: (" .. t.idx ..")")
+-- 		print("searching note with idx: (" .. t.idx ..")")
 
       if	shared then
          note  =  mano.sharednote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
@@ -75,10 +53,10 @@ function __mano_ui()
       end
 
       if note  ~= nil and next(note) ~= nil then
-			print("FOUND note with idx: (" .. note.idx ..")")
+-- 			print("FOUND note with idx: (" .. note.idx ..")")
          mano.mapnoteinput:show('modify', note)
       else
-         print("modifynote: Note NOT Found!")
+         print("ERROR: modifynote: Note NOT Found!")
       end
 
 		return
@@ -119,8 +97,6 @@ function __mano_ui()
 
                if zonetbl.zoneid ~= nil and zonetbl.zoneid ~= "" then
 
---                   print(string.format("zname: (%s) zid:(%s)", tbl.zonename, zonetbl.zoneid))
-
                   table.insert(t,   {  name     =  tbl.zonename,
                                        callback =  { self.mainmenuchoice, zonetbl.zoneid, 'close' },
                                     }
@@ -135,9 +111,7 @@ function __mano_ui()
                                  }
                      )
          t  		=	{}
--- 			menuid	=	menuid + 1
 
---          mano.f.dumptable(retval)
       end
 
       return retval
@@ -214,17 +188,6 @@ function __mano_ui()
       T.editicon:SetWidth(mano.gui.font.size  * .75)
       T.editicon:SetLayer(3)
 		T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
---       T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
---                                                                   local shared   =  false
---                                                                   if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
---                                                                      shared   =  true
---                                                                   end
--- 																						print("going to modify idx: (".. t.idx..")")
---                                                                   modifynote(t, t.customtbl, shared)
---                                                                end,
---                               "edit_note_" .. t.idx )
-
-
 
       T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
 
@@ -233,7 +196,6 @@ function __mano_ui()
       if mano.gui.font.name then
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
---       print("ui4 t:\n", mano.f.dumptable(t))
       T.text:SetFontSize(mano.gui.font.size)
       local text  =  ""
       if t.label  ~= nil then text  =  t.label  end
@@ -310,14 +272,12 @@ function __mano_ui()
 
          -- icon  --
          newline.icon:SetVisible(true)
---          newline.icon:SetTexture("Rift", t.icon or "Fish_icon.png.dds")
          local icon  =  mano.f.getcategoryicon(t.category)
          if icon  == nil then icon   =  "target_portrait_roguepoint.png.dds"   end
          newline.icon:SetTexture("Rift", icon)
 
 
          -- label or text  --
---          newline.text:SetText(t.label or t.text)
          local text  =  ""
          if t.label  ~= nil then text  =  t.label  end
          if text == ""  and t.text ~= nil then text  =  t.text end
@@ -333,21 +293,10 @@ function __mano_ui()
          newline.text:SetText(text, true)
          newline.text:SetVisible(true)
 
-         -- Edit Button
---          newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click,
---                                        function()
---                                           local shared   =  false
---                                           if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
---                                              shared   =  true
---                                           end
---                                           modifynote(t, t.customtbl, shared)
---                                        end,
---                                        "edit_note_" .. self.lineid )
-         newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
+			--	Edit Icon/Button
+			newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
 
-
-
-         -- WayPoint Button --
+         -- WayPoint Icon/Button --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. t.idx )
 
          -- lastlinecontainer --
@@ -392,65 +341,6 @@ function __mano_ui()
       return
    end
 
-
-   local function changefontsize(newfontsize)
-
-      local nfs   =  mano.gui.font.size + newfontsize
-      if (nfs > 24)  then  nfs   =  24 end
-      if (nfs < 6)   then  nfs   =  6  end
-
-      if nfs ~=   mano.gui.font.size then
-         --       print(string.format("Font was %s, now is %s.", mano.gui.font.size, nfs))
-
-         mano.gui.font.size =  nfs
-
---          -- currencies
---          local tbls  =  { self.o.currenttbl, self.o.todaytbl, self.o.weektbl }
---          local TBL   =  {}
---          local currency, tbl = nil, {}
---          for _, TBL in pairs(tbls) do
---             for currency, tbl in pairs(TBL) do
---                tbl.frame:SetHeight(mano.gui.font.size)
---                tbl.label:SetFontSize(mano.gui.font.size)
---                tbl.icon:SetHeight(mano.gui.font.size)
---                tbl.icon:SetWidth(mano.gui.font.size)
---                tbl.value:SetFontSize(mano.gui.font.size)
---             end
---          end
---
---          -- notorieties
---          local tbls  =  { self.o.currentnotorietytbl, self.o.todaynotorietytbl, self.o.weeknotorietytbl }
---          local TBL   = {}
---          local notoriety, tbl = nil, {}
---          for _, TBL in pairs(tbls) do
---             for notoriety, tbl in pairs(TBL) do
---                tbl.frame:SetHeight(mano.gui.font.size)
---                tbl.label:SetFontSize(mano.gui.font.size)
---                tbl.value:SetFontSize(mano.gui.font.size)
---                tbl.standing:SetFontSize(mano.gui.font.size)
---                tbl.percent:SetFontSize(mano.gui.font.size * .75)
---             end
---          end
---
---          -- window title
---          self.o.windowtitle:SetFontSize(mano.gui.font.size*.75)
---          self.o.mano.ersion:SetFontSize(mano.round(mano.gui.font.size/2))
---          self.o.windowinfo:SetFontSize(mano.gui.font.size*.75)
---          self.o.titleicon:SetHeight(mano.gui.font.size*.75)
---          self.o.titleicon:SetWidth(mano.gui.font.size*.75)
---          self.o.corner:SetHeight(mano.gui.font.size)
---          self.o.corner:SetWidth(mano.gui.font.size)
---          self.o.lockbutton:SetHeight(mano.gui.font.size)
---          self.o.lockbutton:SetWidth(mano.gui.font.size)
---          self.o.iconizebutton:SetHeight(mano.gui.font.size)
---          self.o.iconizebutton:SetWidth(mano.gui.font.size)
---          mano.resizewindow(self.o.tracker, self.o.panel)
-      end
-
-      return
-   end
-
-
    function self.addline(t)
 
       local stockframe  =  fetchlinefromstock(t)
@@ -463,7 +353,6 @@ function __mano_ui()
    end
 
    function self.loadlistbyzoneid(zoneid)
---       print(string.format("loadlistbyzoneid(%s)", zoneid))
 
       clearlist()
 
@@ -480,7 +369,6 @@ function __mano_ui()
 
       self.adjustheight()
 
---       setzonetitlebyid(zoneid, counter)
       setstatusbarbyzoneid(zoneid, counter)
 
       return
@@ -488,8 +376,7 @@ function __mano_ui()
 
    function self.mainmenuchoice(zonename)
 
---       mano.events.mainmenutrigger(mano.db.geo.zones[zonename])
-		print("mainmenuchoice: FLIP")
+-- 		print("mainmenuchoice: FLIP")
       self.o.menu.main.flip()
 
       return
@@ -508,10 +395,8 @@ function __mano_ui()
 
          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
          self.o.window:SetHeight(self.o.titleframe:GetHeight() +  mano.f.round(maxY - minY))
---          print(string.format("new Height: (%s)", self.o.window:GetHeight()))
       else
          minY  =  self.o.manoframe:GetTop()
---          maxY  =  self.o.titleframe:GetBottom() + mano.gui.borders.bottom
          maxY  =  self.o.titleframe:GetBottom()
 
          self.o.manoframe:SetHeight(mano.f.round(maxY - maxY))
