@@ -177,6 +177,7 @@ function __mano_ui()
       T.wpicon:SetLayer(3)
       T.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. self.lineid )
       T.wpicon:SetPoint("TOPRIGHT",    T.frame, "TOPRIGHT",  -mano.gui.borders.right*2,	1)
+		self.o.tooltip:InjectEvents(T.wpicon, function() return string.format("%s, %s, %s", t.playerpos.x, t.playerpos.z, t.playerpos.y) end)
 
       -- Edit Point Icon -->|-->||
       T.editicon = UI.CreateFrame("Texture", "line_icon_edit" .. self.lineid, T.frame)
@@ -185,6 +186,7 @@ function __mano_ui()
       T.editicon:SetWidth(mano.gui.font.size  * .75)
       T.editicon:SetLayer(3)
 		T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
+		self.o.tooltip:InjectEvents(T.editicon, function() return "Edit" end)
 
       T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
 
@@ -295,6 +297,7 @@ function __mano_ui()
 
          -- WayPoint Icon/Button --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. t.idx )
+			self.wptooltip:InjectEvents(newline.wpicon, function() return string.format("%s, %s, %s", t.playerpos.x, t.playerpos.z, t.playerpos.y) end)
 
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
@@ -437,6 +440,7 @@ function __mano_ui()
       self.o.window:SetWidth(mano.gui.win.width)
       self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
       self.o.tooltip = UI.CreateFrame("SimpleTooltip", "mano_ui_tt", self.o.window)
+		self.wptooltip	=	self.o.tooltip
 
       self.o.titleframe =  UI.CreateFrame("Frame", "mano_title_frame", self.o.window)
       self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT")     -- move up, outside externalframe
