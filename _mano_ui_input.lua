@@ -32,6 +32,18 @@ function __mano_ui_input(action, modifytbl)
 		for a,b in pairs(eventlist) do	self.o.savebutton:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
 
 
+		--	Clear KeyFocus
+
+		self.o.cattext:SetKeyFocus(false)
+		self.o.labeltext:SetKeyFocus(false)
+		self.o.notetext:SetKeyFocus(false)
+      self.o.ppxtext:SetKeyFocus(false)
+      self.o.ppztext:SetKeyFocus(false)
+      self.o.ppytext:SetKeyFocus(false)
+      self.o.ppzonenametext:SetKeyFocus(false)
+      self.o.ppzoneidtext:SetKeyFocus(false)
+      self.o.ppownertext:SetKeyFocus(false)
+
 		return
 	end
 
@@ -686,6 +698,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.deletebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() deletebuttonaction('delete', modifytbl) end, "MaNo input: Delete Button")
          self.o.savebutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function() savebuttonaction(action, modifytbl) end, "MaNo input: Save Button Pressed" )
 
+			self.o.labeltext:SetKeyFocus(true)
 
 		end
 
