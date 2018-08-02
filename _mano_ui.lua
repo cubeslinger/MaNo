@@ -502,6 +502,21 @@ function __mano_ui()
          self.o.addwpbutton:SetPoint("CENTERRIGHT",   self.o.menubutton, "CENTERLEFT", -mano.gui.font.size, 0)
          self.o.tooltip:InjectEvents(self.o.addwpbutton, function() return "Add Waypoint Here!" end)
 
+         -- Re-Read current zone
+         self.o.refreshzonebutton = UI.CreateFrame("Texture", "mano_menu_refreshzone_button", self.o.titleframe)
+         self.o.refreshzonebutton:SetTexture("Rift", "NPCDialogIcon_questrepeatable.png.dds")
+         self.o.refreshzonebutton:SetHeight(mano.gui.font.size * 1.5)
+         self.o.refreshzonebutton:SetWidth(mano.gui.font.size * 1.5)
+         self.o.refreshzonebutton:SetLayer(3)
+         self.o.refreshzonebutton:EventAttach( Event.UI.Input.Mouse.Left.Click,  function()
+																												local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
+																												self.loadlistbyzoneid(zoneid)
+																											end,
+																											"MaNo: Main Menu RefrehZone Button Pressed" )
+         self.o.refreshzonebutton:SetPoint("CENTERRIGHT",   self.o.addwpbutton, "CENTERLEFT", -mano.gui.font.size, 0)
+         self.o.tooltip:InjectEvents(self.o.refreshzonebutton, function() return "Zone Refresh" end)
+
+
 
          -- Create Menu
          self.o.menu          =  {}

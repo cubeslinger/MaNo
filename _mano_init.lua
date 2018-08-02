@@ -5,6 +5,22 @@
 --
 local addon, mano = ...
 
+local function getzoneinfos()
+
+   local zoneText    =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).name
+
+   local zoneID      =  Inspect.Zone.Detail(Inspect.Unit.Detail("player").zone).id
+
+   local regionText  =  Inspect.Unit.Detail("player").locationName
+
+	local playerid		=	Inspect.Unit.Detail("player").id
+
+-- 	print(string.format("zonetext=(%s) zoneid=(%s) regiontext=(%s) playerid=(%s)", zoneText, zoneID, regionText, playerid ))
+
+   return zoneText, regionText, zoneID, playerid
+end
+
+
 local function splitquotedstringbyspace(text)
 
    local retval   =  {}
@@ -440,6 +456,7 @@ mano.f.getcategoryicon     =  getcategoryicon
 mano.f.splitstring         =  split
 mano.f.rounddecimal        =  rounddecimal
 mano.f.parseslashcommands  =  parseslashcommands
+mano.f.getzoneinfos			=	getzoneinfos
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end
