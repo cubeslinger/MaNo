@@ -8,19 +8,19 @@ local addon, mano = ...
 local function getzoneinfos()
 
    local player, zoneText, regionText, zoneID, playerid =  nil, nil, nil, nil, nil
-   
+
    player         =  Inspect.Unit.Detail("player")
    playerdata     =  Inspect.Zone.Detail(player)
-   
+
    if playerdata ~= nil and next(playerdata) ~= nil  then
-      
+
       zoneText    =  playerdata.zone.name
       zoneID      =  playerdata.zone.id
       regionText  =  playerdata.locationName
    else
       print(string.format("getzoneinfos: ERROR, playerdata =(%s)", playerdata))
-   end 
-   
+   end
+
 	local playerid		=	Inspect.Unit.Detail("player").id
 
 -- 	print(string.format("zonetext=(%s) zoneid=(%s) regiontext=(%s) playerid=(%s)", zoneText, zoneID, regionText, playerid ))
@@ -394,6 +394,7 @@ mano.gui.win               =  {}
 mano.gui.win.x             =  0
 mano.gui.win.y             =  0
 mano.gui.win.width         =  280
+mano.gui.visible				=	true
 --
 -- Minimap Button
 --

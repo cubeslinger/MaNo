@@ -70,6 +70,7 @@ local function savevariables(_, addonname)
       local a        =  {}
       a.mmbtn        =  mano.gui.mmbtn
       a.win          =  mano.gui.win
+		a.visible		=	mano.gui.visible
       manoguidata    =  a
 
       -- Save Character Notes Db
@@ -190,6 +191,8 @@ local function startmeup(h, t)
 --          local retval      =  mano.extdbhandle.filldbs()
 --          print("...initializing EXTERNAL DBs...")
 --       end
+
+		if	mano.gui.visible == false then mano.gui.shown.window.o.window:SetVisible(false)	end
 
       mano.init.startup =  true
    end

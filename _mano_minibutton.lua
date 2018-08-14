@@ -21,7 +21,8 @@ function mano.createminimapbutton()
    btn.border:SetWidth(mano.gui.mmbtn.width)
    btn.border:SetLayer(1)
    btn.border:EventAttach(Event.UI.Input.Mouse.Left.Click,     function()
-                                                                     mano.gui.shown.window.o.window:SetVisible(not mano.gui.shown.window.o.window:GetVisible())
+																							mano.gui.visible = not mano.gui.shown.window.o.window:GetVisible()
+                                                                     mano.gui.shown.window.o.window:SetVisible(mano.gui.visible)
                                                                   return
                                                                end,
                                                                "Show/Hide Left Click" )
