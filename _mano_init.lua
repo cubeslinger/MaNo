@@ -7,25 +7,26 @@ local addon, mano = ...
 
 local function getzoneinfos()
 
-   local player, zoneText, regionText, zoneID, playerid =  nil, nil, nil, nil, nil
+   local player, zoneText, locationText, zoneID, playerid =  nil, nil, nil, nil, nil
 
    player         =  Inspect.Unit.Detail("player")
-   playerdata     =  Inspect.Zone.Detail(player)
+	zoneID      	=  player.zone
+	locationText  	=  player.locationName
+	zonedata			=  Inspect.Zone.Detail(player.zone)
+-- 	mano.f.dumptable(zonedata)
 
-   if playerdata ~= nil and next(playerdata) ~= nil  then
-
-      zoneText    =  playerdata.zone.name
-      zoneID      =  playerdata.zone.id
-      regionText  =  playerdata.locationName
+   if zonedata ~= nil and next(zonedata) ~= nil  then
+      zoneText    =  zonedata.name
    else
-      print(string.format("getzoneinfos: ERROR, playerdata =(%s)", playerdata))
+      print(string.format("getzoneinfos: ERROR, zonedata =(%s)", zonedata))
    end
 
 	local playerid		=	Inspect.Unit.Detail("player").id
 
--- 	print(string.format("zonetext=(%s) zoneid=(%s) regiontext=(%s) playerid=(%s)", zoneText, zoneID, regionText, playerid ))
+--  	print(string.format("zonetext=(%s) zoneid=(%s) regiontext=(%s) playerid=(%s)", zoneText, zoneID, locationText, playerid ))
+	print(string.format("player=(%s)\nzoneText=(%s)\nlocationText=(%s)\nzoneID=(%s)\nplayerid=(%s)\n", player, zoneText, locationText, zoneID, playerid))
 
-   return zoneText, regionText, zoneID, playerid
+   return zoneText, locationText, zoneID, playerid
 end
 
 
@@ -356,7 +357,7 @@ local function setwaypoint(x, z, zonename)
 
    local X, Z = Inspect.Map.Waypoint.Get("player")
 
-   mano.f.dprint(string.format("Way Point added in: %s, at %s, %s", zonename, X, Z))
+   print(string.format("Way Point added in: %s, at %s, %s", zonename, X, Z))
 
    return X, Z
 end

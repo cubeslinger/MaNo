@@ -118,13 +118,23 @@ function __mano_ui()
 
    local function setstatusbarbyzoneid(zoneid, count)
 
-      local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
+--       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
 
-      if bool then
-         if zonedata.name ~= self.lastzone  then
-            self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+--       if bool then
+--          if zonedata.name ~= self.lastzone  then
+--             self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+--             self.lastzone  =	zonedata.name
+--          end
+--       end
+
+
+		local	zoneText, locationText, zoneID, playerid	=	mano.f.getzoneinfos()
+
+      if zoneText then
+--          if zonedata.name ~= self.lastzone  then
+				self.o.statuszone:SetText(string.format("%s: %s (%s)", zoneText, (locationText or ""), count or 0))
             self.lastzone  =	zonedata.name
-         end
+--          end
       end
 
       return

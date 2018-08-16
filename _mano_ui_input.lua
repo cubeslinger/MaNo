@@ -198,9 +198,9 @@ function __mano_ui_input(action, modifytbl)
 
       if p  ~= {} and next(p) ~= nil then t.playerpos =  p  end
 
-		print("-- GetInput() --")
-		mano.f.dumptable(t)
-		print("-- GetInput() --")
+-- 		print("-- GetInput() --")
+-- 		mano.f.dumptable(t)
+-- 		print("-- GetInput() --")
 
       return t
 

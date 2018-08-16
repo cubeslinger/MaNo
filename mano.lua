@@ -11,52 +11,14 @@ mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Ve
 
 local function zonechangeevent(h, t)
 
---       print(string.format("zonechangeevent: h=%s t=%s", h, t ))
+	local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
 
---       local unitid   =  nil
---       local cnt      =  1
-
--- 		print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
---       for unit, zone in pairs(t) do
---
--- 			local u = Inspect.Unit.Detail(unit)
--- 			local z = Inspect.Zone.Detail(zone)
---
--- 			if u and z then
--- 				print(string.format("%s) %s: %s", cnt, u, z))
--- 				print(string.format("%s) %s: %s", cnt, u.name, z.name))
--- 			else
--- 				print(string.format("ERROR: u=(%s) z=(%s)", u, z))
--- 			end
---
---          cnt = cnt + 1
---          if unitid   == nil   then
---             unitid   =  unit
---             zoneid   =  zone
---          end
---       end
---
--- -- 		mano.f.dumptable(t)
--- 		print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-
-		local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
-
-      if playerid   == mano.player.unitid   then
+   if playerid   == mano.player.unitid   then
 --          print("zonechangeevent: Zone change event IS for US!")
-         mano.gui.shown.window.loadlistbyzoneid(zoneid)
+		mano.gui.shown.window.loadlistbyzoneid(zoneid)
       else
 --          print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
       end
-
-
-
---       if unitid   == mano.player.unitid   then
--- --          print("zonechangeevent: Zone change event IS for US!")
---          mano.gui.shown.window.loadlistbyzoneid(zoneid)
---       else
--- --          print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
---       end
-
 
    return
 end
