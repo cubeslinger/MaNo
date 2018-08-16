@@ -187,8 +187,8 @@ function __mano_ui()
       T.editicon:SetLayer(3)
 		T.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
 		self.o.tooltip:InjectEvents(T.editicon, function() return "Edit" end)
-
-      T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
+--       T.editicon:SetPoint("TOPRIGHT",   T.wpicon,   "TOPLEFT",  -mano.gui.borders.right*2,   4)
+      T.editicon:SetPoint("CENTERRIGHT",   T.wpicon,   "CENTERLEFT",  -mano.gui.borders.right*2,   0)
 
       -- Note's Text -->|<--
       T.text     =  UI.CreateFrame("Text", "line_name_" .. self.lineid, T.frame)
@@ -196,6 +196,7 @@ function __mano_ui()
          T.text:SetFont(mano.addon.name, mano.gui.font.name)
       end
       T.text:SetFontSize(mano.gui.font.size)
+-- 		T.text:SetBackgroundColor(unpack(mano.gui.color.lightgreen))
       local text  =  ""
       if t.label  ~= nil then text  =  t.label  end
       if text == ""  and t.text ~= nil then text  =  t.text end
@@ -207,8 +208,12 @@ function __mano_ui()
       T.text:SetText(text, true)
       T.text:SetLayer(3)
       T.text:SetVisible(true)
-      T.text:SetPoint("TOPLEFT",    T.icon,     "TOPRIGHT",  mano.gui.borders.left,     -1)
-      T.text:SetPoint("TOPRIGHT",   T.editicon,   "TOPRIGHT",  -mano.gui.borders.right,   -1)
+--       T.text:SetPoint("TOPLEFT", 	T.icon,		"TOPRIGHT",  mano.gui.borders.left,    -4)
+--       T.text:SetPoint("TOPRIGHT",	T.editicon, "TOPLEFT",  -mano.gui.borders.right,	-4)
+      T.text:SetPoint("CENTERLEFT", 	T.icon,		"CENTERRIGHT",  mano.gui.borders.left,    0)
+      T.text:SetPoint("CENTERRIGHT",	T.editicon, "CENTERLEFT",  -mano.gui.borders.right,	0)
+
+		self.o.tooltip:InjectEvents(T.text, function() return string.format("%s\n\n%s", (t.label or ""), (t.text or "")) end)
       table.insert(self.linestock, T)
 
       return(T)
@@ -226,6 +231,10 @@ function __mano_ui()
 
          tbl.frame:SetVisible(false)
 
+			--	remove Text and WP old tooltips
+			self.tooltip.RemoveEvents(self.tooltip, tbl.text)
+			self.tooltip.RemoveEvents(self.tooltip, tbl.wpicon)
+
 			--
 			--	reset WayPoint button
 			--
@@ -239,7 +248,6 @@ function __mano_ui()
          local a,b
          local eventlist =  tbl.editicon:EventList(Event.UI.Input.Mouse.Left.Click)
 			for a,b in pairs(eventlist) do	tbl.editicon:EventDetach(Event.UI.Input.Mouse.Left.Click, b.handler, b.label)	end
-
 
       end
 
@@ -281,23 +289,25 @@ function __mano_ui()
          if t.label  ~= nil then text  =  t.label  end
          if text == ""  and t.text ~= nil then text  =  t.text end
 
-         if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then
+         if t.customtbl ~= nil and t.customtbl.shared ~= nil and t.customtbl.shared == true then
             newline.text:SetFontColor(unpack(mano.gui.color.lightgreen))
          else
             newline.text:SetFontColor(unpack(mano.gui.color.white))
          end
 
 			-- DEBUG
-			text = string.format("%s (%s)", text, t.idx)
+-- 			text = string.format("%s (%s)", text, t.idx)
+ 			text = string.format("%s", text)
          newline.text:SetText(text, true)
          newline.text:SetVisible(true)
+			self.tooltip:InjectEvents(newline.text, function() return string.format("%s\n\n%s", (t.label or ""), (t.text or "")) end)
 
 			--	Edit Icon/Button
 			newline.editicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() editnotebutton(t) end, "edit_note_" .. t.idx )
 
          -- WayPoint Icon/Button --
          newline.wpicon:EventAttach( Event.UI.Input.Mouse.Left.Click, function() mano.f.setwaypoint(t.playerpos.x, t.playerpos.z, t.playerpos.zonename) end, "Way Point Selected_" .. t.idx )
-			self.wptooltip:InjectEvents(newline.wpicon, function() return string.format("%s, %s, %s", t.playerpos.x, t.playerpos.z, t.playerpos.y) end)
+			self.tooltip:InjectEvents(newline.wpicon, function() return string.format("%s, %s, %s", t.playerpos.x, t.playerpos.z, t.playerpos.y) end)
 
          -- lastlinecontainer --
          self.o.lastlinecontainer =  newline.frame
@@ -440,7 +450,7 @@ function __mano_ui()
       self.o.window:SetWidth(mano.gui.win.width)
       self.o.window:SetBackgroundColor(unpack(mano.gui.color.black))
       self.o.tooltip = UI.CreateFrame("SimpleTooltip", "mano_ui_tt", self.o.window)
-		self.wptooltip	=	self.o.tooltip
+		self.tooltip	=	self.o.tooltip
 
       self.o.titleframe =  UI.CreateFrame("Frame", "mano_title_frame", self.o.window)
       self.o.titleframe:SetPoint("TOPLEFT",  self.o.window, "TOPLEFT")     -- move up, outside externalframe
