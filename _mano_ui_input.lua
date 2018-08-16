@@ -281,8 +281,11 @@ function __mano_ui_input(action, modifytbl)
          -- Window Title
          self.o.windowtitle =  UI.CreateFrame("Text", "mano_input_window_title", self.o.titleframe)
          self.o.windowtitle:SetFontSize(mano.gui.font.size)
-			local inputtext	=	"New Note: " .. (modifytbl.idx or "new")
-			if action == 'modify' then inputtext = "Modify Note: "  .. (modifytbl.idx) end
+-- 			local inputtext	=	"New Note: " .. (modifytbl.idx or "new")
+-- 			if action == 'modify' then inputtext = "Modify Note: "  .. (modifytbl.idx) end
+			local inputtext	=	"New Note:"
+			if action == 'modify' then inputtext = "Modify Note:" end
+
          self.o.windowtitle:SetText(inputtext)
          self.o.windowtitle:SetLayer(3)
          self.o.windowtitle:SetPoint("CENTERLEFT",   self.o.titleicon, "CENTERRIGHT", mano.gui.borders.left*2, 0)
@@ -687,7 +690,8 @@ function __mano_ui_input(action, modifytbl)
             self.o.ppownertext:SetText(modifytbl.playerpos.name)
          end
 
-			self.o.windowtitle:SetText("New Note: "  .. (modifytbl.idx or "new"))
+-- 			self.o.windowtitle:SetText("New Note: "  .. (modifytbl.idx or "new"))
+			self.o.windowtitle:SetText("New Note:")
 
          self.o.cancelbutton:EventAttach( Event.UI.Input.Mouse.Left.Click, function()
                                                                               self.o.save =  false
@@ -709,11 +713,24 @@ function __mano_ui_input(action, modifytbl)
 
          if modifytbl.label      ~= nil   then  t.label  =  modifytbl.label   end
          if modifytbl.text       ~= nil   then  t.text   =  modifytbl.text    end
-         if modifytbl.customtbl  ~= nil   and
-            modifytbl.customtbl.shared ~= nil then  t.shared   =  modifytbl.customtbl.shared
+         if modifytbl.customtbl  ~= nil   and modifytbl.customtbl.shared ~= nil then
+				t.shared   =  modifytbl.customtbl.shared
          end
-         if modifytbl.category	~= nil   then  t.category	=  modifytbl.category   end
-         if modifytbl.icon			~= nil   then  t.icon		=  modifytbl.icon	      end
+
+-- 			print(string.format("modifytbl.category=(%s)\nmodifytbl.icon=(%s)", modifytbl.category, modifytbl.icon))
+         if modifytbl.category	~= nil   then
+
+				t.category	=  modifytbl.category
+
+				if modifytbl.icon			~= nil   then
+					t.caticon	=  modifytbl.icon
+				else
+					t.caticon	=	mano.f.getcategoryicon(modifytbl.category)
+				end
+
+			end
+
+
 -- 			if modifytbl.idx			~= nil	then 	t.idx			=	modifytbl.idx	      end
 
          self.o.labeltext:SetText(t.label)
@@ -733,7 +750,8 @@ function __mano_ui_input(action, modifytbl)
             self.o.ppownertext:SetText(modifytbl.playerpos.name)
          end
 
-			self.o.windowtitle:SetText("Modify Note: "  .. modifytbl.idx)
+-- 			self.o.windowtitle:SetText("Modify Note: "  .. modifytbl.idx)
+			self.o.windowtitle:SetText("Modify Note:")
 
 --          self.o.labeltext:SetKeyFocus(true)
          self.o.deletebutton:SetVisible(true)

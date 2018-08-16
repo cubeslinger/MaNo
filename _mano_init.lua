@@ -23,8 +23,7 @@ local function getzoneinfos()
 
 	local playerid		=	Inspect.Unit.Detail("player").id
 
---  	print(string.format("zonetext=(%s) zoneid=(%s) regiontext=(%s) playerid=(%s)", zoneText, zoneID, locationText, playerid ))
-	print(string.format("player=(%s)\nzoneText=(%s)\nlocationText=(%s)\nzoneID=(%s)\nplayerid=(%s)\n", player, zoneText, locationText, zoneID, playerid))
+-- 	print(string.format("player=(%s)\nzoneText=(%s)\nlocationText=(%s)\nzoneID=(%s)\nplayerid=(%s)\n", player, zoneText, locationText, zoneID, playerid))
 
    return zoneText, locationText, zoneID, playerid
 end
