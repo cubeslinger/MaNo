@@ -13,12 +13,11 @@ local function zonechangeevent(h, t)
 
 	local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
 
-   if playerid   == mano.player.unitid   then
---          print("zonechangeevent: Zone change event IS for US!")
+   if playerid   == mano.player.unitid  and zoneid ~= nil then
 		mano.gui.shown.window.loadlistbyzoneid(zoneid)
-      else
---          print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
-      end
+	else
+--    print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
+   end
 
    return
 end

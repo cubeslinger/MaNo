@@ -7,25 +7,27 @@ local addon, mano = ...
 
 local function getzoneinfos()
 
-   local player, zoneText, locationText, zoneID, playerid =  nil, nil, nil, nil, nil
+   local player, zonetext, locationtext, zoneid, playerid =  nil, nil, nil, nil, nil
 
    player         =  Inspect.Unit.Detail("player")
-	zoneID      	=  player.zone
-	locationText  	=  player.locationName
-	zonedata			=  Inspect.Zone.Detail(player.zone)
--- 	mano.f.dumptable(zonedata)
 
-   if zonedata ~= nil and next(zonedata) ~= nil  then
-      zoneText    =  zonedata.name
-   else
-      print(string.format("getzoneinfos: ERROR, zonedata =(%s)", zonedata))
-   end
+	if	player.zone	then
 
-	local playerid		=	Inspect.Unit.Detail("player").id
+		zoneid      	=  player.zone
+		locationtext  	=  player.locationName
+		zonedata			=  Inspect.Zone.Detail(zoneid)
+		playerid			=	player.id
 
--- 	print(string.format("player=(%s)\nzoneText=(%s)\nlocationText=(%s)\nzoneID=(%s)\nplayerid=(%s)\n", player, zoneText, locationText, zoneID, playerid))
+		if zonedata ~= nil and next(zonedata) ~= nil  then
+			zonetext    =  zonedata.name
+		else
+			print(string.format("getzoneinfos: ERROR, zonedata =(%s)", zonedata))
+		end
+	end
 
-   return zoneText, locationText, zoneID, playerid
+-- 	print(string.format("player=(%s)\nzonetext=(%s)\nlocationtext=(%s)\nzoneid=(%s)\nplayerid=(%s)\n", player, zonetext, locationtext, zoneid, playerid))
+
+   return zonetext, locationtext, zoneid, playerid
 end
 
 
