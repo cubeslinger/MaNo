@@ -26,6 +26,7 @@ RunOnStartup = {
 --   "__menus/__menus_voices.lua",
    "__menus/__menus.lua",
    "__geodata.lua",
+   "__timer.lua",
    "_mano_init.lua",
    "_mano_ui_input.lua",
    "_mano_ui.lua",

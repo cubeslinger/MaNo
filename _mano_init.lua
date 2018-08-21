@@ -368,6 +368,7 @@ end
 -- Handles
 --
 mano.geo                   =	__geodata()
+mano.zonetimer             =  __timer()
 --
 --
 -- DBs
@@ -384,6 +385,12 @@ mano.init.startup          =  false
 mano.flags                 =  {}
 mano.flags.trackartifacts  =  false
 mano.flags.debug           =  true
+--
+-- User Config Flags
+--
+mano.config                =  {}
+mano.config.autocheckzone  =  true
+mano.config.checkzonetimer =  10
 --
 --
 -- GUI

@@ -9,19 +9,52 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 
+local function updateonlyifnewzone()
+
+      local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
+
+      if playerid    == mano.player.unitid         and 
+         zonetext    ~= mano.lastzone.zonetext     or 
+         regiontext  ~= mano.lastzone.regiontext   or
+         zoneid      ~= mano.lastzone.zoneid       then
+         
+            mano.gui.shown.window.loadlistbyzoneid(zoneid)
+         
+            mano.lastzone.zonetext     =  zonetext
+            mano.lastzone.regiontext   =  regiontext
+            mano.lastzone.zoneid       =  zoneid
+            mano.lastzone.playerid     =  playerid
+--       else
+--          print(string.format("%s =  %s\n%s =  %s\n%s =  %s\n%s =  %s\n",
+--                mano.lastzone.zonetext, zonetext,
+--                mano.lastzone.regiontext, regiontext,
+--                mano.lastzone.zoneid, zoneid,
+--                mano.lastzone.playerid, playerid))
+      end
+   
+   return
+end
+
+
 local function zonechangeevent(h, t)
+   
+   local unit, zone  =  nil, nil
 
-	local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
+   for unit, zone in pairs(t) do
+      if unit ~= nil then  
+         unitid   =  unit
+         break
+      end
+   end   
 
-   if playerid   == mano.player.unitid  and zoneid ~= nil then
-		mano.gui.shown.window.loadlistbyzoneid(zoneid)
-	else
---    print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
+   if unitid   ==   mano.player.unitid  then 
+      updateonlyifnewzone()        
+   else
+   --    print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
    end
 
    return
 end
-
 
 local function savevariables(_, addonname)
 
@@ -107,6 +140,12 @@ end
 local function startmeup(h, t)
 
    if not mano.init.startup then
+      
+      mano.lastzone              =  {}
+      mano.lastzone.zonetext     =  nil
+      mano.lastzone.regiontext   =  nil
+      mano.lastzone.zoneid       =  nil
+      mano.lastzone.playerid     =  nil      
 
       -- Create/Display/Hide Mini Map Button Window
       if mano.gui.mmbtnobj == nil then
@@ -145,6 +184,16 @@ local function startmeup(h, t)
 
       -- Start monitoring Player's Zone Changes
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
+      
+      -- Add timer for Auto Zone Checking (default 5 seconds)
+      if mano.config.autocheckzone then
+         mano.zonetimer.add(  function() 
+--                                  print("TIMER TICKS!")
+                                 updateonlyifnewzone()
+                              end,
+                              mano.config.checkzonetimer,
+                              true)
+      end
 
       -- Load External DBs if it's first run
 --       if mano.db == nil or next(mano.db) ==  nil then
@@ -179,3 +228,34 @@ table.insert(Command.Slash.Register("mano"), {function (...) mano.f.parseslashco
 -- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input('new') end
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
 --
+
+      
+      
+--[[
+local function zonechangeevent(h, t)
+
+--    print(string.format("zonechangeevent: h=%s t=%s", h, t ))
+
+   local unit, zone, unitid, zoneid   =  nil, nil, nil, nil
+
+   for unit, zone in pairs(t) do
+      if unitid   == nil   then
+         unitid   =  unit
+         zoneid   =  zone
+      end
+   end
+
+   if unitid   == zids.player.unitid   then
+
+      local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
+      if bool  then
+         addtoziddb(zonedata)
+--       if zids.db[zonedata.name] ==  nil or zids.db[zonedata.name] == "" then
+--          zids.db[zonedata.name] =   { name=zonedata.name, id=zonedata.id, type=zonedata.type }
+--       else
+      end
+   end
+
+   return
+end
+]]--    
