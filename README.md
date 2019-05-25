@@ -4,4 +4,10 @@ Map Notes
 
 snailtail@typhiria
 
-06/05/2018
+25/05/2019
+
+Dependencies:
+
+ - __mapnotes : https://github.com/cubeslinger/__mapnotes/archive/master.zip
+ - __menus    : https://github.com/cubeslinger/__menus/archive/master.zip
+
