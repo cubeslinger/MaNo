@@ -507,7 +507,7 @@ mano.lastsharedcategoryidx =  0
 --
 mano.base                  =  {}
 mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="macro_icon_clover.dds" },
-                                 [2]   =  {  name="Artifacts",          icon="macro_icon_smile.dds" },
+                                 [2]   =  {  name="Artifacts",          icon="artifact_bundle.dds" },
                                  [3]   =  {  name="Crafting",           icon="outfitter1.dds" },
                                  [4]   =  {  name="Villain",            icon="target_portrait_roguepoint.png.dds" },
                                  [5]   =  {  name="User0",              icon="macro_icon_crown.dds" },
@@ -517,7 +517,7 @@ mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="ma
                                  [9]   =  {  name="User4",              icon="macro_icon_sad.dds" },
                                  [10]  =  {  name="User5",              icon="macro_icon_skull.dds" },
                                  [11]  =  {  name="User6",              icon="macro_icon_smile.dds" },
-                                 [12]  =  {  name="User7",              icon="macro_icon_squirell.dds" },
+                                 [12]  =  {  name="User7",              icon="macro_icon_heart.dds" },
                                  [13]  =  {  name="User8",              icon="macro_icon_support.dds" },
                                  [14]  =  {  name="User9",              icon="macro_icon_tank.dds" },
                               }
