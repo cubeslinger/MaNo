@@ -416,7 +416,7 @@ function __mano_ui_input(action, modifytbl)
          self.o.catmenu     = {}
          self.o.catmenu     = menu(self.o.cattext, 200, self.catmenu)
 -- 			print("*************************************************")
--- 			mano.f.dumptable(self.catmenu.voices)
+ 			mano.f.dumptable(self.catmenu.voices)
 -- 			print("/////////////////////////////////////////////////")
 --          self.o.catmenu:hide()
 

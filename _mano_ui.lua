@@ -60,8 +60,6 @@ function __mano_ui()
 		return
 	end
 
-
-
    local function createzonesmenu()
 
       local retval      =  {}
@@ -432,12 +430,12 @@ function __mano_ui()
       self.menucfg         =  {}
       self.menucfg.zones   =  {}
       self.menucfg.main    =  {
-                                 voices   =  {  {  name     =  "Show Zone",
+                                 voices   =  {  {	name     =  "Add Note Here!",
+                                                   callback =  { mano.foo["parseslashcommands"], "add", 'close' },
+                                                },
+																{  name     =  "Show Zone",
                                                    callback =  "_submenu_",
                                                    submenu  =  { voices   =  createzonesmenu() },
-                                                },
-                                                {	name     =  "Add Note Here!",
-                                                   callback =  { mano.foo["parseslashcommands"], "add", 'close' },
                                                 },
                                              },
                               }
@@ -495,12 +493,12 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
 
---          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
--- 																										print("o.menubutton: FLIP")
---                                                                               self.o.menu.main:flip()
---                                                                            end,
---                                                                            "MaNo: Main Menu GUI Button Pressed"
---                                       )
+         self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
+																										print("o.menubutton: FLIP")
+                                                                              self.o.menu.main:flip()
+                                                                           end,
+                                                                           "MaNo: Main Menu GUI Button Pressed"
+                                      )
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
@@ -543,7 +541,9 @@ function __mano_ui()
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
---          self.o.menu.main     =  menu(self.o.menubutton, 1, self.menucfg.main)
+
+			self.o.menu.main     =  mano.f.menu(self.o.menubutton, 1, self.menucfg.main)
+
 			--
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --

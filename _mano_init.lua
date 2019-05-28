@@ -475,6 +475,8 @@ mano.f.splitstring         =  split
 mano.f.rounddecimal        =  rounddecimal
 mano.f.parseslashcommands  =  parseslashcommands
 mano.f.getzoneinfos			=	getzoneinfos
+mano.f.menu						=	menu
+
 --
 -- mano.foo                         =  {}
 -- mano.foo["round"]                =  function(args) return(round(args))                 end
