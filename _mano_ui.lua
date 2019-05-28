@@ -500,7 +500,7 @@ function __mano_ui()
 --                                                                               self.o.menu.main:flip()
 --                                                                            end,
 --                                                                            "MaNo: Main Menu GUI Button Pressed"
---                                        )
+--                                       )
          --
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
@@ -544,7 +544,7 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
 --          self.o.menu.main     =  menu(self.o.menubutton, 1, self.menucfg.main)
-         --
+			--
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
          --
 
