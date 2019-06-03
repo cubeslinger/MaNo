@@ -542,7 +542,8 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
 
-			self.o.menu.main     =  mano.f.menu(self.o.menubutton, 1, self.menucfg.main)
+-- 			self.o.menu.main     =  mano.f.menu(self.o.menubutton, 1, self.menucfg.main)
+			self.o.menu.main     =  mano.f.menu(self.o.menubutton, self.menucfg.main)
 
 			--
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- END
