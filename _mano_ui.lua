@@ -36,14 +36,6 @@ function __mano_ui()
 
 		if t.customtbl and t.customtbl.shared ~= nil and t.customtbl.shared == true then	shared   =  true	end
 
--- 		print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
--- 		print("editnotebutton:")
--- 		mano.f.dumptable(t)
-
---       modifynote(t, t.customtbl, shared)
-
--- 		print("searching note with idx: (" .. t.idx ..")")
-
       if	shared then
          note  =  mano.sharednote.getnotebyzoneandidx(t.playerpos.zonename, t.idx)
       else
@@ -51,7 +43,6 @@ function __mano_ui()
       end
 
       if note  ~= nil and next(note) ~= nil then
--- 			print("FOUND note with idx: (" .. note.idx ..")")
          mano.mapnoteinput:show('modify', note)
       else
          print(string.format("ERROR: modifynote: Note with idx: %s NOT Found!", t.idx))
@@ -69,8 +60,6 @@ function __mano_ui()
 
       -- Get the Expansions list
       for _, tbl in ipairs(mano.db.geo.zones) do
-
---          print(string.format("TBL: {%s} EXP: [%s]", tbl, tbl.expansion))
 
          if tbl         ~= nil and
             next(tbl)   ~= nil and
@@ -392,10 +381,10 @@ function __mano_ui()
       return
    end
 
-   function self.mainmenuchoice(zonename)
+   function self.mainmenuchoice(zid)
 
--- 		print("mainmenuchoice: FLIP")
-      self.o.menu.main.flip()
+--       self.o.menu.main:hide()
+		self.loadlistbyzoneid(zid)
 
       return
    end
@@ -494,7 +483,7 @@ function __mano_ui()
          --
 
          self.o.menubutton:EventAttach( Event.UI.Input.Mouse.Left.Click,   function()
-																										print("o.menubutton: FLIP")
+-- 																										print("o.menubutton: FLIP")
                                                                               self.o.menu.main:flip()
                                                                            end,
                                                                            "MaNo: Main Menu GUI Button Pressed"
@@ -633,3 +622,13 @@ function __mano_ui()
    return self
 
 end
+
+
+--[[
+Error: MaNo/_mano_ui.lua:399: attempt to call global 'findexactzonename' (a nil value)
+    In MaNo / MaNo.menu_810_voice_5_text:Event.UI.Input.Mouse.Left.Click
+stack traceback:
+	[C]: in function 'findexactzonename'
+	MaNo/_mano_ui.lua:399: in function 'func'
+	MaNo/__menus/__menus.lua:187: in function <MaNo/__menus/__menus.lua:185>
+]]
