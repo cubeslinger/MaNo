@@ -71,7 +71,9 @@ function __mano_ui()
       -- Submenu in Expansion Name->Zone list
       for _, expname in pairs(expansions) do
 
-         local t =   {}
+         local t =   {	fontsize	=	mano.gui.fontsize,
+			               fontface	=	mano.gui.fontface,
+							}
 
          -- Get Zones for this Expansion
          for _, tbl in ipairs(mano.db.geo.zones) do
@@ -91,7 +93,11 @@ function __mano_ui()
 
          table.insert( retval,   {  name     =  expname,
                                     callback =  "_submenu_",
-                                    submenu  =  { voices   =  t }
+--                                     submenu  =  { voices   =  t }
+												submenu  =  { fontsize	=	mano.gui.fontsize,
+			                                         fontface 	= 	mano.gui.fontface,
+			                                         voices   	=  t
+																}
                                  }
                      )
          t  		=	{}
@@ -103,29 +109,55 @@ function __mano_ui()
    end
 
 
-   local function setstatusbarbyzoneid(zoneid, count)
-
---       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
-
---       if bool then
---          if zonedata.name ~= self.lastzone  then
---             self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+--    local function setstatusbarbyzoneid(zoneid, count)
+--
+-- --       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
+--
+-- --       if bool then
+-- --          if zonedata.name ~= self.lastzone  then
+-- --             self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+-- --             self.lastzone  =	zonedata.name
+-- --          end
+-- --       end
+--
+--
+-- 		local	zoneText, locationText, zoneID, playerid	=	mano.f.getzoneinfos()
+--
+--       if zoneText then
+-- --          if zonedata.name ~= self.lastzone  then
+-- 				self.o.statuszone:SetText(string.format("%s: %s (%s)", zoneText, (locationText or ""), count or 0))
 --             self.lastzone  =	zonedata.name
---          end
+-- --          end
 --       end
+--
+--       return
+--    end
 
+   local function setstatusbarbyzoneid(zoneid, count, forceZidFlag)
 
-		local	zoneText, locationText, zoneID, playerid	=	mano.f.getzoneinfos()
+		-- Not the Current Player's Zone, selected ferom Zones Menu
+		if forceZidFlag ~= nil and forceZidFlag == true then
+			local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
 
-      if zoneText then
---          if zonedata.name ~= self.lastzone  then
+			if bool then
+				if zonedata.name ~= self.lastzone  then
+					self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
+					self.lastzone  =	zonedata.name
+				end
+			end
+		else
+			--	the Current Player's Zone
+			local	zoneText, locationText, zoneID, playerid	=	mano.f.getzoneinfos()
+
+			if zoneText then
 				self.o.statuszone:SetText(string.format("%s: %s (%s)", zoneText, (locationText or ""), count or 0))
-            self.lastzone  =	zonedata.name
---          end
-      end
+				self.lastzone  =	zonedata.name
+			end
+		end
 
       return
    end
+
 
 
    local function buildforstock(t)
@@ -359,7 +391,7 @@ function __mano_ui()
       return stockframe
    end
 
-   function self.loadlistbyzoneid(zoneid)
+   function self.loadlistbyzoneid(zoneid, forceZidFlag)
 
       clearlist()
 
@@ -376,7 +408,7 @@ function __mano_ui()
 
       self.adjustheight()
 
-      setstatusbarbyzoneid(zoneid, counter)
+      setstatusbarbyzoneid(zoneid, counter, forceZidFlag)
 
       return
    end
@@ -384,7 +416,7 @@ function __mano_ui()
    function self.mainmenuchoice(zid)
 
 --       self.o.menu.main:hide()
-		self.loadlistbyzoneid(zid)
+		self.loadlistbyzoneid(zid, true)
 
       return
    end
@@ -418,13 +450,15 @@ function __mano_ui()
       -- Create/Initialize Menus
       self.menucfg         =  {}
       self.menucfg.zones   =  {}
-      self.menucfg.main    =  {
+      self.menucfg.main    =  {	fontsize =	mano.gui.font.size,
                                  voices   =  {  {	name     =  "Add Note Here!",
                                                    callback =  { mano.foo["parseslashcommands"], "add", 'close' },
                                                 },
 																{  name     =  "Show Zone",
                                                    callback =  "_submenu_",
-                                                   submenu  =  { voices   =  createzonesmenu() },
+                                                   submenu  =  {	fontsize =	mano.gui.font.size,
+																						voices   =  createzonesmenu()
+		                                                         },
                                                 },
                                              },
                               }

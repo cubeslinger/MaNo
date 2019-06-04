@@ -358,7 +358,8 @@ local function setwaypoint(x, z, zonename)
 
    local X, Z = Inspect.Map.Waypoint.Get("player")
 
-   print(string.format("Way Point added in: %s, at %s, %s", zonename, X, Z))
+--    print(string.format("Waypoint added in: %s, at %s, %s", zonename, X, Z))
+	print(string.format("Waypoint added in: %s, at %.0f, %.0f", zonename, X, Z))
 
    return X, Z
 end
