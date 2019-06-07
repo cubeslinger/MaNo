@@ -1,7 +1,7 @@
 --
 -- Addon       _mano_ui.lua
 -- Author      marcob@marcob.org
--- StartDate   29/05/2017
+-- StartDate   07/06/2019
 --
 
 local addon, mano = ...
