@@ -51,8 +51,16 @@ function __mano_ui()
 		return
 	end
 
-	local function filtermenuchoice()
-		print("FILTER!")
+	local function filtermenuchoice(idx, OBJ)
+		print(string.format("FILTER! cattext=(%s)", cattext))
+
+-- 		for	ct,	cf	in	pairs(mano.base.filter) do
+-- 			if	mano.base.filter[ct] ~= cf then mano.base.filter[ct] = cf end
+-- 		end
+
+		mano.base.filter[idx]	=	OBJ:GetChecked()
+
+		self.loadlistbyzoneid(lastzone, true)
 
 		return
 	end
@@ -134,31 +142,7 @@ function __mano_ui()
    end
 
 
---    local function setstatusbarbyzoneid(zoneid, count)
---
--- --       local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
---
--- --       if bool then
--- --          if zonedata.name ~= self.lastzone  then
--- --             self.o.statuszone:SetText(string.format("%s (%s)", zonedata.name, count or 0))
--- --             self.lastzone  =	zonedata.name
--- --          end
--- --       end
---
---
--- 		local	zoneText, locationText, zoneID, playerid	=	mano.f.getzoneinfos()
---
---       if zoneText then
--- --          if zonedata.name ~= self.lastzone  then
--- 				self.o.statuszone:SetText(string.format("%s: %s (%s)", zoneText, (locationText or ""), count or 0))
---             self.lastzone  =	zonedata.name
--- --          end
---       end
---
---       return
---    end
-
-   local function setstatusbarbyzoneid(zoneid, count, forceZidFlag)
+	local function setstatusbarbyzoneid(zoneid, count, forceZidFlag)
 
 		-- Not the Current Player's Zone, selected ferom Zones Menu
 		if forceZidFlag ~= nil and forceZidFlag == true then
@@ -416,6 +400,23 @@ function __mano_ui()
       return stockframe
    end
 
+	local function iscategoryactive(cattext)
+
+		print(string.format("filterbycategory=(%s)", cattext))
+
+		local retval	=	false
+		local idx		=	0
+		for idx, desc in pairs(mano.base.filter) do
+			print(string.format("idx=(%s) desc=(%s)", idx, desc))
+			if desc == cattext then
+				retval =	mano.base.filter[idx]
+				break
+			end
+		end
+
+		return(retval)
+	end
+
    function self.loadlistbyzoneid(zoneid, forceZidFlag)
 
       clearlist()
@@ -426,8 +427,13 @@ function __mano_ui()
       -- Search in both User's notes db and sharenotesdb
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
          for _, tbl in ipairs(db) do
-            local newframe =  mano.gui.shown.window.addline(tbl)
-            counter        =  counter + 1
+
+				print(string.format("category=(%s) isactive=(%s)", tbl.category, iscategoryactive(tbl.category)))
+
+-- 				if iscategoryactive(tbl.category)	==	true then
+					local newframe =  mano.gui.shown.window.addline(tbl)
+					counter        =  counter + 1
+-- 				end
          end
       end
 
@@ -438,7 +444,7 @@ function __mano_ui()
       return
    end
 
-   function self.mainmenuchoice(zid)
+   function self.mainmenuchoice(zid, OBJ)
 
 --       self.o.menu.main:hide()
 		self.loadlistbyzoneid(zid, true)

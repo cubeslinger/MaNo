@@ -479,14 +479,6 @@ mano.f.getzoneinfos			=	getzoneinfos
 mano.f.menu						=	menu
 mano.f.findexactzonename	=	findexactzonename
 
---
--- mano.foo                         =  {}
--- mano.foo["round"]                =  function(args) return(round(args))                 end
--- mano.foo["updateguicoordinates"] =  function(args) return(updateguicoordinates(args))  end
--- mano.foo["dprint"]               =  function(args) return(dprint(args))                end
--- mano.foo["setwaypoint"]          =  function(args) return(setwaypoint(args))           end
--- mano.foo["parseslashcommands"]   =  function(args) return(parseslashcommands(args))    end
---
 mano.foo                   =  {
                               round                 =  round,
                               updateguicoordinates  =  updateguicoordinates,
@@ -526,6 +518,21 @@ mano.base.usercategories   =  {  [1]   =  {  name="Default",            icon="ma
                                  [14]  =  {  name="User9",              icon="macro_icon_tank.dds" },
                               }
 mano.base.sharedcategories =  mano.base.usercategories
+mano.base.filter				=	{  [1]	=	true,
+                                 [2]   =	true,
+                                 [3]   =	true,
+                                 [4]   =	true,
+                                 [5]   =	true,
+                                 [6]   =	true,
+                                 [7]   =	true,
+                                 [8]   =	true,
+                                 [9]   =	true,
+                                 [10]  =	true,
+                                 [11]  =	true,
+                                 [12]  =	true,
+                                 [13]  =	true,
+                                 [14]  =	true,
+                              }
 --
 -- end declarations
 --
