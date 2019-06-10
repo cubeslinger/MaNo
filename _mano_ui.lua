@@ -51,6 +51,31 @@ function __mano_ui()
 		return
 	end
 
+	local function filtermenuchoice()
+		print("FILTER!")
+
+		return
+	end
+
+	local function createcategoriesmenu()
+
+      -- Dynamic Category Menu
+      local idx,  tbl,  category =  nil, {}, nil
+      local T  =  {}
+
+      for idx, tbl in pairs(mano.categories) do
+         local t  =  {  name     =  tbl.name,
+                        icon     =  tbl.icon,
+			               check		=	true,
+                        callback =  { filtermenuchoice, idx, 'close' },
+                     }
+         table.insert(T, t)
+         t  =  {}
+      end
+
+      return T
+	end
+
    local function createzonesmenu()
 
       local retval      =  {}
@@ -460,6 +485,13 @@ function __mano_ui()
 																						voices   =  createzonesmenu()
 		                                                         },
                                                 },
+																{  name     =  "Filter",
+                                                   callback =  "_submenu_",
+                                                   submenu  =  {	fontsize =	mano.gui.font.size,
+																						voices   =  createcategoriesmenu()
+		                                                         },
+                                                },
+
                                              },
                               }
 
