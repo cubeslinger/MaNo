@@ -52,7 +52,7 @@ function __mano_ui()
 	end
 
 	local function filtermenuchoice(idx, OBJ)
-		print(string.format("FILTER! cattext=(%s)", cattext))
+		print(string.format("FILTER! cattext=(%s)", idx))
 
 -- 		for	ct,	cf	in	pairs(mano.base.filter) do
 -- 			if	mano.base.filter[ct] ~= cf then mano.base.filter[ct] = cf end
@@ -404,11 +404,12 @@ function __mano_ui()
 
 		print(string.format("filterbycategory=(%s)", cattext))
 
-		local retval	=	false
+		local retval	=	nil
 		local idx		=	0
-		for idx, desc in pairs(mano.base.filter) do
-			print(string.format("idx=(%s) desc=(%s)", idx, desc))
-			if desc == cattext then
+-- 		for idx, desc in pairs(mano.base.filter) do
+		for idx, desc in pairs(mano.categories) do
+			print(string.format("cattext=(%s) idx=(%s) desc=(%s) mano.base.filter[idx]=(%s)", cattext, idx, desc.name, mano.base.filter[idx]))
+			if desc.name == cattext then
 				retval =	mano.base.filter[idx]
 				break
 			end
@@ -430,10 +431,10 @@ function __mano_ui()
 
 				print(string.format("category=(%s) isactive=(%s)", tbl.category, iscategoryactive(tbl.category)))
 
--- 				if iscategoryactive(tbl.category)	==	true then
+ 				if iscategoryactive(tbl.category)	==	true then
 					local newframe =  mano.gui.shown.window.addline(tbl)
 					counter        =  counter + 1
--- 				end
+ 				end
          end
       end
 
