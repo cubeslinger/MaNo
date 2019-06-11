@@ -433,6 +433,21 @@ function __mano_ui()
 
       -- Search in both User's notes db and sharenotesdb
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
+			--
+			--	Sort entries alphabetically
+			--
+-- 		t	=	{
+-- 					{ str = 42, dex = 10, wis = 100 },
+-- 					{ str = 18, dex = 30, wis = 5 }
+-- 				}
+--
+-- 		table.sort (t, function (k1, k2) return k1.str < k2.str end )
+--
+-- 		table.foreachi (t, function (k, v) table.foreach (v, print) end )
+--
+			--
+			table.sort (db, function (k1, k2) return k1.label < k2.label end )
+			--
          for _, tbl in ipairs(db) do
 
 -- 				print(string.format("category=(%s) isactive=(%s)", tbl.category, iscategoryactive(tbl.category)))
