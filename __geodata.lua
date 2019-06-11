@@ -176,7 +176,7 @@ function __geodata()
                         { zonename="Goboro Reef", zonetype="Normal", expansion="Nightmare Tide", zoneid="z0000012D6EEBB377" },
                         { zonename="Greenscale's Blight", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Iron Pine Peak", zonetype="Normal", expansion="Rift", zoneid="z00000016EB9ECBA5" },
-                        { zonename="Kingdom of Pelladane", zonetype="Normal", expansion="Storm Legion", zoneid="z2F1E4708BEC6A608" },
+                        { zonename="Kingdom of Pelladane", zonetype="Normal", expansion="Storm Legion", zoneid="z1C938C07F41C83CC" },
                         { zonename="Kingsward", zonetype="Normal", expansion="Storm Legion", zoneid="z4D8820D7EF52685C" },
                         { zonename="Mathosia", zonetype="Normal", expansion="Rift", zoneid="" },
                         { zonename="Meridian", zonetype="Normal", expansion="Rift", zoneid="z6BA3E574E9564149" },
