@@ -52,7 +52,7 @@ function __mano_ui()
 	end
 
 	local function filtermenuchoice(idx, OBJ)
-		print(string.format("FILTER! cattext=(%s)", idx))
+-- 		print(string.format("FILTER! cattext=(%s)", idx))
 
 -- 		for	ct,	cf	in	pairs(mano.base.filter) do
 -- 			if	mano.base.filter[ct] ~= cf then mano.base.filter[ct] = cf end
@@ -60,7 +60,11 @@ function __mano_ui()
 
 		mano.base.filter[idx]	=	OBJ:GetChecked()
 
-		self.loadlistbyzoneid(lastzone, true)
+-- 		self.loadlistbyzoneid(lastzone, true)
+-- 		self.loadlistbyzoneid(mano.lastzone.zoneid)
+
+      local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
+		mano.gui.shown.window.loadlistbyzoneid(zoneid)
 
 		return
 	end
@@ -402,13 +406,13 @@ function __mano_ui()
 
 	local function iscategoryactive(cattext)
 
-		print(string.format("filterbycategory=(%s)", cattext))
+-- 		print(string.format("filterbycategory=(%s)", cattext))
 
 		local retval	=	nil
 		local idx		=	0
 -- 		for idx, desc in pairs(mano.base.filter) do
 		for idx, desc in pairs(mano.categories) do
-			print(string.format("cattext=(%s) idx=(%s) desc=(%s) mano.base.filter[idx]=(%s)", cattext, idx, desc.name, mano.base.filter[idx]))
+-- 			print(string.format("cattext=(%s) idx=(%s) desc=(%s) mano.base.filter[idx]=(%s)", cattext, idx, desc.name, mano.base.filter[idx]))
 			if desc.name == cattext then
 				retval =	mano.base.filter[idx]
 				break
@@ -420,6 +424,8 @@ function __mano_ui()
 
    function self.loadlistbyzoneid(zoneid, forceZidFlag)
 
+-- 		print(string.format("zoneid=(%s)", zoneid))
+
       clearlist()
 
       local zonedata =  mano.mapnote.getzonedatabyid(zoneid)
@@ -429,7 +435,7 @@ function __mano_ui()
       for _, db in ipairs({  mano.mapnote.getzonedatabyid(zoneid), mano.sharednote.getzonedatabyid(zoneid) }) do
          for _, tbl in ipairs(db) do
 
-				print(string.format("category=(%s) isactive=(%s)", tbl.category, iscategoryactive(tbl.category)))
+-- 				print(string.format("category=(%s) isactive=(%s)", tbl.category, iscategoryactive(tbl.category)))
 
  				if iscategoryactive(tbl.category)	==	true then
 					local newframe =  mano.gui.shown.window.addline(tbl)
@@ -441,6 +447,8 @@ function __mano_ui()
       self.adjustheight()
 
       setstatusbarbyzoneid(zoneid, counter, forceZidFlag)
+
+-- 		print("DONE")
 
       return
    end
@@ -604,7 +612,6 @@ function __mano_ui()
          -- TEMPORARY DISABLED   * * * * * * * * * *  -- BEGIN
          --
 
--- 			self.o.menu.main     =  mano.f.menu(self.o.menubutton, 1, self.menucfg.main)
 			self.o.menu.main     =  mano.f.menu(self.o.menubutton, self.menucfg.main)
 
 			--
@@ -695,13 +702,3 @@ function __mano_ui()
    return self
 
 end
-
-
---[[
-Error: MaNo/_mano_ui.lua:399: attempt to call global 'findexactzonename' (a nil value)
-    In MaNo / MaNo.menu_810_voice_5_text:Event.UI.Input.Mouse.Left.Click
-stack traceback:
-	[C]: in function 'findexactzonename'
-	MaNo/_mano_ui.lua:399: in function 'func'
-	MaNo/__menus/__menus.lua:187: in function <MaNo/__menus/__menus.lua:185>
-]]

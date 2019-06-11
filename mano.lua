@@ -9,17 +9,18 @@ mano.addon           =  {}
 mano.addon.name      =  Inspect.Addon.Detail(Inspect.Addon.Current())["name"]
 mano.addon.version   =  Inspect.Addon.Detail(Inspect.Addon.Current())["toc"]["Version"]
 
-local function updateonlyifnewzone()
+local function updateonlyifnewzone(force)
 
       local zonetext, regiontext, zoneid, playerid	=	mano.f.getzoneinfos()
 
-      if playerid    == mano.player.unitid         and 
-         zonetext    ~= mano.lastzone.zonetext     or 
+      if playerid    == mano.player.unitid         and
+         zonetext    ~= mano.lastzone.zonetext     or
          regiontext  ~= mano.lastzone.regiontext   or
-         zoneid      ~= mano.lastzone.zoneid       then
-         
+         zoneid      ~= mano.lastzone.zoneid       or
+			force			==	true								then
+
             mano.gui.shown.window.loadlistbyzoneid(zoneid)
-         
+
             mano.lastzone.zonetext     =  zonetext
             mano.lastzone.regiontext   =  regiontext
             mano.lastzone.zoneid       =  zoneid
@@ -31,24 +32,24 @@ local function updateonlyifnewzone()
 --                mano.lastzone.zoneid, zoneid,
 --                mano.lastzone.playerid, playerid))
       end
-   
+
    return
 end
 
 
 local function zonechangeevent(h, t)
-   
+
    local unit, zone  =  nil, nil
 
    for unit, zone in pairs(t) do
-      if unit ~= nil then  
+      if unit ~= nil then
          unitid   =  unit
          break
       end
-   end   
+   end
 
-   if unitid   ==   mano.player.unitid  then 
-      updateonlyifnewzone()        
+   if unitid   ==   mano.player.unitid  then
+      updateonlyifnewzone()
    else
    --    print(string.format("zonechangeevent: Zone change event NOT for US.: \n[%s]\n[%s]", unitid, mano.player.unitid))
    end
@@ -140,12 +141,12 @@ end
 local function startmeup(h, t)
 
    if not mano.init.startup then
-      
+
       mano.lastzone              =  {}
       mano.lastzone.zonetext     =  nil
       mano.lastzone.regiontext   =  nil
       mano.lastzone.zoneid       =  nil
-      mano.lastzone.playerid     =  nil      
+      mano.lastzone.playerid     =  nil
 
       -- Create/Display/Hide Mini Map Button Window
       if mano.gui.mmbtnobj == nil then
@@ -184,10 +185,10 @@ local function startmeup(h, t)
 
       -- Start monitoring Player's Zone Changes
       Command.Event.Attach(Event.Unit.Detail.Zone, function(...) zonechangeevent(...) end,   "MaNo: Zone Change Event")
-      
+
       -- Add timer for Auto Zone Checking (default 5 seconds)
       if mano.config.autocheckzone then
-         mano.zonetimer.add(  function() 
+         mano.zonetimer.add(  function()
 --                                  print("TIMER TICKS!")
                                  updateonlyifnewzone()
                               end,
@@ -229,8 +230,8 @@ table.insert(Command.Slash.Register("mano"), {function (...) mano.f.parseslashco
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
 --
 
-      
-      
+
+
 --[[
 local function zonechangeevent(h, t)
 
@@ -258,4 +259,4 @@ local function zonechangeevent(h, t)
 
    return
 end
-]]--    
+]]--
