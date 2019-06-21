@@ -11,20 +11,19 @@ Environment =  "4.0"
 Embed = {
    LibDraggable = true,
    LibSimpleWidgets = true,
+   LibMenus	=	true
 }
 
 Dependencies = {
    LibDraggable     = {"required", "before"},
    LibSimpleWidgets = {"required", "before"},
+   LibMenus = {"required", "before"},
 }
 
 RunOnStartup = {
    "__mapnotes/__mapnotes.lua",
-----   "__mapnotes/db/__cairns.lua",
-----   "__mapnotes/db/__puzzles.lua",
-   "__menus/__menus_init.lua",
-----   "__menus/__menus_voices.lua",
-   "__menus/__menus.lua",
+--   "__menus/__menus_init.lua",
+--   "__menus/__menus.lua",
    "__geodata.lua",
    "__timer.lua",
    "_mano_init.lua",

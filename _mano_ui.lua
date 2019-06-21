@@ -130,13 +130,13 @@ function __mano_ui()
 
          table.insert( retval,   {  name     =  expname,
                                     callback =  "_submenu_",
---                                     submenu  =  { voices   =  t }
 												submenu  =  { fontsize	=	mano.gui.fontsize,
 			                                         fontface 	= 	mano.gui.fontface,
 			                                         voices   	=  t
 																}
                                  }
                      )
+
          t  		=	{}
 
       end

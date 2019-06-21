@@ -476,7 +476,7 @@ mano.f.splitstring         =  split
 mano.f.rounddecimal        =  rounddecimal
 mano.f.parseslashcommands  =  parseslashcommands
 mano.f.getzoneinfos			=	getzoneinfos
-mano.f.menu						=	menu
+mano.f.menu						=	Library.LibMenus.menu
 mano.f.findexactzonename	=	findexactzonename
 
 mano.foo                   =  {
