@@ -101,14 +101,16 @@ local function loadvariables(_, addonname)
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
          notesdb  =  manonotesdb
       end
-      mano.mapnote   =  __map_notes(notesdb)
+--       mano.mapnote   =  __map_notes(notesdb)
+		mano.mapnote   =  Library.LibMapNotes.note(notesdb)
 
       -- Shared Notes Db
       local shareddb =  {}
       if manoextnotesdb ~= nil and next(manoextnotesdb) ~= nil then
          shareddb =  manoextnotesdb
       end
-      mano.sharednote   =  __map_notes(shareddb)
+--       mano.sharednote   =  __map_notes(shareddb)
+		mano.sharednote   =  Library.LibMapNotes.note(shareddb)
 
       -- Character Categories
       if manousercats ~= nil and next(manousercats) ~= nil then
@@ -229,34 +231,3 @@ table.insert(Command.Slash.Register("mano"), {function (...) mano.f.parseslashco
 -- if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input('new') end
 if not mano.mapnoteinput   then  mano.mapnoteinput =  __mano_ui_input() end
 --
-
-
-
---[[
-local function zonechangeevent(h, t)
-
---    print(string.format("zonechangeevent: h=%s t=%s", h, t ))
-
-   local unit, zone, unitid, zoneid   =  nil, nil, nil, nil
-
-   for unit, zone in pairs(t) do
-      if unitid   == nil   then
-         unitid   =  unit
-         zoneid   =  zone
-      end
-   end
-
-   if unitid   == zids.player.unitid   then
-
-      local bool, zonedata = pcall(Inspect.Zone.Detail, zoneid)
-      if bool  then
-         addtoziddb(zonedata)
---       if zids.db[zonedata.name] ==  nil or zids.db[zonedata.name] == "" then
---          zids.db[zonedata.name] =   { name=zonedata.name, id=zonedata.id, type=zonedata.type }
---       else
-      end
-   end
-
-   return
-end
-]]--
