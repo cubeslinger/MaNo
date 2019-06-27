@@ -101,14 +101,16 @@ local function loadvariables(_, addonname)
       if manonotesdb ~= nil and next(manonotesdb) ~= nil then
          notesdb  =  manonotesdb
       end
-      mano.mapnote   =  __map_notes(notesdb)
+--       mano.mapnote   =  __map_notes(notesdb)
+		mano.mapnote   =  Library.LibMapNotes.note(notesdb)
 
       -- Shared Notes Db
       local shareddb =  {}
       if manoextnotesdb ~= nil and next(manoextnotesdb) ~= nil then
          shareddb =  manoextnotesdb
       end
-      mano.sharednote   =  __map_notes(shareddb)
+--       mano.sharednote   =  __map_notes(shareddb)
+		mano.sharednote   =  Library.LibMapNotes.note(shareddb)
 
       -- Character Categories
       if manousercats ~= nil and next(manousercats) ~= nil then
