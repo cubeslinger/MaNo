@@ -368,8 +368,11 @@ end
 --
 -- Handles
 --
-mano.geo                   =	__geodata()
-mano.zonetimer             =  __timer()
+--	mano.geo                   =	__geodata()
+--	mano.zonetimer             =  __timer()
+mano.geo                   =	Library.LibGeoData.geodata()
+mano.zonetimer             =  Library.LibTimer.timer()
+
 --
 --
 -- DBs

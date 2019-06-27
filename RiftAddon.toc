@@ -1,7 +1,7 @@
 Identifier  =  "MaNo"
 Name        =  { English = "MaNo" }
 NameShort   =  "MaNo"
-Version     =  "0.3.5.6"
+Version     =  "0.3.5.7"
 Description =  { English = "MAp NOtes" }
 Author      =  "marcob@marcob.org"
 Website     =  "https://github.com/cubeslinger/MaNo"
@@ -11,21 +11,21 @@ Environment =  "4.0"
 Embed = {
    LibDraggable = true,
    LibSimpleWidgets = true,
-   LibMenus	=	true
+   LibMenus	=	true,
+   LibTimer = true,
+   LibGeoData = true
 }
 
 Dependencies = {
    LibDraggable     = {"required", "before"},
    LibSimpleWidgets = {"required", "before"},
    LibMenus = {"required", "before"},
+   LibTimer = {"required", "before"},
+   LibGeoData = {"required", "before"},
 }
 
 RunOnStartup = {
    "__mapnotes/__mapnotes.lua",
---   "__menus/__menus_init.lua",
---   "__menus/__menus.lua",
-   "__geodata.lua",
-   "__timer.lua",
    "_mano_init.lua",
    "_mano_ui_input.lua",
    "_mano_ui.lua",
