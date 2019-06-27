@@ -506,9 +506,10 @@ function __mano_ui()
       self.menucfg         =  {}
       self.menucfg.zones   =  {}
       self.menucfg.main    =  {	fontsize =	mano.gui.font.size,
-                                 voices   =  {  {	name     =  "Add Note Here!",
-                                                   callback =  { mano.foo["parseslashcommands"], "add", 'close' },
-                                                },
+                                 voices   =  {
+-- 																{	name     =  "Add Note Here!",
+--                                                    callback =  { mano.foo["parseslashcommands"], "add", 'close' },
+--                                                 },
 																{  name     =  "Show Zone",
                                                    callback =  "_submenu_",
                                                    submenu  =  {	fontsize =	mano.gui.font.size,
